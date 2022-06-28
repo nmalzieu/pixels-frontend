@@ -1,0 +1,17 @@
+.gridWrapper {
+  border: 1px dashed;
+  max-width: 600px;
+  .grid {
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%;
+
+    .pixelWrapper {
+      border: 0.5px solid black;
+
+      .pixel {
+        padding-bottom: 100%;
+      }
+    }
+  }
+}

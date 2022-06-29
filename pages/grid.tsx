@@ -4,6 +4,7 @@ import type { NextPage } from "next";
 import { usePixelERC721Contract } from "../contracts/pixelERC721";
 import { usePixelDrawerContract } from "../contracts/pixelDrawer";
 import GridComponent from "../components/grid";
+import ConnectToStarknet from "../components/connectToStarknet";
 
 const Grid: NextPage = () => {
   const { account } = useStarknet();
@@ -11,7 +12,7 @@ const Grid: NextPage = () => {
   const { contract: pixelDrawerContract } = usePixelDrawerContract();
 
   const { data: pixelsOfOwnerData } = useStarknetCall({
-    contract: pixelDrawerContract,
+    contract: pixelERC721Contract,
     method: "pixelsOfOwner",
     args: [account],
   });
@@ -28,6 +29,10 @@ const Grid: NextPage = () => {
     args: [],
   });
 
+  if (!account) {
+    return <ConnectToStarknet />;
+  }
+
   if (!matrixSizeData || !currentDrawingRoundData || !pixelsOfOwnerData) {
     return <div>Loading...</div>;
   }
@@ -36,9 +41,7 @@ const Grid: NextPage = () => {
 
   const round = currentDrawingRoundData[0].toNumber();
 
-  const pixelsOwned = currentDrawingRoundData[0];
-
-  console.log({ pixelsOwned });
+  const pixelsOwned = pixelsOfOwnerData[0].map((p: any) => p.toNumber());
 
   if (round == 0) {
     return <div>Loading...</div>;

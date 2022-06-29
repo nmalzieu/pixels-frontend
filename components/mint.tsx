@@ -5,11 +5,21 @@ import {
   useStarknetInvoke,
 } from "@starknet-react/core";
 import { usePixelERC721Contract } from "../contracts/pixelERC721";
-
+import {
+  Transaction,
+  useStarknetTransactionManager,
+} from "@starknet-react/core";
+import { useEffect } from "react";
 
 const Mint = () => {
   const { account } = useStarknet();
+  const { transactions } = useStarknetTransactionManager();
   const { contract: pixelERC721Contract } = usePixelERC721Contract();
+
+  useEffect(() => {
+    // TODO => save current mint transaction to local storage
+    // to have visual information
+  }, [transactions]);
 
   const { data: totalSupplyData, loading: totalSupplyLoading } =
     useStarknetCall({
@@ -50,6 +60,11 @@ const Mint = () => {
     return <div>Loading...</div>;
   }
 
+  const mintPixel = () =>
+    mint({
+      args: [account],
+    });
+
   return (
     <div>
       <h2>
@@ -61,17 +76,7 @@ const Mint = () => {
           another one
         </span>
       )}
-      {balance == 0 && (
-        <button
-          onClick={() =>
-            mint({
-              args: [account],
-            })
-          }
-        >
-          Mint your pixel
-        </button>
-      )}
+      {balance == 0 && <button onClick={mintPixel}>Mint your pixel</button>}
     </div>
   );
 };

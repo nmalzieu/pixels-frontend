@@ -1,6 +1,7 @@
 .gridWrapper {
   border: 1px dashed;
   max-width: 600px;
+
   .grid {
     position: relative;
     width: 100%;
@@ -9,8 +10,16 @@
     .pixelWrapper {
       border: 0.5px solid black;
 
+      &.pixelOwned {
+        border: 0.5px solid red;
+        cursor: pointer;
+      }
+
       .pixel {
         padding-bottom: 100%;
+        &:hover {
+          filter: brightness(150%);
+        }
       }
     }
   }

@@ -1,17 +1,40 @@
 import { useStarknet } from "@starknet-react/core";
+import { useEffect, useState } from "react";
+import { useStoreDispatch, useStoreState } from "../store";
 
 const ConnectToStarknet = () => {
-  const { account, connect, connectors } = useStarknet();
+  const state = useStoreState();
+  const dispatch = useStoreDispatch();
+
+  const {
+    account: starknetConnectedAccount,
+    connect,
+    connectors,
+  } = useStarknet();
   const connector = connectors.find((c) => c.available());
-  return (
-    <div>
-      {!account && connector && (
-        <button key={connector.id()} onClick={() => connect(connector)}>
-          Connect to Starknet
-        </button>
-      )}
-    </div>
-  );
+
+  useEffect(() => {
+    if (
+      starknetConnectedAccount &&
+      starknetConnectedAccount !== state.account
+    ) {
+      dispatch.setAccount({
+        account: starknetConnectedAccount,
+        accountConnected: true,
+      });
+    }
+  }, [dispatch, starknetConnectedAccount, state.account]);
+
+  if (state.account) {
+    return <div>👛 {state.account}</div>;
+  } else if (!starknetConnectedAccount && connector) {
+    return (
+      <div onClick={() => connect(connector)} className="clickable">
+        👛 connect wallet
+      </div>
+    );
+  }
+  return <div></div>;
 };
 
 export default ConnectToStarknet;

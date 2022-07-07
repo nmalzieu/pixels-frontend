@@ -1,82 +1,104 @@
 import { uint256 } from "starknet";
-import {
-  useStarknet,
-  useStarknetCall,
-  useStarknetInvoke,
-} from "@starknet-react/core";
+import { useStarknetCall } from "@starknet-react/core";
 import { usePixelERC721Contract } from "../contracts/pixelERC721";
-import {
-  Transaction,
-  useStarknetTransactionManager,
-} from "@starknet-react/core";
-import { useEffect } from "react";
+import { useStarknetTransactionManager } from "@starknet-react/core";
+import { useCallback, useEffect, useState } from "react";
+import Image from "next/image";
+import styles from "../styles/Mint.module.scss";
+import { useStoreDispatch, useStoreState } from "../store";
+import { useInvoke } from "../contracts/helpers";
 
 const Mint = () => {
-  const { account } = useStarknet();
+  const [hoverMintButton, setHoverMintButton] = useState(false);
+  const [isMintReady, setIsMintReady] = useState(false);
+  const [waitingToMint, setWaitingToMint] = useState(false);
+  const [addedTransactionToRefresh, setAddedTransactionToRefresh] =
+    useState(false);
+  const state = useStoreState();
+  const dispatch = useStoreDispatch();
+
   const { transactions } = useStarknetTransactionManager();
+
   const { contract: pixelERC721Contract } = usePixelERC721Contract();
 
-  useEffect(() => {
-    // TODO => save current mint transaction to local storage
-    // to have visual information
-  }, [transactions]);
+  const { data: totalSupplyData } = useStarknetCall({
+    contract: pixelERC721Contract,
+    method: "totalSupply",
+    args: [],
+  });
 
-  const { data: totalSupplyData, loading: totalSupplyLoading } =
-    useStarknetCall({
-      contract: pixelERC721Contract,
-      method: "totalSupply",
-      args: [],
-    });
-
-  const { data: maxSupplyData, loading: maxSupplyLoading } = useStarknetCall({
+  const { data: maxSupplyData } = useStarknetCall({
     contract: pixelERC721Contract,
     method: "maxSupply",
     args: [],
   });
 
-  const { data: balanceOfData, loading: balanceOfLoading } = useStarknetCall({
-    contract: pixelERC721Contract,
-    method: "balanceOf",
-    args: [account],
-  });
-
-  const { invoke: mint } = useStarknetInvoke({
+  const { invoke: mint } = useInvoke({
     contract: pixelERC721Contract,
     method: "mint",
   });
 
-  const totalSupply = totalSupplyData
-    ? uint256.uint256ToBN(totalSupplyData?.[0]).toNumber()
-    : 0;
-  const maxSupply = maxSupplyData
-    ? uint256.uint256ToBN(maxSupplyData?.[0]).toNumber()
-    : 0;
-  const balance = balanceOfData
-    ? uint256.uint256ToBN(balanceOfData?.[0]).toNumber()
-    : 0;
-  const loading = !totalSupplyData || !maxSupplyData || !balanceOfData;
+  const mintIfPossible = useCallback(() => {
+    if (!state.account || !totalSupplyData || !maxSupplyData) return;
+    const totalSupply = uint256.uint256ToBN(totalSupplyData?.[0]).toNumber();
+    const maxSupply = uint256.uint256ToBN(maxSupplyData?.[0]).toNumber();
+    if (totalSupply === maxSupply) {
+      dispatch.setMessage("all pxl NFTs have been minted");
+    } else {
+      mint({
+        args: [state.account],
+        metadata: {
+          method: "mint",
+        },
+      });
+    }
+  }, [state.account, dispatch, maxSupplyData, mint, totalSupplyData]);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  useEffect(() => {
+    // This checks regularly to see if we're ready
+    // to mint or still waiting for some data from
+    // Starknet (totalSupply / maxSupply)
+    const interval = setInterval(() => {
+      if (totalSupplyData && maxSupplyData && !isMintReady) {
+        if (state.account && waitingToMint) {
+          setWaitingToMint(false);
+          mintIfPossible();
+        }
+        setIsMintReady(true);
+      }
+    }, 500);
+    return () => clearInterval(interval);
+  }, [
+    state.account,
+    isMintReady,
+    maxSupplyData,
+    mint,
+    mintIfPossible,
+    totalSupplyData,
+    waitingToMint,
+  ]);
 
-  const mintPixel = () =>
-    mint({
-      args: [account],
-    });
+  const mintPixel = () => {
+    if (!state.account) {
+      dispatch.setMessage("please connect wallet before minting");
+    } else if (!isMintReady) {
+      setWaitingToMint(true);
+    } else {
+      mintIfPossible();
+    }
+  };
 
   return (
-    <div>
-      <h2>
-        {totalSupply} PXLS minted / {maxSupply}
-      </h2>
-      {balance > 0 && (
-        <span>
-          Your account {account} already owns {balance} PXLS, you cannot mint
-          another one
-        </span>
-      )}
-      {balance == 0 && <button onClick={mintPixel}>Mint your pixel</button>}
+    <div className={styles.mintButton} onClick={mintPixel}>
+      <Image
+        src={hoverMintButton ? "/mint-button-hover.svg" : "/mint-button.svg"}
+        alt="Mint"
+        width={346}
+        height={115}
+        layout="fixed"
+        onMouseEnter={() => setHoverMintButton(true)}
+        onMouseLeave={() => setHoverMintButton(false)}
+      />
     </div>
   );
 };

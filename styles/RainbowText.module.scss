@@ -1,0 +1,16 @@
+.rainbowText {
+  background: linear-gradient(
+    90.86deg,
+    #f860e7 -8.54%,
+    #6255f1 29.16%,
+    #ea8817 69.5%,
+    #1acd42 118.44%
+  );
+  font-size: 30px;
+  height: 40px;
+  width: fit-content;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+}

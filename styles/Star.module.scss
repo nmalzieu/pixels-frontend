@@ -1,0 +1,27 @@
+.star {
+  position: absolute;
+  top: 283px;
+  left: 64px;
+  transform: rotate(-21.23deg);
+
+  .message {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 36px;
+    line-height: 42px;;
+    font-weight: 600;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    text-align: center;
+  }
+
+  .starImage {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+}

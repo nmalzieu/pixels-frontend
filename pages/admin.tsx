@@ -1,13 +1,10 @@
-import {
-  useStarknet,
-  useStarknetCall,
-  useStarknetInvoke,
-} from "@starknet-react/core";
+import { useStarknet, useStarknetCall } from "@starknet-react/core";
 import type { NextPage } from "next";
-import ConnectToStarknet from "../components/connectToStarknet";
 import { usePixelERC721Contract } from "../contracts/pixelERC721";
 import { usePixelDrawerContract } from "../contracts/pixelDrawer";
 import { getAddressFromBN, getNumberFromUint } from "../utils";
+import { useInvoke } from "../contracts/helpers";
+import ConnectToStarknet from "../components/connectToStarknet";
 
 const Admin: NextPage = () => {
   const { account } = useStarknet();
@@ -50,18 +47,20 @@ const Admin: NextPage = () => {
     args: [],
   });
 
-  const { invoke: startDrawing } = useStarknetInvoke({
+  const { invoke: startDrawing } = useInvoke({
     contract: pixelDrawerContract,
     method: "start",
   });
 
-  if (!account) {
-    return <ConnectToStarknet />;
-  }
+  const { invoke: launchNewRoundIfNecessary } = useInvoke({
+    contract: pixelDrawerContract,
+    method: "launchNewRoundIfNecessary",
+  });
 
   return (
     <div>
       <h1>Admin</h1>
+      <ConnectToStarknet />
       <div>
         <h2>PixelERC721</h2>
         <ul>
@@ -109,18 +108,21 @@ const Admin: NextPage = () => {
               ? currentDrawingRoundData[0].toNumber()
               : "loading..."}
           </li>
-          {currentDrawingRoundData &&
-            currentDrawingRoundData[0].toNumber() == 0 && (
-              <button
-                onClick={() =>
-                  startDrawing({
-                    args: [],
-                  })
-                }
-              >
-                Start drawing
-              </button>
-            )}
+          {currentDrawingRoundData && (
+            <button
+              onClick={() =>
+                currentDrawingRoundData[0].toNumber() == 0
+                  ? startDrawing({
+                      args: [],
+                    })
+                  : launchNewRoundIfNecessary({ args: [] })
+              }
+            >
+              {currentDrawingRoundData[0].toNumber() == 0
+                ? "Start drawing"
+                : "Launch next round"}
+            </button>
+          )}
         </ul>
       </div>
     </div>

@@ -20,7 +20,6 @@ const TransactionRefreshComponent = () => {
   // If the minting transaction is rejected or accepted
   // we don't need it anymore
   useEffect(() => {
-    console.log("IN THE USEFFECT", transactions);
     const mintingTransaction = transactions.find(
       (t) => t.metadata?.method === "mint"
     );

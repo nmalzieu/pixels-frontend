@@ -7,6 +7,8 @@ import Image from "next/image";
 import styles from "../styles/Mint.module.scss";
 import { useStoreDispatch, useStoreState } from "../store";
 import { useInvoke } from "../contracts/helpers";
+import MintButtonImage from "../public/mint-button.svg";
+import MintButtonImageHover from "../public/mint-button-hover.svg";
 
 const Mint = () => {
   const [hoverMintButton, setHoverMintButton] = useState(false);
@@ -89,16 +91,13 @@ const Mint = () => {
   };
 
   return (
-    <div className={styles.mintButton} onClick={mintPixel}>
-      <Image
-        src={hoverMintButton ? "/mint-button-hover.svg" : "/mint-button.svg"}
-        alt="Mint"
-        width={346}
-        height={115}
-        layout="fixed"
-        onMouseEnter={() => setHoverMintButton(true)}
-        onMouseLeave={() => setHoverMintButton(false)}
-      />
+    <div
+      className={styles.mintButton}
+      onClick={mintPixel}
+      onMouseEnter={() => setHoverMintButton(true)}
+      onMouseLeave={() => setHoverMintButton(false)}
+    >
+      {hoverMintButton ? <MintButtonImageHover /> : <MintButtonImage />}
     </div>
   );
 };

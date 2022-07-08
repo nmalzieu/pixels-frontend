@@ -1,4 +1,3 @@
-import Image from "next/image";
 import styles from "../styles/Star.module.scss";
 import StarImage from "../public/star.svg";
 

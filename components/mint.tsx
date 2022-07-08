@@ -3,7 +3,6 @@ import { useStarknetCall } from "@starknet-react/core";
 import { usePixelERC721Contract } from "../contracts/pixelERC721";
 import { useStarknetTransactionManager } from "@starknet-react/core";
 import { useCallback, useEffect, useState } from "react";
-import Image from "next/image";
 import styles from "../styles/Mint.module.scss";
 import { useStoreDispatch, useStoreState } from "../store";
 import { useInvoke } from "../contracts/helpers";

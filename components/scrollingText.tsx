@@ -5,7 +5,7 @@ const ScrollingText = () => (
   <div className={styles.scrollingText}>
     <div className={styles.separator} />
     <div className={styles.separator} />
-    <Marquee className={styles.marquee} gradient={false} speed={100}>
+    <Marquee className={styles.marquee} gradient={false} speed={200}>
       PXLS IS A COLLABORATIVE BLOCKCHAIN ART EXPERIMENT&nbsp;
     </Marquee>
   </div>

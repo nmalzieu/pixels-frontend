@@ -31,7 +31,8 @@ const Home: NextPage = () => {
     const height = event.target.offsetHeight;
     const position = (x + y) / (width + height);
     const rotate = position * 360;
-    setHueRotate(rotate);
+    const sensibility = 3;
+    setHueRotate(rotate * sensibility);
   };
 
   const pixelsOwned = (pixelsOfOwnerData as any)?.pixels?.map((p: any) =>

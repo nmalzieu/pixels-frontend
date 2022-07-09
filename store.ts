@@ -42,9 +42,9 @@ export const state = createModel<RootModel>()({
       const newState = { ...state, currentlyMintingHash: hash };
       if (hash) {
         localStorage.setItem("pxls-minting", hash);
-        newState.message = "minting in progress ...";
+        newState.message = "minting in progress...";
       } else {
-        if (state.message === "minting in progress ...") {
+        if (state.message === "minting in progress...") {
           newState.message = "";
         }
         localStorage.removeItem("pxls-minting");
@@ -96,7 +96,7 @@ setInterval(() => {
     const nextMessage = mintingMessages[nextIndex];
     store.dispatch({ type: "state/setMessage", payload: nextMessage });
   }
-}, 500);
+}, 850);
 
 export type Store = typeof store;
 export type Dispatch = RematchDispatch<RootModel>;

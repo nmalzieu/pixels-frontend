@@ -111,7 +111,6 @@ const Admin: NextPage = () => {
           {pixelsOwned && pixelsOwned.length > 0 && (
             <button
               onClick={() => {
-                console.log([storeState.account, 0, pixelsOwned[0], 0]);
                 transfer({
                   args: [
                     storeState.account,

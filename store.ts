@@ -12,6 +12,13 @@ type SetAccountType = {
   accountConnected: boolean;
 };
 
+const mintingMessages = [
+  "minting in progress",
+  "minting in progress.",
+  "minting in progress..",
+  "minting in progress...",
+];
+
 export const state = createModel<RootModel>()({
   state: {
     message: "",
@@ -78,6 +85,18 @@ setTimeout(() => {
     }
   }
 }, 50);
+
+setInterval(() => {
+  // Making the "minting in progress..."
+  // message dynamic
+  const currentMessage = store.getState().state.message;
+  const indexOfMessage = mintingMessages.indexOf(currentMessage);
+  if (indexOfMessage > -1) {
+    const nextIndex = (indexOfMessage + 1) % mintingMessages.length;
+    const nextMessage = mintingMessages[nextIndex];
+    store.dispatch({ type: "state/setMessage", payload: nextMessage });
+  }
+}, 500);
 
 export type Store = typeof store;
 export type Dispatch = RematchDispatch<RootModel>;

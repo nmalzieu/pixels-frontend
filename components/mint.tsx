@@ -13,12 +13,8 @@ const Mint = () => {
   const [hoverMintButton, setHoverMintButton] = useState(false);
   const [isMintReady, setIsMintReady] = useState(false);
   const [waitingToMint, setWaitingToMint] = useState(false);
-  const [addedTransactionToRefresh, setAddedTransactionToRefresh] =
-    useState(false);
   const state = useStoreState();
   const dispatch = useStoreDispatch();
-
-  const { transactions } = useStarknetTransactionManager();
 
   const { contract: pixelERC721Contract } = usePixelERC721Contract();
 

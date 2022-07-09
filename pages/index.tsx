@@ -25,14 +25,19 @@ const Home: NextPage = () => {
   const [hueRotate, setHueRotate] = useState(0);
 
   const handleMouseMove = (event: any) => {
-    const x = event.clientX - event.target.offsetLeft;
-    const y = event.clientY - event.target.offsetTop;
-    const width = event.target.offsetWidth;
-    const height = event.target.offsetHeight;
+    const x = event.screenX;
+    const y = event.screenY;
+    const width = Math.max(
+      document.documentElement.clientWidth || 0,
+      window.innerWidth || 0
+    );
+    const height = Math.max(
+      document.documentElement.clientHeight || 0,
+      window.innerHeight || 0
+    );
     const position = (x + y) / (width + height);
-    const rotate = position * 360;
-    const sensibility = 3;
-    setHueRotate(rotate * sensibility);
+    const rotate = 3 * position * 360;
+    setHueRotate(rotate);
   };
 
   const pixelsOwned = (pixelsOfOwnerData as any)?.pixels?.map((p: any) =>
@@ -50,9 +55,7 @@ const Home: NextPage = () => {
     showMint = false;
   }
 
-  const rainbowMessage = state.currentlyMintingHash
-    ? "minting in progress ..."
-    : state.message;
+  const rainbowMessage = state.message;
 
   return (
     <div className={styles.home} onMouseMove={handleMouseMove}>

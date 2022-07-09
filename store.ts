@@ -25,15 +25,24 @@ export const state = createModel<RootModel>()({
     },
     setAccount(state, { account, accountConnected }: SetAccountType) {
       localStorage.setItem("pxls-account", account);
-      return { ...state, account, accountConnected };
+      const newState = { ...state, account, accountConnected };
+      if (state.message === "please connect wallet before minting") {
+        newState.message = "";
+      }
+      return newState;
     },
     setMintingHash(state, hash: string) {
+      const newState = { ...state, currentlyMintingHash: hash };
       if (hash) {
         localStorage.setItem("pxls-minting", hash);
+        newState.message = "minting in progress ...";
       } else {
+        if (state.message === "minting in progress ...") {
+          newState.message = "";
+        }
         localStorage.removeItem("pxls-minting");
       }
-      return { ...state, currentlyMintingHash: hash };
+      return newState;
     },
   },
 });

@@ -34,7 +34,6 @@ const TransactionRefreshComponent = () => {
       mintingTransaction &&
       !pendingStatuses.includes(mintingTransaction.status)
     ) {
-      console.log("deleting a rejected transaction");
       // ACCEPTED / REJECTED transaction
       removeTransaction(mintingTransaction.transactionHash);
       dispatch.setMintingHash("");
@@ -43,11 +42,9 @@ const TransactionRefreshComponent = () => {
       pendingStatuses.includes(mintingTransaction.status) &&
       mintingTransaction.transactionHash !== state.currentlyMintingHash
     ) {
-      console.log("adding a new minting transaction");
       // New minting transaction
       dispatch.setMintingHash(mintingTransaction.transactionHash);
     } else if (!mintingTransaction && state.currentlyMintingHash) {
-      console.log("adding an existing transaction");
       addTransaction({
         status: "TRANSACTION_RECEIVED",
         transactionHash: state.currentlyMintingHash,

@@ -2,11 +2,17 @@ import { useStarknet, useStarknetCall } from "@starknet-react/core";
 import type { NextPage } from "next";
 import { usePixelERC721Contract } from "../contracts/pixelERC721";
 import { usePixelDrawerContract } from "../contracts/pixelDrawer";
-import { getAddressFromBN, getNumberFromUint } from "../utils";
+import {
+  getAddressFromBN,
+  getNumberFromUint,
+  getUintFromNumber,
+} from "../utils";
 import { useInvoke } from "../contracts/helpers";
 import ConnectToStarknet from "../components/connectToStarknet";
+import { useStoreState } from "../store";
 
 const Admin: NextPage = () => {
+  const storeState = useStoreState();
   const { account } = useStarknet();
   const { contract: pixelERC721Contract } = usePixelERC721Contract();
   const { contract: pixelDrawerContract } = usePixelDrawerContract();
@@ -33,6 +39,22 @@ const Admin: NextPage = () => {
     contract: pixelDrawerContract,
     method: "owner",
     args: [],
+  });
+
+  const { data: pixelsOfOwnerData, loading: pixelsOfOwnerLoading } =
+    useStarknetCall({
+      contract: pixelERC721Contract,
+      method: "pixelsOfOwner",
+      args: [storeState.account],
+    });
+
+  const pixelsOwned = (pixelsOfOwnerData as any)?.pixels?.map((p: any) =>
+    p.toNumber()
+  );
+
+  const { invoke: transfer } = useInvoke({
+    contract: pixelERC721Contract,
+    method: "transferFrom",
   });
 
   const { data: pixelERC721AddressData } = useStarknetCall({
@@ -83,6 +105,25 @@ const Admin: NextPage = () => {
               ? getNumberFromUint(totalSupplyData?.[0])
               : "loading..."}
           </li>
+          <li>
+            pxls owned by current user : {pixelsOwned && pixelsOwned.join(",")}
+          </li>
+          {pixelsOwned && pixelsOwned.length > 0 && (
+            <button
+              onClick={() => {
+                console.log([storeState.account, 0, pixelsOwned[0], 0]);
+                transfer({
+                  args: [
+                    storeState.account,
+                    "0x000000000000000000000000000000000000dead",
+                    getUintFromNumber(pixelsOwned[0]),
+                  ],
+                });
+              }}
+            >
+              Transfer token to 0
+            </button>
+          )}
         </ul>
       </div>
       <div>

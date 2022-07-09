@@ -9,3 +9,7 @@ export const getAddressFromBN = (bn: any) => {
 export const getNumberFromUint = (uint: any) => {
   return uint256.uint256ToBN(uint).toNumber();
 };
+
+export const getUintFromNumber = (num: any) => {
+  return uint256.bnToUint256(num);
+};

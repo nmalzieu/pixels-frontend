@@ -8,7 +8,7 @@ const Home: NextPage = () => {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const handleResizeWindow = () => {
-        setShowMobile(window.innerWidth < 700);
+        setShowMobile(window.innerWidth < 550);
       };
       // subscribe to window resize event "onComponentDidMount"
       window.addEventListener("resize", handleResizeWindow);

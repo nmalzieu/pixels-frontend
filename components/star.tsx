@@ -15,14 +15,14 @@ const Star = ({
   return (
     <div
       className={styles.star}
-      style={{ transform: `rotate(${realRotate}deg)` }}
+      style={{ transform: `translate(-50%, -50%) rotate(${realRotate}deg)` }}
       ref={innerRef}
     >
       <StarImage />
       <div className={styles.message}>
         YOU OWN
         <br />
-        PXL #{pxls.join(",")}
+        <span className={styles.underline}>PXL #{pxls.join(",")}</span>
       </div>
     </div>
   );

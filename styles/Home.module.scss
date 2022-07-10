@@ -13,7 +13,7 @@
 
 .gridLogo {
   background-image: url(/grid-logo.svg);
-  background-size: 7309px 4931px;
+  background-size: 4349px 2839px;
   background-position: top center;
   background-repeat: no-repeat;
   width: 100%;
@@ -26,10 +26,11 @@
 
 .top {
   display: flex;
-  font-size: 30px;
-  line-height: 34.5px;
-  padding-top: 98px;
+  font-size: 20px;
+  line-height: 23px;
+  padding-top: 93px;
   padding-bottom: 10px;
+  padding-right: 25px;
   position: relative;
 
   .topElement {
@@ -59,6 +60,6 @@
 
 .message {
   position: absolute;
-  left: 120px;
-  top: 175px;
+  left: 108px;
+  top: 148px;
 }

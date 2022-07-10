@@ -1,21 +1,25 @@
 .star {
   position: absolute;
-  top: 283px;
-  left: 64px;
+  left: calc(50% - 230px);
+  top: calc(50% - 30px);
 
   .message {
     position: absolute;
     left: 50%;
     top: 50%;
     width: 200px;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -40%);
     color: white;
-    font-size: 36px;
-    line-height: 42px;
+    font-size: 20px;
+    line-height: 23px;
     font-weight: 600;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     text-align: center;
+
+    .underline {
+      text-decoration: underline;
+    }
   }
 }

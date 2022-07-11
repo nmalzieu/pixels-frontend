@@ -5,6 +5,7 @@ import HomeMobile from "../components/homeMobile";
 
 const Home: NextPage = () => {
   const [showMobile, setShowMobile] = useState(false);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const handleResizeWindow = () => {

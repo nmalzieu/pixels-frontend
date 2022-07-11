@@ -1,17 +1,23 @@
 import type { NextPage } from "next";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useStarknetCall } from "@starknet-react/core";
 import Mint from "./mint";
 import ConnectToStarknet from "./connectToStarknet";
 import styles from "../styles/Home.module.scss";
-import { useStoreState } from "../store";
+import { useStoreDispatch, useStoreState } from "../store";
 import RainbowText from "./rainbowText";
 import { usePixelERC721Contract } from "../contracts/pixelERC721";
 import Star from "./star";
 import ScrollingText from "./scrollingText";
+import { useStarknetNetwork } from "../utils";
 
 const HomeDesktop = () => {
   const state = useStoreState();
+  const dispatch = useStoreDispatch();
+  const network = useStarknetNetwork();
+  useEffect(() => {
+    dispatch.setNetwork(network || "");
+  }, [dispatch, network]);
 
   const { contract: pixelERC721Contract } = usePixelERC721Contract();
 
@@ -121,7 +127,17 @@ const HomeDesktop = () => {
         </div>
       </div>
       <div className={styles.message}>
-        <RainbowText text={rainbowMessage} />
+        {state.currentlyMintingHash ? (
+          <a
+            href={`${process.env.NEXT_PUBLIC_VOYAGER_LINK}/${state.currentlyMintingHash}`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <RainbowText text={rainbowMessage} />
+          </a>
+        ) : (
+          <RainbowText text={rainbowMessage} />
+        )}
       </div>
       {showMint && <Mint />}
       <ScrollingText />

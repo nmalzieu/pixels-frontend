@@ -1,3 +1,4 @@
+import { useStarknet } from "@starknet-react/core";
 import { uint256 } from "starknet";
 
 export const getAddressFromBN = (bn: any) => {
@@ -12,4 +13,21 @@ export const getNumberFromUint = (uint: any) => {
 
 export const getUintFromNumber = (num: any) => {
   return uint256.bnToUint256(num);
+};
+
+export const useStarknetNetwork = () => {
+  const { account, library } = useStarknet();
+  if (!account) {
+    return;
+  }
+  try {
+    const { baseUrl } = library;
+    if (baseUrl.includes("alpha-mainnet.starknet.io")) {
+      return "mainnet";
+    } else if (baseUrl.includes("alpha4.starknet.io")) {
+      return "goerli";
+    } else if (baseUrl.match(/^https?:\/\/localhost.*/)) {
+      return "localhost";
+    }
+  } catch {}
 };

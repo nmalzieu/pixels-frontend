@@ -18,14 +18,19 @@ export const useInvoke = ({
   const {
     account: starknetConnectedAccount,
     connect,
+    disconnect,
     connectors,
   } = useStarknet();
 
   const accountRef = useRef(starknetConnectedAccount);
   const invokeRef = useRef(invoke);
+  const networkRef = useRef(state.network);
+  const disconnectRef = useRef(disconnect);
   useEffect(() => {
     accountRef.current = starknetConnectedAccount;
     invokeRef.current = invoke;
+    networkRef.current = state.network;
+    disconnectRef.current = disconnect;
   });
 
   useEffect(() => {
@@ -46,7 +51,13 @@ export const useInvoke = ({
       interval = setInterval(() => {
         if (accountRef.current) {
           clearInterval(interval);
-          invokeRef.current({ args, metadata }).then(resolve).catch(reject);
+          // Invoking only if on the right network
+          if (networkRef.current === process.env.NEXT_PUBLIC_STARKNET_NETWORK) {
+            invokeRef.current({ args, metadata }).then(resolve).catch(reject);
+          } else {
+            disconnectRef.current();
+            reject("Wrong network");
+          }
         } else {
           const connector = connectors.find((c) => c.available());
           if (connector) {

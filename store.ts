@@ -24,6 +24,7 @@ export const state = createModel<RootModel>()({
     message: "",
     account: "",
     accountConnected: false,
+    network: "",
     currentlyMintingHash: "",
   },
   reducers: {
@@ -44,10 +45,22 @@ export const state = createModel<RootModel>()({
         localStorage.setItem("pxls-minting", hash);
         newState.message = "minting in progress...";
       } else {
-        if (state.message === "minting in progress...") {
+        if (mintingMessages.includes(state.message)) {
           newState.message = "";
         }
         localStorage.removeItem("pxls-minting");
+      }
+      return newState;
+    },
+    setNetwork(state, network: string) {
+      const newState = { ...state, network };
+      const networkMessage = `please connect to the ${process.env.NEXT_PUBLIC_STARKNET_NETWORK} network`;
+      if (network) {
+        if (network !== process.env.NEXT_PUBLIC_STARKNET_NETWORK) {
+          newState.message = networkMessage;
+        } else if (state.message === networkMessage) {
+          newState.message = "";
+        }
       }
       return newState;
     },

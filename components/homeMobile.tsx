@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styles from "../styles/Mobile.module.scss";
+import CrossImage from "../public/cross.svg";
 
 const HomeMobile = () => {
   const [numberOfClones, setNumberOfClones] = useState(0);
@@ -31,9 +32,11 @@ const HomeMobile = () => {
     <div className={styles.homeMobile}>
       <div className={styles.mobile}>
         <div className={styles.alert} onClick={duplicate} id="alert">
-          <div className={styles.alertTop}></div>
+          <div className={styles.alertTop}>
+            <CrossImage />
+          </div>
           <div className={styles.alertContent}>
-            PXLS only works on real computers, you boomer
+            PXLS only works on real computers.
             <div className={styles.alertButton}>ok</div>
           </div>
         </div>

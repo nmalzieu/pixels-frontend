@@ -9,12 +9,28 @@ const ConnectToStarknet = () => {
   const {
     account: starknetConnectedAccount,
     connect,
+    disconnect,
     connectors,
   } = useStarknet();
   const connector = connectors.find((c) => c.available());
 
   useEffect(() => {
     if (
+      state.network &&
+      state.network !== process.env.NEXT_PUBLIC_STARKNET_NETWORK
+    ) {
+      disconnect();
+      dispatch.setAccount({
+        account: "",
+        accountConnected: false,
+      });
+    }
+  }, [disconnect, dispatch, state.network]);
+
+  useEffect(() => {
+    if (
+      state.network &&
+      state.network === process.env.NEXT_PUBLIC_STARKNET_NETWORK &&
       starknetConnectedAccount &&
       starknetConnectedAccount !== state.account
     ) {
@@ -23,7 +39,7 @@ const ConnectToStarknet = () => {
         accountConnected: true,
       });
     }
-  }, [dispatch, starknetConnectedAccount, state.account]);
+  }, [dispatch, starknetConnectedAccount, state.account, state.network]);
 
   if (state.account) {
     return <div>👛 {state.account}</div>;

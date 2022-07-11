@@ -56,6 +56,10 @@ export const useInvoke = ({
             invokeRef.current({ args, metadata }).then(resolve).catch(reject);
           } else {
             disconnectRef.current();
+            dispatch.setAccount({
+              account: "",
+              accountConnected: false,
+            });
             reject("Wrong network");
           }
         } else {

@@ -18,8 +18,10 @@ const HomeMobile = () => {
       document.documentElement.clientHeight || 0,
       window.innerHeight || 0
     );
-  
-    const x = Math.random() * (pageWidth - 0.6 * boundingRect.width) - 0.2 * boundingRect.width;
+
+    const x =
+      Math.random() * (pageWidth - 0.6 * boundingRect.width) -
+      0.2 * boundingRect.width;
     const y = Math.random() * (pageHeight - 0.7 * boundingRect.height);
     clone.style = `position: absolute; top: ${y}px; left: ${x}px;`;
     setNumberOfClones(numberOfClones + 1);

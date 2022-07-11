@@ -3,27 +3,23 @@ import { useEffect, useState } from "react";
 import HomeDesktop from "../components/homeDesktop";
 import HomeMobile from "../components/homeMobile";
 
-const Home: NextPage = () => {
-  const [showMobile, setShowMobile] = useState(false);
+interface Props {
+  isMobileView: boolean;
+}
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const handleResizeWindow = () => {
-        setShowMobile(window.innerWidth < 550);
-      };
-      // subscribe to window resize event "onComponentDidMount"
-      window.addEventListener("resize", handleResizeWindow);
-      handleResizeWindow();
-      return () => {
-        // unsubscribe "onComponentDestroy"
-        window.removeEventListener("resize", handleResizeWindow);
-      };
-    }
-  }, []);
-  if (showMobile) {
+const Home: NextPage<Props> = ({ isMobileView }) => {
+  if (isMobileView) {
     return <HomeMobile />;
   }
   return <HomeDesktop />;
+};
+
+Home.getInitialProps = async ({ req }) => {
+  const userAgent = req ? req.headers["user-agent"] : navigator.userAgent;
+  const isMobileView = !!userAgent?.match(
+    /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
+  );
+  return { isMobileView };
 };
 
 export default Home;

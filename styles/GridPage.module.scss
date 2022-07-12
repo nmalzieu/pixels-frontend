@@ -1,0 +1,39 @@
+.gridPage {
+  background-image: url(/background-live.jpg);
+  background-size: cover;
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+  flex-direction: column;
+  padding-top: 60px;
+
+  div {
+    z-index: 1;
+  }
+}
+
+.logo {
+  position: absolute;
+  top: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+
+// Par rapport au top left, retirer
+// 169 top, 100 left
+
+.container {
+  border: 1px solid red;
+  width: 1240px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 75px;
+  position: relative;
+}
+
+.doubleSeparator {
+    height: 10px;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}

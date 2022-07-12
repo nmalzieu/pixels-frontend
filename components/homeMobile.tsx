@@ -1,6 +1,7 @@
 import { useState } from "react";
-import styles from "../styles/Mobile.module.scss";
+
 import CrossImage from "../public/cross.svg";
+import styles from "../styles/Mobile.module.scss";
 
 const HomeMobile = () => {
   const [numberOfClones, setNumberOfClones] = useState(0);

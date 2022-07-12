@@ -1,21 +1,30 @@
 import "../styles/reset.css";
 import "../styles/globals.css";
-import type { AppProps } from "next/app";
-import { Provider as Starknet } from "starknet";
-import { Provider as ReactReduxProvider } from "react-redux";
+
 import {
-  StarknetProvider,
   InjectedConnector,
+  StarknetProvider,
   useStarknetTransactionManager,
 } from "@starknet-react/core";
-import { store, useStoreDispatch, useStoreState } from "../store";
+import type { AppProps } from "next/app";
 import { useEffect } from "react";
+import { Provider as ReactReduxProvider } from "react-redux";
+import { Provider as Starknet } from "starknet";
 
-const TransactionRefreshComponent = () => {
+import { store, useStoreDispatch, useStoreState } from "../store";
+import { useStarknetNetwork } from "../utils";
+
+const StarknetStatusComponent = () => {
   const state = useStoreState();
   const dispatch = useStoreDispatch();
   const { addTransaction, transactions, removeTransaction } =
     useStarknetTransactionManager();
+
+  // Save starknet network to state
+  const network = useStarknetNetwork();
+  useEffect(() => {
+    dispatch.setNetwork(network || "");
+  }, [dispatch, network]);
 
   // If the minting transaction is rejected or accepted
   // we don't need it anymore
@@ -75,7 +84,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           })
         }
       >
-        <TransactionRefreshComponent />
+        <StarknetStatusComponent />
         <Component {...pageProps} />
       </StarknetProvider>
     </ReactReduxProvider>

@@ -1,15 +1,16 @@
 import { useStarknet, useStarknetCall } from "@starknet-react/core";
 import type { NextPage } from "next";
-import { usePixelERC721Contract } from "../contracts/pixelERC721";
+
+import ConnectToStarknet from "../components/connectToStarknet";
+import { useInvoke } from "../contracts/helpers";
 import { usePixelDrawerContract } from "../contracts/pixelDrawer";
+import { usePixelERC721Contract } from "../contracts/pixelERC721";
+import { useStoreState } from "../store";
 import {
   getAddressFromBN,
   getNumberFromUint,
   getUintFromNumber,
 } from "../utils";
-import { useInvoke } from "../contracts/helpers";
-import ConnectToStarknet from "../components/connectToStarknet";
-import { useStoreState } from "../store";
 
 const Admin: NextPage = () => {
   const storeState = useStoreState();

@@ -1,4 +1,5 @@
 import Marquee from "react-fast-marquee";
+
 import styles from "../styles/ScrollingText.module.scss";
 
 const ScrollingText = () => (

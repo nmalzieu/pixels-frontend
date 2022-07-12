@@ -1,23 +1,17 @@
-import type { NextPage } from "next";
-import { useEffect, useRef, useState } from "react";
 import { useStarknetCall } from "@starknet-react/core";
-import Mint from "./mint";
-import ConnectToStarknet from "./connectToStarknet";
-import styles from "../styles/Home.module.scss";
-import { useStoreDispatch, useStoreState } from "../store";
-import RainbowText from "./rainbowText";
+import { useRef, useState } from "react";
+
 import { usePixelERC721Contract } from "../contracts/pixelERC721";
-import Star from "./star";
+import { useStoreState } from "../store";
+import styles from "../styles/Home.module.scss";
+import Mint from "./mint";
+import RainbowText from "./rainbowText";
 import ScrollingText from "./scrollingText";
-import { useStarknetNetwork } from "../utils";
+import Star from "./star";
+import TopNav from "./topNav";
 
 const HomeDesktop = () => {
   const state = useStoreState();
-  const dispatch = useStoreDispatch();
-  const network = useStarknetNetwork();
-  useEffect(() => {
-    dispatch.setNetwork(network || "");
-  }, [dispatch, network]);
 
   const { contract: pixelERC721Contract } = usePixelERC721Contract();
 
@@ -118,14 +112,7 @@ const HomeDesktop = () => {
       {pixelsOwned?.length > 0 && (
         <Star pxls={pixelsOwned} rotate={starRotate} innerRef={starRef} />
       )}
-      <div className={styles.top}>
-        <div className={styles.topElement}>
-          <ConnectToStarknet />
-        </div>
-        <div className={styles.topElement}>
-          <div className="clickable">🙄 wtf?</div>
-        </div>
-      </div>
+      <TopNav />
       <div className={styles.message}>
         {state.currentlyMintingHash ? (
           <a

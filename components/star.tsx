@@ -1,5 +1,5 @@
-import styles from "../styles/Star.module.scss";
 import StarImage from "../public/star.svg";
+import styles from "../styles/Star.module.scss";
 
 const Star = ({
   pxls,

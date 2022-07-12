@@ -1,4 +1,5 @@
 import { NextPage } from "next";
+
 import HomeDesktop from "../components/homeDesktop";
 import HomeMobile from "../components/homeMobile";
 

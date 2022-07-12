@@ -1,13 +1,13 @@
-import { uint256 } from "starknet";
 import { useStarknetCall } from "@starknet-react/core";
-import { usePixelERC721Contract } from "../contracts/pixelERC721";
-import { useStarknetTransactionManager } from "@starknet-react/core";
 import { useCallback, useEffect, useState } from "react";
-import styles from "../styles/Mint.module.scss";
-import { useStoreDispatch, useStoreState } from "../store";
+import { uint256 } from "starknet";
+
 import { useInvoke } from "../contracts/helpers";
+import { usePixelERC721Contract } from "../contracts/pixelERC721";
 import MintButtonImage from "../public/mint-button.svg";
 import MintButtonImageHover from "../public/mint-button-hover.svg";
+import { useStoreDispatch, useStoreState } from "../store";
+import styles from "../styles/Mint.module.scss";
 
 const Mint = () => {
   const [hoverMintButton, setHoverMintButton] = useState(false);

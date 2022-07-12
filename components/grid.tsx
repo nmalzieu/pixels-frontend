@@ -1,6 +1,7 @@
 import { useStarknetCall, useStarknetInvoke } from "@starknet-react/core";
 import { uint256 } from "starknet";
 import { BigNumberish } from "starknet/dist/utils/number";
+
 import { usePixelDrawerContract } from "../contracts/pixelDrawer";
 import styles from "../styles/Grid.module.scss";
 
@@ -18,12 +19,6 @@ const getPixel = (
   setPixelColor: any
 ) => {
   const pixelSizePercent = 100 / gridSize;
-  // Pixel # = column + row * gridSize
-  const row = Math.floor(pixelIndex / gridSize);
-  const column = pixelIndex - row * gridSize;
-
-  const top = pixelSizePercent * row;
-  const left = pixelSizePercent * column;
 
   const pixelClick = async () => {
     if (!owned) return;
@@ -43,9 +38,6 @@ const getPixel = (
       className={`${styles.pixelWrapper} ${owned ? styles.pixelOwned : ""}`}
       style={{
         width: `${pixelSizePercent}%`,
-        position: "absolute",
-        top: `${top}%`,
-        left: `${left}%`,
       }}
     >
       <div
@@ -66,6 +58,7 @@ type GridProps = {
 };
 
 const Grid = ({ round, gridSize, pixelsOwned }: GridProps) => {
+  console.log("rendering grid with", pixelsOwned ? pixelsOwned.length : 0);
   const { contract: pixelDrawerContract } = usePixelDrawerContract();
 
   const { data: gridData } = useStarknetCall({
@@ -80,14 +73,16 @@ const Grid = ({ round, gridSize, pixelsOwned }: GridProps) => {
   });
 
   const usePixelsPositions = (pixelsOwned: any) =>
-    pixelsOwned.map((pixelOwned: any) =>
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      useStarknetCall({
-        contract: pixelDrawerContract,
-        method: "tokenPixelIndex",
-        args: [uint256.bnToUint256(pixelOwned)],
-      })
-    );
+    pixelsOwned
+      ? pixelsOwned.map((pixelOwned: any) =>
+          // eslint-disable-next-line react-hooks/rules-of-hooks
+          useStarknetCall({
+            contract: pixelDrawerContract,
+            method: "tokenPixelIndex",
+            args: [uint256.bnToUint256(pixelOwned)],
+          })
+        )
+      : [];
 
   const pixelsPositionsData = usePixelsPositions(pixelsOwned);
   const pixelsPositions = pixelsPositionsData.map((p: any) =>
@@ -100,7 +95,7 @@ const Grid = ({ round, gridSize, pixelsOwned }: GridProps) => {
   }));
 
   if (!gridData) {
-    return <div>Loading...</div>;
+    return <div>LOADING GRID DATA</div>;
   }
 
   const pixelData: any = [];
@@ -116,19 +111,19 @@ const Grid = ({ round, gridSize, pixelsOwned }: GridProps) => {
         pixelData.length - 1
       ].set
         ? numberValue
-        : 50;
+        : 242;
     } else if (index % 4 === 2) {
       pixelData[pixelData.length - 1].color.green = pixelData[
         pixelData.length - 1
       ].set
         ? numberValue
-        : 50;
+        : 242;
     } else if (index % 4 === 3) {
       pixelData[pixelData.length - 1].color.blue = pixelData[
         pixelData.length - 1
       ].set
         ? numberValue
-        : 50;
+        : 242;
     }
   });
 

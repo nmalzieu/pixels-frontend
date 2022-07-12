@@ -5,6 +5,8 @@
   height: 100%;
   overflow: hidden;
   flex-direction: column;
+  padding-top: 93px;
+
 
   div {
     z-index: 1;
@@ -24,38 +26,6 @@
   z-index: 0;
 }
 
-.top {
-  display: flex;
-  font-size: 20px;
-  line-height: 23px;
-  padding-top: 93px;
-  padding-bottom: 10px;
-  padding-right: 25px;
-  position: relative;
-
-  .topElement {
-    &:first-child {
-      margin-left: auto;
-    }
-    margin-right: 59px;
-    padding-bottom: 3px;
-    max-width: 250px;
-
-    div {
-
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;  
-    }
-
-
-    :global(.clickable):hover {
-      cursor: pointer;
-      padding-bottom: 3px;
-      border-bottom: 2px solid black;
-    }
-  }
-}
 
 
 .message {

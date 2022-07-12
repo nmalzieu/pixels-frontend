@@ -1,5 +1,6 @@
 import { useStarknet } from "@starknet-react/core";
 import { useEffect } from "react";
+
 import { useStoreDispatch, useStoreState } from "../store";
 
 const ConnectToStarknet = () => {

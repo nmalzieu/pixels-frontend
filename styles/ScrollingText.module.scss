@@ -20,3 +20,19 @@
   background-color: black;
   margin-top: 15px;
 }
+
+.small {
+  &.scrollingText {
+    position: relative !important;
+  }
+  .marquee {
+    font-weight: 400;
+    font-size: 50px;
+    font-style: italic;
+    line-height: 57px;
+  }
+  .separator {
+    margin-top: 0;
+    margin-bottom: 5px;
+  }
+}

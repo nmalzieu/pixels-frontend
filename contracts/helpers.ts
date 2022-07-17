@@ -52,12 +52,6 @@ export const useInvoke = ({
       interval = setInterval(() => {
         if (accountRef.current) {
           clearInterval(interval);
-          console.log(
-            "a",
-            networkRef.current,
-            "b",
-            process.env.NEXT_PUBLIC_STARKNET_NETWORK
-          );
           // Invoking only if on the right network
           if (networkRef.current === process.env.NEXT_PUBLIC_STARKNET_NETWORK) {
             invokeRef.current({ args, metadata }).then(resolve).catch(reject);

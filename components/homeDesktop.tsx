@@ -15,12 +15,11 @@ const HomeDesktop = () => {
 
   const { contract: pixelERC721Contract } = usePixelERC721Contract();
 
-  const { data: pixelsOfOwnerData, loading: pixelsOfOwnerLoading } =
-    useStarknetCall({
-      contract: pixelERC721Contract,
-      method: "pixelsOfOwner",
-      args: [state.account],
-    });
+  const { data: pixelsOfOwnerData } = useStarknetCall({
+    contract: pixelERC721Contract,
+    method: "pixelsOfOwner",
+    args: [state.account],
+  });
 
   const [hueRotate, setHueRotate] = useState(0);
   const [isMouseClicked, setIsMouseClicked] = useState(false);
@@ -84,7 +83,7 @@ const HomeDesktop = () => {
   // and hide button
   if (
     state.account &&
-    !pixelsOfOwnerLoading &&
+    pixelsOfOwnerData &&
     pixelsOwned &&
     pixelsOwned.length > 0
   ) {

@@ -12,6 +12,31 @@ type SetAccountType = {
   accountConnected: boolean;
 };
 
+export type OwnedPixel = {
+  tokenId: number;
+  pixelIndex: number;
+};
+
+type Color = {
+  red: number;
+  green: number;
+  blue: number;
+};
+
+export type GridPixel = {
+  set: boolean;
+  color: Color;
+};
+
+type SetPixelTemporaryColorPayload = {
+  tokenId: number;
+  color: Color;
+};
+
+type TemporaryColors = {
+  [tokenId: number]: Color;
+};
+
 const mintingMessages = [
   "minting in progress",
   "minting in progress.",
@@ -26,6 +51,9 @@ export const state = createModel<RootModel>()({
     accountConnected: false,
     network: "",
     currentlyMintingHash: "",
+    grid: [] as GridPixel[],
+    temporaryColors: [] as TemporaryColors,
+    selectedPixel: undefined as OwnedPixel | undefined,
   },
   reducers: {
     setMessage(state, message: string) {
@@ -53,7 +81,7 @@ export const state = createModel<RootModel>()({
       return newState;
     },
     setNetwork(state, network: string) {
-      const newState = { ...state, network };
+      const newState: any = { ...state, network };
       const networkMessage = `please connect to the ${process.env.NEXT_PUBLIC_STARKNET_NETWORK} network`;
       if (network) {
         if (network !== process.env.NEXT_PUBLIC_STARKNET_NETWORK) {
@@ -63,6 +91,17 @@ export const state = createModel<RootModel>()({
         }
       }
       return newState;
+    },
+    setGrid(state, grid: GridPixel[]) {
+      return { ...state, grid };
+    },
+    setSelectedPixel(state, pixel: OwnedPixel | undefined) {
+      return { ...state, selectedPixel: pixel };
+    },
+    setPixelTemporaryColor(state, payload: SetPixelTemporaryColorPayload) {
+      const temporaryColors = state.temporaryColors;
+      temporaryColors[payload.tokenId] = payload.color;
+      return { ...state, temporaryColors };
     },
   },
 });
@@ -97,7 +136,7 @@ setTimeout(() => {
       });
     }
   }
-}, 50);
+}, 150);
 
 setInterval(() => {
   // Making the "minting in progress..."

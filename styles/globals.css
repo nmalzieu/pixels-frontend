@@ -5,6 +5,10 @@ body {
   font-family: "Arial Narrow", Arial, sans-serif;
   height: 100%;
 
+  font-size: 20px;
+  line-height: 23px;
+
+
   /* NO SELECT */
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */

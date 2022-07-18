@@ -7,6 +7,7 @@ import {
   useStarknetTransactionManager,
 } from "@starknet-react/core";
 import type { AppProps } from "next/app";
+import Head from "next/head";
 import { useEffect } from "react";
 import { Provider as ReactReduxProvider } from "react-redux";
 import { Provider as Starknet } from "starknet";
@@ -84,6 +85,19 @@ function MyApp({ Component, pageProps }: AppProps) {
           })
         }
       >
+        <Head>
+          <title>Pxls</title>
+          <meta property="og:url" content={process.env.NEXT_PUBLIC_URL} />
+          <meta property="og:title" content="Pxls" />
+          <meta
+            property="og:description"
+            content="Four hundred pxls, one unique collaborative rtwrk every day"
+          />
+          <meta
+            property="og:image"
+            content={`${process.env.NEXT_PUBLIC_URL}/social_sharing.png`}
+          />
+        </Head>
         <StarknetStatusComponent />
         <Component {...pageProps} />
       </StarknetProvider>

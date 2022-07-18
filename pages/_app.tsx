@@ -97,6 +97,8 @@ function MyApp({ Component, pageProps }: AppProps) {
             property="og:image"
             content={`${process.env.NEXT_PUBLIC_URL}/social_sharing.png`}
           />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
         </Head>
         <StarknetStatusComponent />
         <Component {...pageProps} />

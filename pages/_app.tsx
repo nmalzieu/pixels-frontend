@@ -95,7 +95,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           />
           <meta
             property="og:image"
-            content={`${process.env.NEXT_PUBLIC_URL}/social_sharing.png`}
+            content={`${process.env.NEXT_PUBLIC_URL}/social_sharing.jpg`}
           />
           <meta property="og:image:width" content="1200" />
           <meta property="og:image:height" content="630" />

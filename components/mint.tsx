@@ -77,7 +77,7 @@ const Mint = () => {
 
   const mintPixel = () => {
     if (!state.account) {
-      dispatch.setMessage("please connect wallet before minting");
+      dispatch.setMessage("please connect your Starknet wallet before minting");
     } else if (!isMintReady) {
       setWaitingToMint(true);
     } else {

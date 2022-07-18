@@ -53,22 +53,23 @@ const HomeDesktop = () => {
 
       // Depending on cursor position and star center,
       // diffX and diffY are added / subtracted
-      let newRotate = starRotate;
+      let addRotate = 0;
       const boundingRect = (starRef.current as any).getBoundingClientRect();
       const centerX = boundingRect.left + boundingRect.width / 2;
       const centerY = boundingRect.top + boundingRect.height / 2;
       if (x > centerX) {
-        newRotate += diffY / 2;
+        addRotate += diffY;
       } else {
-        newRotate -= diffY / 2;
+        addRotate -= diffY;
       }
 
       if (y > centerY) {
-        newRotate -= diffX / 2;
+        addRotate -= diffX;
       } else {
-        newRotate += diffX / 2;
+        addRotate += diffX;
       }
-      setStarRotate(newRotate);
+      addRotate = addRotate / 4;
+      setStarRotate(starRotate + addRotate);
     }
     setLastMousePosition({ x, y });
   };

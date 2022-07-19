@@ -150,7 +150,7 @@ setInterval(() => {
     const nextMessage = mintingMessages[nextIndex];
     store.dispatch({ type: "state/setMessage", payload: nextMessage });
   }
-}, 850);
+}, 500);
 
 export type Store = typeof store;
 export type Dispatch = RematchDispatch<RootModel>;

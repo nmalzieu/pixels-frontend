@@ -27,11 +27,13 @@ export const useInvoke = ({
   const invokeRef = useRef(invoke);
   const networkRef = useRef(state.network);
   const disconnectRef = useRef(disconnect);
+  const messageRef = useRef(state.message);
   useEffect(() => {
     accountRef.current = starknetConnectedAccount;
     invokeRef.current = invoke;
     networkRef.current = state.network;
     disconnectRef.current = disconnect;
+    messageRef.current = state.message;
   });
 
   useEffect(() => {
@@ -61,12 +63,26 @@ export const useInvoke = ({
               account: "",
               accountConnected: false,
             });
+            clearInterval(interval);
             reject("Wrong network");
           }
         } else {
           const connector = connectors.find((c) => c.available());
           if (connector) {
-            connect(connector);
+            if (
+              messageRef.current !==
+              `please connect to the ${process.env.NEXT_PUBLIC_STARKNET_NETWORK} network`
+            ) {
+              connect(connector);
+            } else {
+              disconnectRef.current();
+              dispatch.setAccount({
+                account: "",
+                accountConnected: false,
+              });
+              clearInterval(interval);
+              reject("Wrong network");
+            }
           } else {
             clearInterval(interval);
             reject("No connector found!");

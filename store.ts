@@ -60,12 +60,16 @@ export const state = createModel<RootModel>()({
       return { ...state, message };
     },
     setAccount(state, { account, accountConnected }: SetAccountType) {
-      localStorage.setItem("pxls-account", account);
       const newState = { ...state, account, accountConnected };
-      if (
-        state.message === "please connect your Starknet wallet before minting"
-      ) {
-        newState.message = "";
+      if (account) {
+        localStorage.setItem("pxls-account", account);
+        if (
+          state.message === "please connect your Starknet wallet before minting"
+        ) {
+          newState.message = "";
+        }
+      } else {
+        localStorage.removeItem("pxls-account");
       }
       return newState;
     },

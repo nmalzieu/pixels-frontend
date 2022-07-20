@@ -14,12 +14,6 @@
     padding-bottom: 3px;
     max-width: 250px;
 
-    div {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
     :global(.clickable):hover {
       cursor: pointer;
       padding-bottom: 3px;

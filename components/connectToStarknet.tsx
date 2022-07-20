@@ -1,5 +1,5 @@
 import { useStarknet } from "@starknet-react/core";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 import { useStoreDispatch, useStoreState } from "../store";
 
@@ -15,18 +15,22 @@ const ConnectToStarknet = () => {
   } = useStarknet();
   const connector = connectors.find((c) => c.available());
 
+  const disconnectAndDispatch = useCallback(() => {
+    disconnect();
+    dispatch.setAccount({
+      account: "",
+      accountConnected: false,
+    });
+  }, [disconnect, dispatch]);
+
   useEffect(() => {
     if (
       state.network &&
       state.network !== process.env.NEXT_PUBLIC_STARKNET_NETWORK
     ) {
-      disconnect();
-      dispatch.setAccount({
-        account: "",
-        accountConnected: false,
-      });
+      disconnectAndDispatch();
     }
-  }, [disconnect, dispatch, state.network]);
+  }, [disconnectAndDispatch, state.network]);
 
   useEffect(() => {
     if (
@@ -43,7 +47,14 @@ const ConnectToStarknet = () => {
   }, [dispatch, starknetConnectedAccount, state.account, state.network]);
 
   if (state.account) {
-    return <div>👛 {state.account}</div>;
+    return (
+      <div>
+        👛 {state.account.slice(0, 8)}...{" "}
+        <span className="clickable" onClick={disconnectAndDispatch}>
+          (disconnect)
+        </span>
+      </div>
+    );
   } else if (!starknetConnectedAccount && connector) {
     return (
       <div onClick={() => connect(connector)} className="clickable">

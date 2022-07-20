@@ -2,18 +2,16 @@ import { NextPage } from "next";
 
 import HomeDesktop from "../components/homeDesktop";
 import HomeMobile from "../components/homeMobile";
-import { useStoreState } from "../store";
 
 interface Props {
   isMobileView: boolean;
 }
 
 const Home: NextPage<Props> = ({ isMobileView }) => {
-  const state = useStoreState();
   if (isMobileView) {
     return <HomeMobile />;
   }
-  return <HomeDesktop key={state.account} />;
+  return <HomeDesktop />;
 };
 
 Home.getInitialProps = async ({ req }) => {

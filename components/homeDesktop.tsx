@@ -111,7 +111,7 @@ const HomeDesktop = () => {
         className={styles.gridLogo}
         style={{ filter: `hue-rotate(${hueRotate}deg)` }}
       />
-      {pixelsOwned?.length > 0 && (
+      {state.account && pixelsOwned?.length > 0 && (
         <Star pxls={pixelsOwned} rotate={starRotate} innerRef={starRef} />
       )}
       <TopNav />
@@ -131,7 +131,7 @@ const HomeDesktop = () => {
         )}
       </div>
       {showMint && <Mint />}
-      {pixelsOwned?.length > 0 && (
+      {state.account && pixelsOwned?.length > 0 && (
         <Window
           style={{
             width: 300,

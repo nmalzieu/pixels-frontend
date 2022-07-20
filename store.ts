@@ -51,6 +51,7 @@ export const state = createModel<RootModel>()({
     accountConnected: false,
     network: "",
     currentlyMintingHash: "",
+    failedMintHash: "",
     grid: [] as GridPixel[],
     temporaryColors: [] as TemporaryColors,
     selectedPixel: undefined as OwnedPixel | undefined,
@@ -108,6 +109,13 @@ export const state = createModel<RootModel>()({
       const temporaryColors = state.temporaryColors;
       temporaryColors[payload.tokenId] = payload.color;
       return { ...state, temporaryColors };
+    },
+    setFailedMintHash(state, payload: string) {
+      const newState = { ...state, failedMintHash: payload };
+      if (payload) {
+        newState.message = "minting did not work";
+      }
+      return newState;
     },
   },
 });

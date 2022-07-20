@@ -8,3 +8,27 @@
 .border {
   border: 1px solid black;
 }
+
+.rainbowBar {
+  background: linear-gradient(
+    90deg,
+    #ff5151 0%,
+    #fff16f 25%,
+    #62fff6 54.17%,
+    #7a6fff 77.8%,
+    #44ff4b 100%
+  );
+  border: 1px solid white;
+  font-size: 16px;
+  line-height: 18.4px;
+  padding: 10px 20px;
+  text-align: center;
+}
+
+.windowContent {
+  padding: 29px;
+
+  a {
+    text-decoration: underline;
+  }
+}

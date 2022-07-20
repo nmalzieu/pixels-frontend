@@ -4,11 +4,13 @@ import { useRef, useState } from "react";
 import { usePixelERC721Contract } from "../contracts/pixelERC721";
 import { useStoreState } from "../store";
 import styles from "../styles/Home.module.scss";
+import windowStyles from "../styles/Window.module.scss";
 import Mint from "./mint";
 import RainbowText from "./rainbowText";
 import ScrollingText from "./scrollingText";
 import Star from "./star";
 import TopNav from "./topNav";
+import Window from "./window";
 
 const HomeDesktop = () => {
   const state = useStoreState();
@@ -114,9 +116,11 @@ const HomeDesktop = () => {
       )}
       <TopNav />
       <div className={styles.message}>
-        {state.currentlyMintingHash ? (
+        {state.currentlyMintingHash || state.failedMintHash ? (
           <a
-            href={`${process.env.NEXT_PUBLIC_VOYAGER_LINK}/${state.currentlyMintingHash}`}
+            href={`${process.env.NEXT_PUBLIC_VOYAGER_LINK}/${
+              state.currentlyMintingHash || state.failedMintHash
+            }`}
             target="_blank"
             rel="noreferrer"
           >
@@ -127,6 +131,40 @@ const HomeDesktop = () => {
         )}
       </div>
       {showMint && <Mint />}
+      {pixelsOwned?.length > 0 && (
+        <Window
+          style={{
+            width: 300,
+            top: 369,
+            left: `50%`,
+            transform: "translateX(25%)",
+          }}
+        >
+          <div className={windowStyles.rainbowBar}>&nbsp; </div>
+          <div className={windowStyles.windowContent}>
+            Welcome to the pxl community!
+            <br />
+            <b>Next step:</b> create our very first rtwrk together!
+            <br />
+            <a
+              href="https://discord.gg/ufafywMTQh"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Join the Discord
+            </a>{" "}
+            &{" "}
+            <a
+              href="https://twitter.com/PxlsWtf"
+              target="_blank"
+              rel="noreferrer"
+            >
+              follow Pxls on Twitter
+            </a>{" "}
+            to be notified on pxl-day.
+          </div>
+        </Window>
+      )}
       <ScrollingText />
     </div>
   );

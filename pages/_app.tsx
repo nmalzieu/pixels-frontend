@@ -47,6 +47,9 @@ const StarknetStatusComponent = () => {
       // ACCEPTED / REJECTED transaction
       removeTransaction(mintingTransaction.transactionHash);
       dispatch.setMintingHash("");
+      if (mintingTransaction.status === "REJECTED") {
+        dispatch.setFailedMintHash(mintingTransaction.transactionHash);
+      }
     } else if (
       mintingTransaction &&
       pendingStatuses.includes(mintingTransaction.status) &&

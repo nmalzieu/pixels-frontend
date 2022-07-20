@@ -12,6 +12,7 @@ import CloseImage from "../public/cross.svg";
 import LogoImage from "../public/logo.svg";
 import { useStoreDispatch, useStoreState } from "../store";
 import styles from "../styles/GridPage.module.scss";
+import windowStyles from "../styles/Window.module.scss";
 import { rgbToHex } from "../utils";
 import GridComponent from "./grid";
 import GridLoader from "./gridLoader";
@@ -183,10 +184,10 @@ const GridPage = () => {
         </Window>
         {/* retirer 169 top, 100 left */}
         <Window style={{ width: 385, top: 82, left: 665 }}>
-          <div className={styles.rainbowBar}>
+          <div className={windowStyles.rainbowBar}>
             👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛
           </div>
-          <div className={styles.windowContent}>
+          <div className={windowStyles.windowContent}>
             {!state.account && (
               <span>
                 You own a PXL NFT? Connect your starknet wallet and colorize

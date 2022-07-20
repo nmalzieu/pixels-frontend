@@ -9,6 +9,20 @@ const nextConfig = {
 
     return config;
   },
+  async redirects() {
+    return [
+      {
+        source: "/admin",
+        destination: "/",
+        permanent: false,
+      },
+      {
+        source: "/grid",
+        destination: "/",
+        permanent: false,
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

@@ -46,8 +46,9 @@ const mintingMessages = [
 
 export const state = createModel<RootModel>()({
   state: {
-    message:
-      "all pxl NFTs have been minted - come back during phase 2 to create collaborative rtwrks!",
+    message: process.env.NEXT_PUBLIC_MINT_DONE
+      ? "all pxl NFTs have been minted - come back during phase 2 to create collaborative rtwrks!"
+      : "",
     account: "",
     accountConnected: false,
     network: "",

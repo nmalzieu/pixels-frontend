@@ -115,21 +115,32 @@ const HomeDesktop = () => {
         <Star pxls={pixelsOwned} rotate={starRotate} innerRef={starRef} />
       )}
       <TopNav />
-      <div className={styles.message}>
-        {state.currentlyMintingHash || state.failedMintHash ? (
-          <a
-            href={`${process.env.NEXT_PUBLIC_VOYAGER_LINK}/${
-              state.currentlyMintingHash || state.failedMintHash
-            }`}
-            target="_blank"
-            rel="noreferrer"
-          >
+      {rainbowMessage && (
+        <Window
+          style={{
+            width: "auto",
+            position: "absolute",
+            left: 108,
+            top: 148,
+            padding: "10px 14px",
+          }}
+        >
+          {state.currentlyMintingHash || state.failedMintHash ? (
+            <a
+              href={`${process.env.NEXT_PUBLIC_VOYAGER_LINK}/${
+                state.currentlyMintingHash || state.failedMintHash
+              }`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <RainbowText text={rainbowMessage} />
+            </a>
+          ) : (
             <RainbowText text={rainbowMessage} />
-          </a>
-        ) : (
-          <RainbowText text={rainbowMessage} />
-        )}
-      </div>
+          )}
+        </Window>
+      )}
+
       {showMint && <Mint />}
       {state.account && pixelsOwned?.length > 0 && (
         <Window

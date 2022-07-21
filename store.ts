@@ -38,9 +38,9 @@ type TemporaryColors = {
 };
 
 const mintingMessages = [
-  "minting in progress (can take up to several hours)",
-  "minting in progress (can take up to several hours).",
-  "minting in progress (can take up to several hours)..",
+  "minting in progress (can take up to several hours)   ",
+  "minting in progress (can take up to several hours).  ",
+  "minting in progress (can take up to several hours).. ",
   "minting in progress (can take up to several hours)...",
 ];
 

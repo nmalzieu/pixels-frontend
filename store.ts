@@ -38,10 +38,10 @@ type TemporaryColors = {
 };
 
 const mintingMessages = [
-  "minting in progress",
-  "minting in progress.",
-  "minting in progress..",
-  "minting in progress...",
+  "minting in progress (can take up to several hours)",
+  "minting in progress (can take up to several hours).",
+  "minting in progress (can take up to several hours)..",
+  "minting in progress (can take up to several hours)...",
 ];
 
 export const state = createModel<RootModel>()({
@@ -78,7 +78,8 @@ export const state = createModel<RootModel>()({
       const newState = { ...state, currentlyMintingHash: hash };
       if (hash) {
         localStorage.setItem("pxls-minting", hash);
-        newState.message = "minting in progress...";
+        newState.message =
+          "minting in progress (can take up to several hours)...";
       } else {
         if (mintingMessages.includes(state.message)) {
           newState.message = "";
@@ -153,7 +154,7 @@ setTimeout(() => {
 }, 150);
 
 setInterval(() => {
-  // Making the "minting in progress..."
+  // Making the "minting in progress (can take up to several hours)..."
   // message dynamic
   const currentMessage = store.getState().state.message;
   const indexOfMessage = mintingMessages.indexOf(currentMessage);

@@ -69,7 +69,7 @@ const GridPage = () => {
       mins = Math.trunc(mins);
       secs = Math.trunc(secs);
       setFixedInText(`in ${hours}h ${mins}m ${secs}s`);
-    }, 1000);
+    }, 100);
     return () => clearInterval(interval);
   }, [currentDrawingTimestampData]);
 
@@ -91,7 +91,6 @@ const GridPage = () => {
   let gridComponent = <GridLoader />;
 
   let pxlsColorizedText = "";
-  let showText = false;
 
   if (
     state.account &&
@@ -131,7 +130,6 @@ const GridPage = () => {
         </div>
       );
     } else {
-      showText = true;
       gridComponent = (
         <GridComponent
           gridSize={matrixSize}
@@ -159,6 +157,8 @@ const GridPage = () => {
     });
   };
 
+  const isGridReady = currentDrawingTimestampData && state.grid && fixedInText;
+
   return (
     <div className={styles.gridPage}>
       <TopNav white logo />
@@ -167,7 +167,7 @@ const GridPage = () => {
           <DoubleSeparator />
           <div className={styles.gridContainer}>{gridComponent}</div>
           <DoubleSeparator />
-          {showText && (
+          {isGridReady && (
             <>
               <div className={styles.windowTitle}>TODAY’S RTWRK</div>
               <div>

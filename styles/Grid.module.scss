@@ -18,12 +18,12 @@
           border: 1px solid #000000;
         }
       }
+      &:hover {
+        border: 2px solid white;
+      }
 
       .pixel {
         padding-bottom: 100%;
-        &:hover {
-          filter: brightness(150%);
-        }
       }
     }
   }

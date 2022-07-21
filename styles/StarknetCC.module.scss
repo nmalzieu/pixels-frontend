@@ -2,18 +2,23 @@
   background-image: url(/background.jpg);
   background-size: cover;
   display: flex;
-  height: 100%;
-  overflow: hidden;
   align-items: center;
   flex-direction: column;
-  justify-content: space-around;
+  min-height: 100%;
+
+  .logo {
+    margin-top: 45px;
+    margin-bottom: 55px;
+  }
+
   .message {
     text-align: center;
     padding: 0px 60px;
-    font-size: 18px;
   }
 
   a {
+    margin-top: 50px;
+    margin-bottom: 50px;
     img {
       margin-bottom: 5px;
     }

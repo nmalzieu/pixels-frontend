@@ -19,6 +19,21 @@
     {
         "data": [
             {
+                "name": "previousOwner",
+                "type": "felt"
+            },
+            {
+                "name": "newOwner",
+                "type": "felt"
+            }
+        ],
+        "keys": [],
+        "name": "OwnershipTransferred",
+        "type": "event"
+    },
+    {
+        "data": [
+            {
                 "name": "from_",
                 "type": "felt"
             },
@@ -74,21 +89,6 @@
         "type": "event"
     },
     {
-        "data": [
-            {
-                "name": "previousOwner",
-                "type": "felt"
-            },
-            {
-                "name": "newOwner",
-                "type": "felt"
-            }
-        ],
-        "keys": [],
-        "name": "OwnershipTransferred",
-        "type": "event"
-    },
-    {
         "inputs": [
             {
                 "name": "name",
@@ -99,12 +99,28 @@
                 "type": "felt"
             },
             {
+                "name": "m_size",
+                "type": "Uint256"
+            },
+            {
                 "name": "owner",
                 "type": "felt"
             },
             {
-                "name": "m_size",
-                "type": "Uint256"
+                "name": "pxls_1_100_address",
+                "type": "felt"
+            },
+            {
+                "name": "pxls_101_200_address",
+                "type": "felt"
+            },
+            {
+                "name": "pxls_201_300_address",
+                "type": "felt"
+            },
+            {
+                "name": "pxls_301_400_address",
+                "type": "felt"
             }
         ],
         "name": "constructor",
@@ -225,6 +241,22 @@
         "type": "function"
     },
     {
+        "inputs": [],
+        "name": "contractURI",
+        "outputs": [
+            {
+                "name": "contractURI_len",
+                "type": "felt"
+            },
+            {
+                "name": "contractURI",
+                "type": "felt*"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [
             {
                 "name": "tokenId",
@@ -234,20 +266,12 @@
         "name": "tokenURI",
         "outputs": [
             {
-                "name": "tokenURI",
+                "name": "tokenURI_len",
                 "type": "felt"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "owner",
-        "outputs": [
+            },
             {
-                "name": "owner",
-                "type": "felt"
+                "name": "tokenURI",
+                "type": "felt*"
             }
         ],
         "stateMutability": "view",
@@ -290,18 +314,6 @@
         "type": "function"
     },
     {
-        "inputs": [],
-        "name": "pixelDrawerAddress",
-        "outputs": [
-            {
-                "name": "address",
-                "type": "felt"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
         "inputs": [
             {
                 "name": "owner",
@@ -317,6 +329,18 @@
             {
                 "name": "pixels",
                 "type": "felt*"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "owner",
+        "outputs": [
+            {
+                "name": "owner",
+                "type": "felt"
             }
         ],
         "stateMutability": "view",
@@ -412,6 +436,21 @@
     {
         "inputs": [
             {
+                "name": "hash_len",
+                "type": "felt"
+            },
+            {
+                "name": "hash",
+                "type": "felt*"
+            }
+        ],
+        "name": "setContractURIHash",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "name": "newOwner",
                 "type": "felt"
             }
@@ -423,17 +462,6 @@
     {
         "inputs": [],
         "name": "renounceOwnership",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "pixel_drawer_address",
-                "type": "felt"
-            }
-        ],
-        "name": "initialize",
         "outputs": [],
         "type": "function"
     }

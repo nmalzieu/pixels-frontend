@@ -73,11 +73,11 @@
     {
         "inputs": [
             {
-                "name": "pixel_erc721_address",
+                "name": "owner",
                 "type": "felt"
             },
             {
-                "name": "owner",
+                "name": "pixel_erc721_address",
                 "type": "felt"
             }
         ],
@@ -212,15 +212,23 @@
     {
         "inputs": [
             {
-                "name": "tokenId",
-                "type": "Uint256"
+                "name": "tokenIds_len",
+                "type": "felt"
             },
             {
-                "name": "color",
-                "type": "Color"
+                "name": "tokenIds",
+                "type": "Uint256*"
+            },
+            {
+                "name": "colors_len",
+                "type": "felt"
+            },
+            {
+                "name": "colors",
+                "type": "Color*"
             }
         ],
-        "name": "setPixelColor",
+        "name": "setPixelsColors",
         "outputs": [],
         "type": "function"
     },
@@ -239,6 +247,23 @@
                 "type": "felt"
             }
         ],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "newOwner",
+                "type": "felt"
+            }
+        ],
+        "name": "transferOwnership",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "renounceOwnership",
+        "outputs": [],
         "type": "function"
     }
 ]

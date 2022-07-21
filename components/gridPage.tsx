@@ -9,7 +9,6 @@ import { useInvoke } from "../contracts/helpers";
 import { usePixelDrawerContract } from "../contracts/pixelDrawer";
 import { usePixelERC721Contract } from "../contracts/pixelERC721";
 import CloseImage from "../public/cross.svg";
-import LogoImage from "../public/logo.svg";
 import { useStoreDispatch, useStoreState } from "../store";
 import styles from "../styles/GridPage.module.scss";
 import windowStyles from "../styles/Window.module.scss";
@@ -162,10 +161,7 @@ const GridPage = () => {
 
   return (
     <div className={styles.gridPage}>
-      <div className={styles.logo}>
-        <LogoImage />
-      </div>
-      <TopNav white />
+      <TopNav white logo />
       <div className={styles.container}>
         <Window style={{ width: 405, padding: 29, top: 0, left: 164 }}>
           <DoubleSeparator />
@@ -185,7 +181,7 @@ const GridPage = () => {
         {/* retirer 169 top, 100 left */}
         <Window style={{ width: 385, top: 82, left: 665 }}>
           <div className={windowStyles.rainbowBar}>
-            👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛
+            👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛
           </div>
           <div className={windowStyles.windowContent}>
             {!state.account && (

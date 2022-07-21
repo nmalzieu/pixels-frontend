@@ -1,11 +1,13 @@
+import LogoImage from "../public/logo.svg";
 import styles from "../styles/TopNav.module.scss";
 import ConnectToStarknet from "./connectToStarknet";
 
 type Props = {
   white?: boolean;
+  logo?: boolean;
 };
 
-const TopNav = ({ white }: Props) => (
+const TopNav = ({ white, logo }: Props) => (
   <div className={`${styles.top} ${white ? styles.topWhite : ""}`}>
     <div className={styles.topElement}>
       <ConnectToStarknet />
@@ -20,6 +22,11 @@ const TopNav = ({ white }: Props) => (
         🙄 wtf?
       </a>
     </div>
+    {logo && (
+      <div className={styles.logo}>
+        <LogoImage />
+      </div>
+    )}
   </div>
 );
 

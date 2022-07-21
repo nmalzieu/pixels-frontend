@@ -6,6 +6,13 @@
   position: relative;
   height: 36px;
 
+  .logo {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
   .topElement {
     &:first-child {
       margin-left: auto;

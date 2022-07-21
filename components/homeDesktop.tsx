@@ -141,7 +141,7 @@ const HomeDesktop = () => {
         </Window>
       )}
 
-      {showMint && <Mint />}
+      {showMint && false && <Mint />}
       {state.account && pixelsOwned?.length > 0 && (
         <Window
           style={{

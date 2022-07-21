@@ -98,7 +98,49 @@ const HomeDesktop = () => {
     showMint = false;
   }
 
-  const rainbowMessage = state.message;
+  let rainbowMessage: any = "";
+  if (state.message) {
+    if (state.currentlyMintingHash || state.failedMintHash) {
+      rainbowMessage = (
+        <a
+          href={`${process.env.NEXT_PUBLIC_VOYAGER_LINK}/${
+            state.currentlyMintingHash || state.failedMintHash
+          }`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          <RainbowText text={state.message} />
+        </a>
+      );
+    } else {
+      rainbowMessage = <RainbowText text={state.message} />;
+    }
+  } else if (process.env.NEXT_PUBLIC_MINT_DONE) {
+    let messageWithLink = (
+      <span>
+        all pxl NFTs have been minted - join us on{" "}
+        <a
+          href="https://discord.gg/ufafywMTQh"
+          target="_blank"
+          rel="noreferrer"
+          className="clickable"
+        >
+          Discord
+        </a>{" "}
+        &{" "}
+        <a
+          href="https://twitter.com/PxlsWtf"
+          target="_blank"
+          rel="noreferrer"
+          className="clickable"
+        >
+          Twitter
+        </a>{" "}
+        for next announcements
+      </span>
+    );
+    rainbowMessage = <RainbowText text={messageWithLink} />;
+  }
 
   return (
     <div
@@ -125,19 +167,7 @@ const HomeDesktop = () => {
             padding: "10px 14px",
           }}
         >
-          {state.currentlyMintingHash || state.failedMintHash ? (
-            <a
-              href={`${process.env.NEXT_PUBLIC_VOYAGER_LINK}/${
-                state.currentlyMintingHash || state.failedMintHash
-              }`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <RainbowText text={rainbowMessage} />
-            </a>
-          ) : (
-            <RainbowText text={rainbowMessage} />
-          )}
+          {rainbowMessage}
         </Window>
       )}
 

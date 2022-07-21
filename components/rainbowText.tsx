@@ -1,7 +1,7 @@
 import styles from "../styles/RainbowText.module.scss";
 
 type Props = {
-  text: string;
+  text: any;
 };
 
 const RainbowText = ({ text }: Props) => (

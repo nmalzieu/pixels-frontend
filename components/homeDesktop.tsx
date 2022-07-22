@@ -98,6 +98,11 @@ const HomeDesktop = () => {
     showMint = false;
   }
 
+  // If done minting, hiding
+  if (process.env.NEXT_PUBLIC_MINT_DONE) {
+    showMint = false;
+  }
+
   let rainbowMessage: any = "";
   if (state.message) {
     if (state.currentlyMintingHash || state.failedMintHash) {
@@ -171,7 +176,7 @@ const HomeDesktop = () => {
         </Window>
       )}
 
-      {showMint && false && <Mint />}
+      {showMint && <Mint />}
       {state.account && pixelsOwned?.length > 0 && (
         <Window
           style={{

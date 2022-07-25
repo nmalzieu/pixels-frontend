@@ -130,6 +130,9 @@ export const state = createModel<RootModel>()({
       temporaryColors[payload.tokenId] = payload.color;
       return { ...state, temporaryColors };
     },
+    resetColoringState(state) {
+      return { ...state, temporaryColors: [] };
+    },
     setFailedMintHash(state, payload: string) {
       const newState = { ...state, failedMintHash: payload };
       if (payload) {

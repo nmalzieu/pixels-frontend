@@ -72,7 +72,7 @@ const GridPage = () => {
       mins = Math.trunc(mins);
       secs = Math.trunc(secs);
       setFixedInText(`in ${hours}h ${mins}m ${secs}s`);
-    }, 1000);
+    }, 100);
     return () => clearInterval(interval);
   }, [currentDrawingTimestampData]);
 
@@ -99,8 +99,8 @@ const GridPage = () => {
   let gridComponent = <GridLoader />;
 
   let pxlsColorizedText = "";
-  let showText = false;
-  let pixelsOwned = [];
+  const pixelsOwned =
+    (pixelsOfOwnerData as any)?.pixels?.map((p: any) => p.toNumber()) || [];
 
   if (
     state.account &&
@@ -111,8 +111,6 @@ const GridPage = () => {
   ) {
     const matrixSize = uint256.uint256ToBN(matrixSizeData?.[0]).toNumber();
     const round = currentDrawingRoundData[0].toNumber();
-    pixelsOwned =
-      (pixelsOfOwnerData as any)?.pixels?.map((p: any) => p.toNumber()) || [];
     const currentDrawingTimestamp = currentDrawingTimestampData[0].toNumber();
 
     const now = moment();
@@ -140,7 +138,6 @@ const GridPage = () => {
         </div>
       );
     } else {
-      showText = true;
       gridComponent = (
         <GridComponent
           gridSize={matrixSize}
@@ -191,14 +188,35 @@ const GridPage = () => {
     );
     title = (
       <span>
-        Hello, pxlr! You own PXL{pixelsOwned.length > 1 ? "s" : ""}{" "}
-        {pixelsOwned.join(",")}
+        Hello, pxlr!{" "}
+        {pixelsOwned?.length > 0 ? (
+          <span>
+            You own PXL{pixelsOwned.length > 1 ? "s" : ""}{" "}
+            {pixelsOwned.join(",")}
+          </span>
+        ) : (
+          ""
+        )}
       </span>
     );
     const temporaryColorIndexes = Object.keys(state.temporaryColors);
     const hasTemporaryColors = temporaryColorIndexes.length > 0;
     let action = null;
-    if (hasTemporaryColors) {
+    if (state.currentlyColoringHash) {
+      message = (
+        <span>
+          ⏳️ Your color changes are currently commiting to the blockchain; it
+          can take a moment. You can go and drink a coffee or a tea or whatever.
+        </span>
+      );
+    } else if (state.failedColoringHash) {
+      message = (
+        <span className={windowStyles.danger}>
+          😢️ There was an issue with your commit and it failed. You’ll have to
+          commit again to colorize your pxl today.
+        </span>
+      );
+    } else if (hasTemporaryColors) {
       const tokenIds = temporaryColorIndexes.map((i) => bnToUint256(i));
       const colors = temporaryColorIndexes.map((i) => {
         const c = state.temporaryColors[parseInt(i, 10)];
@@ -221,11 +239,16 @@ const GridPage = () => {
     cta = (
       <Button
         text="Commit to blockchain"
-        disabled={!hasTemporaryColors}
+        disabled={
+          !hasTemporaryColors ||
+          !!state.currentlyColoringHash ||
+          !!state.failedColoringHash
+        }
         action={action}
       />
     );
   }
+  const isGridReady = currentDrawingTimestampData && state.grid && fixedInText;
 
   return (
     <div className={styles.gridPage}>
@@ -235,7 +258,7 @@ const GridPage = () => {
           <DoubleSeparator />
           <div className={styles.gridContainer}>{gridComponent}</div>
           <DoubleSeparator />
-          {showText && (
+          {isGridReady && (
             <>
               <div className={styles.windowTitle}>TODAY’S RTWRK</div>
               <div>

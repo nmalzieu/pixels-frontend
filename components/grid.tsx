@@ -45,6 +45,8 @@ const getPixel = (
       key={pixelIndex}
       className={`${styles.pixelWrapper} ${owned ? styles.pixelOwned : ""} ${
         owned && !state.currentlyColoringHash ? styles.pointer : ""
+      } ${
+        owned && pixelColor.set && !temporaryColor ? styles.pixelCommitted : ""
       }`}
       style={{
         width: `${pixelSizePercent}%`,

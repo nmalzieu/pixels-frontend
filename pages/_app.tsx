@@ -52,6 +52,9 @@ const StarknetStatusComponent = () => {
       dispatch.setColoringHash("");
       if (coloringTransaction.status === "REJECTED") {
         dispatch.setFailedColoringHash(coloringTransaction.transactionHash);
+      } else {
+        // ACCEPTED, let's reset coloring state
+        dispatch.resetColoringState();
       }
     } else if (
       coloringTransaction &&

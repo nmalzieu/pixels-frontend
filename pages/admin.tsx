@@ -1,4 +1,4 @@
-import { useStarknet, useStarknetCall } from "@starknet-react/core";
+import { useStarknetCall } from "@starknet-react/core";
 import type { NextPage } from "next";
 
 import ConnectToStarknet from "../components/connectToStarknet";
@@ -14,7 +14,6 @@ import {
 
 const Admin: NextPage = () => {
   const storeState = useStoreState();
-  const { account } = useStarknet();
   const { contract: pixelERC721Contract } = usePixelERC721Contract();
   const { contract: pixelDrawerContract } = usePixelDrawerContract();
 
@@ -83,7 +82,7 @@ const Admin: NextPage = () => {
   return (
     <div>
       <h1>Admin</h1>
-      <ConnectToStarknet />
+      <ConnectToStarknet connectButton="Connect to Starknet" />
       <div>
         <h2>PixelERC721</h2>
         <ul>

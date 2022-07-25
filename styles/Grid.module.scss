@@ -10,9 +10,12 @@
     .pixelWrapper {
       display: inline-block;
 
+      &.pointer {
+        cursor: pointer;
+      }
+
       &.pixelOwned {
         border: 1px dashed #000000;
-        cursor: pointer;
 
         &.pixelCommitted {
           border: 1px solid #000000;
@@ -20,9 +23,20 @@
       }
 
       .pixel {
+        position: relative;
         padding-bottom: 100%;
         &:hover {
           filter: brightness(150%);
+        }
+
+        .questionMark {
+          font-size: 14px;
+          font-weight: 400;
+          font-family: "Arial";
+          position: absolute;
+          text-align: center;
+          left: 3px;
+          top: 8px;
         }
       }
     }

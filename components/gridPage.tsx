@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { ChromePicker } from "react-color";
 import { uint256 } from "starknet";
+import { bnToUint256 } from "starknet/dist/utils/uint256";
 
 import { useInvoke } from "../contracts/helpers";
 import { usePixelDrawerContract } from "../contracts/pixelDrawer";
@@ -13,6 +14,8 @@ import { useStoreDispatch, useStoreState } from "../store";
 import styles from "../styles/GridPage.module.scss";
 import windowStyles from "../styles/Window.module.scss";
 import { rgbToHex } from "../utils";
+import Button from "./button";
+import ConnectToStarknet from "./connectToStarknet";
 import GridComponent from "./grid";
 import GridLoader from "./gridLoader";
 import ScrollingText from "./scrollingText";
@@ -88,10 +91,16 @@ const GridPage = () => {
     method: "launchNewRoundIfNecessary",
   });
 
+  const { invoke: setPixelsColors } = useInvoke({
+    contract: pixelDrawerContract,
+    method: "setPixelsColors",
+  });
+
   let gridComponent = <GridLoader />;
 
   let pxlsColorizedText = "";
   let showText = false;
+  let pixelsOwned = [];
 
   if (
     state.account &&
@@ -102,7 +111,7 @@ const GridPage = () => {
   ) {
     const matrixSize = uint256.uint256ToBN(matrixSizeData?.[0]).toNumber();
     const round = currentDrawingRoundData[0].toNumber();
-    const pixelsOwned =
+    pixelsOwned =
       (pixelsOfOwnerData as any)?.pixels?.map((p: any) => p.toNumber()) || [];
     const currentDrawingTimestamp = currentDrawingTimestampData[0].toNumber();
 
@@ -159,6 +168,65 @@ const GridPage = () => {
     });
   };
 
+  let cta = (
+    <ConnectToStarknet connectButton={<Button text="Connect wallet" />} />
+  );
+  let message = (
+    <span>
+      You own a PXL NFT? Connect your starknet wallet and colorize your pxl. Be
+      the artist of the third internet.
+    </span>
+  );
+  let title = (
+    <span style={{ fontSize: 16, textAlign: "left" }}>
+      👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛
+    </span>
+  );
+  if (state.account) {
+    message = (
+      <span>
+        ☀️️ Hello, pxlr! Which color are you going to choose today? Click on
+        your pxl to change its color.
+      </span>
+    );
+    title = (
+      <span>
+        Hello, pxlr! You own PXL{pixelsOwned.length > 1 ? "s" : ""}{" "}
+        {pixelsOwned.join(",")}
+      </span>
+    );
+    const temporaryColorIndexes = Object.keys(state.temporaryColors);
+    const hasTemporaryColors = temporaryColorIndexes.length > 0;
+    let action = null;
+    if (hasTemporaryColors) {
+      const tokenIds = temporaryColorIndexes.map((i) => bnToUint256(i));
+      const colors = temporaryColorIndexes.map((i) => {
+        const c = state.temporaryColors[parseInt(i, 10)];
+        return [c.red, c.green, c.blue];
+      });
+      action = () =>
+        setPixelsColors({
+          args: [tokenIds, colors],
+          metadata: {
+            method: "setPixelsColors",
+          },
+        });
+      message = (
+        <span className={windowStyles.danger}>
+          ⚠️ Your color changes are not stored on the blockchain yet - click
+          below to save your work.
+        </span>
+      );
+    }
+    cta = (
+      <Button
+        text="Commit to blockchain"
+        disabled={!hasTemporaryColors}
+        action={action}
+      />
+    );
+  }
+
   return (
     <div className={styles.gridPage}>
       <TopNav white logo />
@@ -178,28 +246,15 @@ const GridPage = () => {
             </>
           )}
         </Window>
-        {/* retirer 169 top, 100 left */}
-        <Window style={{ width: 385, top: 82, left: 665 }}>
-          <div className={windowStyles.rainbowBar}>
-            👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛
-          </div>
+        <Window style={{ width: 446, top: -20, left: 665 }}>
+          <div className={windowStyles.rainbowBar}>{title}</div>
           <div className={windowStyles.windowContent}>
-            {!state.account && (
-              <span>
-                You own a PXL NFT? Connect your starknet wallet and colorize
-                your pxl. Be the artist of the third internet.
-              </span>
-            )}
-            {state.account && (
-              <span>
-                ☀️️ Hello, pxlr! Which color are you going to choose today?
-                Click on your pxl to change its color.
-              </span>
-            )}
+            {message}
+            {cta}
           </div>
         </Window>
         {state.selectedPixel && (
-          <Window style={{ width: 225, top: 278, left: 679 }} border>
+          <Window style={{ width: 225, top: 218, left: 679 }} border>
             <div className={styles.windowCloseTitle}>
               <CloseImage
                 onClick={() => {

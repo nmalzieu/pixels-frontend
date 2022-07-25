@@ -1,0 +1,13 @@
+.button {
+  padding: 7px 18px;
+  border: 1px solid #000000;
+  max-width: fit-content;
+  margin-top: 20px;
+  cursor: pointer;
+
+  &.disabled {
+    pointer-events: none;
+    color: #8f8f8f;
+    border: 1px solid #8f8f8f;
+  }
+}

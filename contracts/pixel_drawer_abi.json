@@ -116,6 +116,27 @@
                 "type": "Uint256"
             }
         ],
+        "name": "currentTokenPixelIndex",
+        "outputs": [
+            {
+                "name": "pixelIndex",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "round",
+                "type": "felt"
+            },
+            {
+                "name": "tokenId",
+                "type": "Uint256"
+            }
+        ],
         "name": "tokenPixelIndex",
         "outputs": [
             {
@@ -146,6 +167,23 @@
     {
         "inputs": [],
         "name": "currentDrawingTimestamp",
+        "outputs": [
+            {
+                "name": "timestamp",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "round",
+                "type": "felt"
+            }
+        ],
+        "name": "drawingTimestamp",
         "outputs": [
             {
                 "name": "timestamp",
@@ -229,12 +267,6 @@
             }
         ],
         "name": "setPixelsColors",
-        "outputs": [],
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "start",
         "outputs": [],
         "type": "function"
     },

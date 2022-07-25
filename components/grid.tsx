@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { uint256 } from "starknet";
 import { BigNumberish } from "starknet/dist/utils/number";
 
-import { useInvoke } from "../contracts/helpers";
 import { usePixelDrawerContract } from "../contracts/pixelDrawer";
 import {
   Dispatch,
@@ -31,7 +30,7 @@ const getPixel = (
   const thisPixel = myPixels.find((p) => p.pixelIndex === pixelIndex);
 
   const pixelClick = async () => {
-    if (!owned) return;
+    if (!owned || state.currentlyColoringHash) return;
     dispatch.setSelectedPixel(thisPixel);
   };
 
@@ -39,11 +38,14 @@ const getPixel = (
     ? state.temporaryColors[thisPixel.tokenId]
     : null;
   const color = temporaryColor || pixelColor.color;
+  const showQuestionMark = owned && !color;
 
   return (
     <div
       key={pixelIndex}
-      className={`${styles.pixelWrapper} ${owned ? styles.pixelOwned : ""}`}
+      className={`${styles.pixelWrapper} ${owned ? styles.pixelOwned : ""} ${
+        owned && !state.currentlyColoringHash ? styles.pointer : ""
+      }`}
       style={{
         width: `${pixelSizePercent}%`,
       }}
@@ -54,7 +56,9 @@ const getPixel = (
         style={{
           backgroundColor: `rgb(${color.red},${color.green},${color.blue})`,
         }}
-      ></div>
+      >
+        {showQuestionMark && <span className={styles.questionMark}>?</span>}
+      </div>
     </div>
   );
 };
@@ -110,17 +114,12 @@ const Grid = ({ round, gridSize, pixelsOwned }: GridProps) => {
     dispatch.setGrid(pixelData);
   }, [dispatch, gridData]);
 
-  const { invoke: setPixelColor } = useInvoke({
-    contract: pixelDrawerContract,
-    method: "setPixelColor",
-  });
-
   const usePixelsPositions = (pixelsOwned: any) =>
     pixelsOwned.map((pixelOwned: any) =>
       // eslint-disable-next-line react-hooks/rules-of-hooks
       useStarknetCall({
         contract: pixelDrawerContract,
-        method: "tokenPixelIndex",
+        method: "currentTokenPixelIndex",
         args: [uint256.bnToUint256(pixelOwned)],
       })
     );

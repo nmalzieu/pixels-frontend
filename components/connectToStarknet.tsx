@@ -3,7 +3,11 @@ import { useCallback, useEffect } from "react";
 
 import { useStoreDispatch, useStoreState } from "../store";
 
-const ConnectToStarknet = () => {
+type Props = {
+  connectButton: React.ReactNode;
+};
+
+const ConnectToStarknet = ({ connectButton }: Props) => {
   const state = useStoreState();
   const dispatch = useStoreDispatch();
 
@@ -58,7 +62,7 @@ const ConnectToStarknet = () => {
   } else if (!starknetConnectedAccount && connector) {
     return (
       <div onClick={() => connect(connector)} className="clickable">
-        👛 connect wallet
+        {connectButton}
       </div>
     );
   }

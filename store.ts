@@ -52,6 +52,8 @@ export const state = createModel<RootModel>()({
     network: "",
     currentlyMintingHash: "",
     failedMintHash: "",
+    currentlyColoringHash: "",
+    failedColoringHash: "",
     grid: [] as GridPixel[],
     temporaryColors: [] as TemporaryColors,
     selectedPixel: undefined as OwnedPixel | undefined,
@@ -88,6 +90,23 @@ export const state = createModel<RootModel>()({
       }
       return newState;
     },
+    setColoringHash(state, hash: string) {
+      const newState = { ...state, currentlyColoringHash: hash };
+      if (hash) {
+        localStorage.setItem("pxls-coloring", hash);
+        // newState.message =
+        //   "⏳️ Your color changes are currently commiting to the blockchain; it can take a moment. You can go and drink a coffee or a tea or whatever.";
+      } else {
+        // if (
+        //   state.message ===
+        //   "⏳️ Your color changes are currently commiting to the blockchain; it can take a moment. You can go and drink a coffee or a tea or whatever."
+        // ) {
+        //   newState.message = "";
+        // }
+        localStorage.removeItem("pxls-coloring");
+      }
+      return newState;
+    },
     setNetwork(state, network: string) {
       const newState: any = { ...state, network };
       const networkMessage = `please connect to the ${process.env.NEXT_PUBLIC_STARKNET_NETWORK} network`;
@@ -116,6 +135,14 @@ export const state = createModel<RootModel>()({
       if (payload) {
         newState.message = "minting did not work";
       }
+      return newState;
+    },
+    setFailedColoringHash(state, payload: string) {
+      const newState = { ...state, failedColoringHash: payload };
+      // if (payload) {
+      //   newState.message =
+      //     "😢️ There was an issue with your commit and it failed. You’ll have to commit again to colorize your pxl today.";
+      // }
       return newState;
     },
   },

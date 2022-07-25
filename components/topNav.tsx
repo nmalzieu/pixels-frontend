@@ -10,7 +10,7 @@ type Props = {
 const TopNav = ({ white, logo }: Props) => (
   <div className={`${styles.top} ${white ? styles.topWhite : ""}`}>
     <div className={styles.topElement}>
-      <ConnectToStarknet />
+      <ConnectToStarknet connectButton="👛 connect wallet" />
     </div>
     <div className={styles.topElement}>
       <a

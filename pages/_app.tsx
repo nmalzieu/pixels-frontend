@@ -33,12 +33,40 @@ const StarknetStatusComponent = () => {
     const mintingTransaction = transactions.find(
       (t) => t.metadata?.method === "mint"
     );
+    const coloringTransaction = transactions.find(
+      (t) => t.metadata?.method === "setPixelsColors"
+    );
     const pendingStatuses = [
       "TRANSACTION_RECEIVED",
       "NOT_RECEIVED",
       "RECEIVED",
       "PENDING",
     ];
+
+    if (
+      coloringTransaction &&
+      !pendingStatuses.includes(coloringTransaction.status)
+    ) {
+      // ACCEPTED / REJECTED transaction
+      removeTransaction(coloringTransaction.transactionHash);
+      dispatch.setColoringHash("");
+      if (coloringTransaction.status === "REJECTED") {
+        dispatch.setFailedColoringHash(coloringTransaction.transactionHash);
+      }
+    } else if (
+      coloringTransaction &&
+      pendingStatuses.includes(coloringTransaction.status) &&
+      coloringTransaction.transactionHash !== state.currentlyColoringHash
+    ) {
+      // New minting transaction
+      dispatch.setColoringHash(coloringTransaction.transactionHash);
+    } else if (!coloringTransaction && state.currentlyColoringHash) {
+      addTransaction({
+        status: "TRANSACTION_RECEIVED",
+        transactionHash: state.currentlyColoringHash,
+        metadata: { method: "setPixelsColors" },
+      });
+    }
 
     if (
       mintingTransaction &&

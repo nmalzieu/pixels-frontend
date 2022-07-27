@@ -2,6 +2,10 @@
   width: 100%;
   position: absolute;
 
+  &.viewerOnly {
+    pointer-events: none;
+  }
+
   .grid {
     position: relative;
     width: 100%;
@@ -9,10 +13,6 @@
 
     .pixelWrapper {
       display: inline-block;
-
-      &.pointer {
-        cursor: pointer;
-      }
 
       &.pixelOwned {
         border: 1px dashed #000000;

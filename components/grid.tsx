@@ -1,6 +1,5 @@
 import { useStarknetCall } from "@starknet-react/core";
-import { useEffect } from "react";
-import { uint256 } from "starknet";
+import { useEffect, useState } from "react";
 import { BigNumberish } from "starknet/dist/utils/number";
 
 import { usePixelDrawerContract } from "../contracts/pixelDrawer";
@@ -19,7 +18,6 @@ const getPixel = (
   pixelIndex: number,
   pixelColor: GridPixel,
   gridSize: number,
-  owned: boolean,
   myPixels: OwnedPixel[],
   state: RootState["state"],
   dispatch: Dispatch["state"]
@@ -29,16 +27,26 @@ const getPixel = (
   // Get pixel tokenId
   const thisPixel = myPixels.find((p) => p.pixelIndex === pixelIndex);
 
-  const pixelClick = async () => {
-    if (!owned || state.currentlyColoringHash) return;
-    dispatch.setSelectedPixel(thisPixel);
-  };
+  const owned = !!myPixels.find((p) => p.pixelIndex === pixelIndex);
 
   const temporaryColor = thisPixel?.tokenId
     ? state.temporaryColors[thisPixel.tokenId]
     : null;
   const color = temporaryColor || pixelColor.color;
   const showQuestionMark = owned && !color;
+
+  const pixelClick = async () => {
+    if (state.currentlyColoringHash) return;
+    if (owned && !state.eyedropperMode && thisPixel) {
+      dispatch.setSelectedPixel(thisPixel);
+    } else if (state.eyedropperMode && state.selectedPixel) {
+      dispatch.setPixelTemporaryColor({
+        tokenId: state.selectedPixel.tokenId,
+        color: color,
+      });
+      dispatch.setEyeDropperMode(false);
+    }
+  };
 
   return (
     <div
@@ -50,6 +58,10 @@ const getPixel = (
       }`}
       style={{
         width: `${pixelSizePercent}%`,
+        cursor:
+          owned && !state.currentlyColoringHash && !state.eyedropperMode
+            ? "pointer"
+            : undefined,
       }}
     >
       <div
@@ -68,13 +80,27 @@ const getPixel = (
 type GridProps = {
   round: number;
   gridSize: number;
-  pixelsOwned: number[];
+  timestamp: number;
+  myPixels: {
+    tokenId: number;
+    pixelIndex: number;
+  }[];
+  viewerOnly?: boolean;
+  saveGrid?: boolean;
 };
 
-const Grid = ({ round, gridSize, pixelsOwned }: GridProps) => {
+const Grid = ({
+  round,
+  gridSize,
+  myPixels,
+  viewerOnly,
+  saveGrid,
+}: GridProps) => {
   const { contract: pixelDrawerContract } = usePixelDrawerContract();
   const dispatch = useStoreDispatch();
   const state = useStoreState();
+
+  const [pixelDataToDisplay, setPixelDataToDisplay] = useState(state.grid);
 
   const { data: gridData } = useStarknetCall({
     contract: pixelDrawerContract,
@@ -113,49 +139,23 @@ const Grid = ({ round, gridSize, pixelsOwned }: GridProps) => {
           : 242;
       }
     });
-    dispatch.setGrid(pixelData);
-  }, [dispatch, gridData]);
+    setPixelDataToDisplay(pixelData);
+    if (saveGrid) {
+      dispatch.setGrid(pixelData);
+    }
+  }, [dispatch, gridData, saveGrid]);
 
-  const usePixelsPositions = (pixelsOwned: any) =>
-    pixelsOwned.map((pixelOwned: any) =>
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      useStarknetCall({
-        contract: pixelDrawerContract,
-        method: "currentTokenPixelIndex",
-        args: [uint256.bnToUint256(pixelOwned)],
-      })
-    );
-
-  const pixelsPositionsData = usePixelsPositions(pixelsOwned);
-  const pixelsPositions = pixelsPositionsData.map((p: any) =>
-    p?.data?.[0]?.toNumber()
-  );
-
-  const myPixels = pixelsOwned.map((pixelTokenId, i) => ({
-    tokenId: pixelTokenId,
-    pixelIndex: pixelsPositions[i],
-  }));
-
-  if (
-    !gridData ||
-    pixelsPositionsData.some((position: any) => !position.data)
-  ) {
+  if (!gridData) {
     return <GridLoader />;
   }
 
   return (
-    <div className={styles.gridWrapper}>
+    <div
+      className={`${styles.gridWrapper} ${viewerOnly ? styles.viewerOnly : ""}`}
+    >
       <div className={styles.grid}>
-        {state.grid.map((pixelColor: GridPixel, pixelIndex: number) =>
-          getPixel(
-            pixelIndex,
-            pixelColor,
-            gridSize,
-            pixelsPositions.includes(pixelIndex),
-            myPixels,
-            state,
-            dispatch
-          )
+        {pixelDataToDisplay.map((pixelColor: GridPixel, pixelIndex: number) =>
+          getPixel(pixelIndex, pixelColor, gridSize, myPixels, state, dispatch)
         )}
       </div>
     </div>

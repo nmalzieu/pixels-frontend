@@ -10,6 +10,8 @@ import { useInvoke } from "../contracts/helpers";
 import { usePixelDrawerContract } from "../contracts/pixelDrawer";
 import { usePixelERC721Contract } from "../contracts/pixelERC721";
 import CloseImage from "../public/cross.svg";
+import WhatWillYouDrawImage from "../public/what_will_you_draw.svg";
+import WtfImage from "../public/wtf.svg";
 import { useStoreDispatch, useStoreState } from "../store";
 import styles from "../styles/GridPage.module.scss";
 import windowStyles from "../styles/Window.module.scss";
@@ -18,6 +20,7 @@ import Button from "./button";
 import ConnectToStarknet from "./connectToStarknet";
 import GridComponent from "./grid";
 import GridLoader from "./gridLoader";
+import PreviousRtwrk from "./previousRtwrk";
 import ScrollingText from "./scrollingText";
 import TopNav from "./topNav";
 import Window from "./window";
@@ -65,13 +68,17 @@ const GridPage = () => {
       const now = moment();
       const endOfDrawing = beginningOfDrawing.add(1, "days");
       const durationInSeconds = endOfDrawing.diff(now, "seconds");
-      let hours = durationInSeconds / 3600;
-      let mins = (durationInSeconds % 3600) / 60;
-      let secs = (mins * 60) % 60;
-      hours = Math.trunc(hours);
-      mins = Math.trunc(mins);
-      secs = Math.trunc(secs);
-      setFixedInText(`in ${hours}h ${mins}m ${secs}s`);
+      if (durationInSeconds < 0) {
+        setFixedInText("");
+      } else {
+        let hours = durationInSeconds / 3600;
+        let mins = (durationInSeconds % 3600) / 60;
+        let secs = (mins * 60) % 60;
+        hours = Math.trunc(hours);
+        mins = Math.trunc(mins);
+        secs = Math.trunc(secs);
+        setFixedInText(`in ${hours}h ${mins}m ${secs}s`);
+      }
     }, 100);
     return () => clearInterval(interval);
   }, [currentDrawingTimestampData]);
@@ -86,10 +93,10 @@ const GridPage = () => {
     setColorPickerColor(rgbToHex(color.red, color.green, color.blue));
   }, [state.grid, state.selectedPixel, state.temporaryColors]);
 
-  const { invoke: launchNewRound } = useInvoke({
-    contract: pixelDrawerContract,
-    method: "launchNewRoundIfNecessary",
-  });
+  // const { invoke: launchNewRound } = useInvoke({
+  //   contract: pixelDrawerContract,
+  //   method: "launchNewRoundIfNecessary",
+  // });
 
   const { invoke: setPixelsColors } = useInvoke({
     contract: pixelDrawerContract,
@@ -98,9 +105,14 @@ const GridPage = () => {
 
   let gridComponent = <GridLoader />;
 
-  let pxlsColorizedText = "";
+  let pxlsColorizedText = "... pxls";
   const pixelsOwned =
     (pixelsOfOwnerData as any)?.pixels?.map((p: any) => p.toNumber()) || [];
+
+  let myPixels: any = [];
+  let matrixSize = 0;
+  let round = 0;
+  let noCurrentRound = false;
 
   if (
     state.account &&
@@ -109,9 +121,19 @@ const GridPage = () => {
     pixelsOfOwnerData &&
     currentDrawingTimestampData
   ) {
-    const matrixSize = uint256.uint256ToBN(matrixSizeData?.[0]).toNumber();
-    const round = currentDrawingRoundData[0].toNumber();
+    matrixSize = uint256.uint256ToBN(matrixSizeData?.[0]).toNumber();
+    round = currentDrawingRoundData[0].toNumber();
     const currentDrawingTimestamp = currentDrawingTimestampData[0].toNumber();
+
+    const pixelsPositions = pixelsOwned.map(
+      (pixelTokenId: any) =>
+        (373 * pixelTokenId + currentDrawingTimestamp) % 400
+    );
+
+    myPixels = pixelsOwned.map((pixelTokenId: any, i: any) => ({
+      tokenId: pixelTokenId,
+      pixelIndex: pixelsPositions[i],
+    }));
 
     const now = moment();
     const beginningOfDrawing = moment.unix(currentDrawingTimestamp);
@@ -123,18 +145,11 @@ const GridPage = () => {
     }
 
     if (diff >= 1) {
+      noCurrentRound = true;
       gridComponent = (
-        <div>
-          Please{" "}
-          <button
-            onClick={() =>
-              launchNewRound({
-                args: [],
-              })
-            }
-          >
-            Launch new round
-          </button>
+        <div className={styles.noCurrentRound}>
+          There is no rtwrk being drawn right now. Join our Discord or follow us
+          on Twitter to receive rtwrks notifications.
         </div>
       );
     } else {
@@ -142,13 +157,15 @@ const GridPage = () => {
         <GridComponent
           gridSize={matrixSize}
           round={round}
-          pixelsOwned={pixelsOwned}
+          myPixels={myPixels}
+          timestamp={currentDrawingTimestamp}
+          saveGrid
         />
       );
     }
   }
 
-  if (state.grid) {
+  if (state.grid && state.grid.length > 0) {
     const colorizedCount = state.grid.filter((p: any) => p.set === true).length;
     pxlsColorizedText = `${colorizedCount} pxls`;
   }
@@ -165,7 +182,7 @@ const GridPage = () => {
     });
   };
 
-  let cta = (
+  let cta: React.ReactNode = (
     <ConnectToStarknet connectButton={<Button text="Connect wallet" />} />
   );
   let message = (
@@ -179,12 +196,10 @@ const GridPage = () => {
       👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛
     </span>
   );
+  const isGridReady = currentDrawingTimestampData && state.grid && fixedInText;
   if (state.account) {
     message = (
-      <span>
-        ☀️️ Hello, pxlr! Which color are you going to choose today? Click on
-        your pxl to change its color.
-      </span>
+      <span>☀️️ Hello, pxlr! We&apos;re loading today&apos;s rtwrk...</span>
     );
     title = (
       <span>
@@ -202,7 +217,22 @@ const GridPage = () => {
     const temporaryColorIndexes = Object.keys(state.temporaryColors);
     const hasTemporaryColors = temporaryColorIndexes.length > 0;
     let action = null;
-    if (state.currentlyColoringHash) {
+    let showCta = true;
+    let hasColorizedGrid = false;
+    if (noCurrentRound) {
+      message = <span>There is no rtwrk being drawn for now.</span>;
+      showCta = false;
+    } else if (state.grid.length > 0 && myPixels.length > 0) {
+      myPixels.forEach((myPixel: any) => {
+        const gridPixel = state.grid[myPixel.pixelIndex];
+        if (gridPixel.set) {
+          hasColorizedGrid = true;
+        }
+      });
+    }
+    if (state.grid.length === 0) {
+      // Don't change, still show loading message
+    } else if (state.currentlyColoringHash) {
       message = (
         <span>
           ⏳️ Your color changes are currently commiting to the blockchain; it
@@ -235,8 +265,30 @@ const GridPage = () => {
           below to save your work.
         </span>
       );
+    } else if (hasColorizedGrid) {
+      message = (
+        <span>
+          ✅️ Your pxl’s color is set in the virtual stone of the blockchain -
+          you can still modify them and re-commit if you want.
+        </span>
+      );
+    } else if (pixelsOfOwnerData && pixelsOwned?.length === 0) {
+      message = (
+        <span>
+          🤔️ It seems like you don’t have any PXL NFT in your wallet. If you
+          want to join the pxlrs, you’ll have to get one first.
+        </span>
+      );
+      showCta = false;
+    } else if (isGridReady) {
+      message = (
+        <span>
+          ☀️️ Hello, pxlr! Which color are you going to choose today? Click on
+          your pxl to change its color.
+        </span>
+      );
     }
-    cta = (
+    cta = showCta ? (
       <Button
         text="Commit to blockchain"
         disabled={
@@ -246,19 +298,22 @@ const GridPage = () => {
         }
         action={action}
       />
-    );
+    ) : null;
   }
-  const isGridReady = currentDrawingTimestampData && state.grid && fixedInText;
 
   return (
-    <div className={styles.gridPage}>
+    <div
+      className={`${styles.gridPage} ${
+        state.eyedropperMode ? styles.eyeDropper : ""
+      }`}
+    >
       <TopNav white logo />
       <div className={styles.container}>
         <Window style={{ width: 405, padding: 29, top: 0, left: 164 }}>
           <DoubleSeparator />
           <div className={styles.gridContainer}>{gridComponent}</div>
           <DoubleSeparator />
-          {isGridReady && (
+          {isGridReady && !noCurrentRound && round >= 1 && (
             <>
               <div className={styles.windowTitle}>TODAY’S RTWRK</div>
               <div>
@@ -277,10 +332,11 @@ const GridPage = () => {
           </div>
         </Window>
         {state.selectedPixel && (
-          <Window style={{ width: 225, top: 218, left: 679 }} border>
+          <Window style={{ width: 225, top: 248, left: 679 }} border>
             <div className={styles.windowCloseTitle}>
               <CloseImage
                 onClick={() => {
+                  dispatch.setEyeDropperMode(false);
                   dispatch.setSelectedPixel(undefined);
                 }}
               />
@@ -292,6 +348,18 @@ const GridPage = () => {
               onChange={handleColorPickerChange}
               onChangeComplete={handleColorPickerChangeComplete}
             />
+            <div className={styles.colorPickerPick}>
+              Or{" "}
+              <span
+                style={{
+                  textDecoration: "underline",
+                  cursor: state.eyedropperMode ? undefined : "pointer",
+                }}
+                onClick={() => dispatch.setEyeDropperMode(true)}
+              >
+                pick a pxl&apos;s color
+              </span>
+            </div>
           </Window>
         )}
         <Window style={{ width: 928, top: 643, right: 0 }}>
@@ -300,6 +368,19 @@ const GridPage = () => {
         <div className={styles.palmTree}>
           <Image src="/palmtree.png" alt="Palm Tree" layout="fill" />
         </div>
+        <PreviousRtwrk maxRound={round} matrixSize={matrixSize} />
+        <a
+          className={styles.wtf}
+          href="https://pxlswtf.notion.site/Pxls-wtf-d379e6b48f2749c2a047813815ed038f"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <WtfImage />
+        </a>
+        <WhatWillYouDrawImage className={styles.whatWillYouDraw} />
+        <img src="/twitter-text.png" alt="Twitter" className={styles.twitter} />
+        <img src="/discord-text.png" alt="Discord" className={styles.discord} />
+        <div className={styles.bottom} />
       </div>
     </div>
   );

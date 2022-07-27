@@ -11,13 +11,18 @@
     z-index: 1;
   }
 
-  :global(.chrome-picker ) {
+  :global(.chrome-picker) {
     width: 100% !important;
     border-radius: 0 !important;
 
     > div {
       border-radius: 0 !important;
     }
+  }
+
+  &.eyeDropper {
+    cursor: url("data:image/x-icon;base64,AAACAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAEAAAAAAAAAAAAAAAh4eHAL+/vwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIQAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAACEAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAhAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAIQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///////////////////////////////////////////////////////////////////////////////////////D////g///+AP///gD///8B////A////sP///0D///6M///9H///+j////R////o////0f///9P////H////w=="),
+      auto;
   }
 }
 
@@ -27,6 +32,10 @@
   margin-right: auto;
   margin-top: 75px;
   position: relative;
+
+  :global(.chrome-picker) {
+    box-shadow: none !important;
+  }
 }
 
 .doubleSeparator {
@@ -70,4 +79,55 @@
   width: 474px;
   height: 276px;
   left: 134px;
+}
+
+.colorPickerPick {
+  text-align: center;
+  padding: 17px 0px;
+}
+
+.noCurrentRound {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  width: 230px;
+  text-align: center;
+}
+
+.wtf {
+  position: absolute;
+  display: block;
+  left: 217px;
+  top: 1750px;
+}
+
+.whatWillYouDraw {
+  position: absolute;
+  display: block;
+  left: 60%;
+  transform: translateX(-50%);
+  top: 1850px;
+}
+
+.twitter {
+  position: absolute;
+  display: block;
+  top: 2200px;
+  left: 588px;
+}
+
+.discord {
+  position: absolute;
+  display: block;
+  top: 2300px;
+  left: 358px;
+}
+
+.bottom {
+  height: 1px;
+  width: 1px;
+  position: absolute;
+  top: 2400px;
+  left: 358px;
 }

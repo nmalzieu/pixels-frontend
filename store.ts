@@ -57,6 +57,7 @@ export const state = createModel<RootModel>()({
     grid: [] as GridPixel[],
     temporaryColors: [] as TemporaryColors,
     selectedPixel: undefined as OwnedPixel | undefined,
+    eyedropperMode: false,
   },
   reducers: {
     setMessage(state, message: string) {
@@ -148,6 +149,9 @@ export const state = createModel<RootModel>()({
       // }
       return newState;
     },
+    setEyeDropperMode(state, mode) {
+      return { ...state, eyedropperMode: mode };
+    },
   },
 });
 
@@ -165,6 +169,7 @@ setTimeout(() => {
   if (typeof window !== "undefined") {
     const previousAccount = localStorage.getItem("pxls-account");
     const mintingHash = localStorage.getItem("pxls-minting");
+    const coloringHash = localStorage.getItem("pxls-coloring");
     if (previousAccount) {
       store.dispatch({
         type: "state/setAccount",
@@ -178,6 +183,12 @@ setTimeout(() => {
       store.dispatch({
         type: "state/setMintingHash",
         payload: mintingHash,
+      });
+    }
+    if (coloringHash) {
+      store.dispatch({
+        type: "state/setColoringHash",
+        payload: coloringHash,
       });
     }
   }

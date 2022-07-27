@@ -73,6 +73,60 @@
     {
         "inputs": [
             {
+                "name": "input",
+                "type": "felt"
+            },
+            {
+                "name": "at",
+                "type": "felt"
+            },
+            {
+                "name": "number_of_bits",
+                "type": "felt"
+            }
+        ],
+        "name": "actual_get_element_at",
+        "outputs": [
+            {
+                "name": "response",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "input",
+                "type": "felt"
+            },
+            {
+                "name": "at",
+                "type": "felt"
+            },
+            {
+                "name": "number_of_bits",
+                "type": "felt"
+            },
+            {
+                "name": "element",
+                "type": "felt"
+            }
+        ],
+        "name": "actual_set_element_at",
+        "outputs": [
+            {
+                "name": "response",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "name": "owner",
                 "type": "felt"
             },
@@ -248,6 +302,18 @@
         "type": "function"
     },
     {
+        "inputs": [],
+        "name": "everyoneCanLaunchRound",
+        "outputs": [
+            {
+                "name": "bool",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [
             {
                 "name": "tokenIds_len",
@@ -279,6 +345,17 @@
                 "type": "felt"
             }
         ],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "bool",
+                "type": "felt"
+            }
+        ],
+        "name": "setEveryoneCanLaunchRound",
+        "outputs": [],
         "type": "function"
     },
     {

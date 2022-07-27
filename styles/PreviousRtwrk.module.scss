@@ -4,12 +4,12 @@
 }
 
 .previousRtwrks {
-  border: 3px solid #000000;
   position: absolute;
-  width: 694px;
-  height: 466px;
+  width: 704px;
+  height: 476px;
   left: 451px;
   top: 1200px;
+  background-image: url(/previous-rtwrks-box.png);
 
   .previousRtwrksContent {
     position: absolute;
@@ -23,7 +23,7 @@
   .previousRtwrksSide {
     position: absolute;
     top: 33px;
-    right: 33px;
+    right: 43px;
     height: 400px;
     width: 200px;
   }

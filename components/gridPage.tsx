@@ -312,8 +312,17 @@ const GridPage = () => {
     >
       <TopNav white logo />
       <div className={styles.container}>
-        <Window style={{ width: 405, padding: 29, top: 0, left: 164 }}>
-          <DoubleSeparator />
+        <Window style={{ width: 405, padding: "16px 29px", top: 0, left: 164 }}>
+          {state.grid.length > 0 &&
+          pixelsOfOwnerData &&
+          pixelsOwned?.length > 0 ? (
+            <img src="/click-pxl-title.png" alt="title" />
+          ) : (
+            <>
+              <div style={{ marginTop: 12 }} />
+              <DoubleSeparator />
+            </>
+          )}
           <div className={styles.gridContainer}>{gridComponent}</div>
           <DoubleSeparator />
           {isGridReady && !noCurrentRound && round >= 1 && (

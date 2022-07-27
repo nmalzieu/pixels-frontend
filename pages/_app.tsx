@@ -99,6 +99,7 @@ const StarknetStatusComponent = () => {
     addTransaction,
     dispatch,
     removeTransaction,
+    state.currentlyColoringHash,
     state.currentlyMintingHash,
     transactions,
   ]);

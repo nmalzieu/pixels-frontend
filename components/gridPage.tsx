@@ -39,7 +39,7 @@ const GridPage = () => {
   const { data: pixelsOfOwnerData } = useStarknetCall({
     contract: pixelERC721Contract,
     method: "pixelsOfOwner",
-    args: [state.account],
+    args: [state.account || "0x000000000000000000000000000000000000dead"],
   });
 
   const { data: matrixSizeData } = useStarknetCall({
@@ -115,7 +115,6 @@ const GridPage = () => {
   let noCurrentRound = false;
 
   if (
-    state.account &&
     matrixSizeData &&
     currentDrawingRoundData &&
     pixelsOfOwnerData &&
@@ -147,7 +146,7 @@ const GridPage = () => {
     if (diff >= 1) {
       noCurrentRound = true;
       gridComponent = (
-        <div className={styles.noCurrentRound}>
+        <div className={styles.gridMessage}>
           There is no rtwrk being drawn right now. Join our Discord or follow us
           on Twitter to receive rtwrks notifications.
         </div>
@@ -185,15 +184,17 @@ const GridPage = () => {
   let cta: React.ReactNode = (
     <ConnectToStarknet connectButton={<Button text="Connect wallet" />} />
   );
+  let subMessage: React.ReactNode = "";
   let message = (
     <span>
       You own a PXL NFT? Connect your starknet wallet and colorize your pxl. Be
       the artist of the third internet.
     </span>
   );
+
   let title = (
     <span style={{ fontSize: 16, textAlign: "left" }}>
-      👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛
+      👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛 👛
     </span>
   );
   const isGridReady = currentDrawingTimestampData && state.grid && fixedInText;
@@ -299,6 +300,13 @@ const GridPage = () => {
         action={action}
       />
     ) : null;
+  } else {
+    subMessage = (
+      <span className={windowStyles.danger}>
+        <br />
+        {state.message}
+      </span>
+    );
   }
 
   return (
@@ -329,6 +337,7 @@ const GridPage = () => {
           <div className={windowStyles.windowContent}>
             {message}
             {cta}
+            {subMessage}
           </div>
         </Window>
         {state.selectedPixel && (
@@ -378,8 +387,24 @@ const GridPage = () => {
           <WtfImage />
         </a>
         <WhatWillYouDrawImage className={styles.whatWillYouDraw} />
-        <img src="/twitter-text.png" alt="Twitter" className={styles.twitter} />
-        <img src="/discord-text.png" alt="Discord" className={styles.discord} />
+        <a
+          className={styles.twitter}
+          href="https://twitter.com/PxlsWtf"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <img src="/twitter-text.png" alt="Twitter" />
+        </a>
+
+        <a
+          className={styles.discord}
+          href="https://discord.com/invite/ufafywMTQh"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <img src="/discord-text.png" alt="Discord" />
+        </a>
+
         <div className={styles.bottom} />
       </div>
     </div>

@@ -93,11 +93,6 @@ const GridPage = () => {
     setColorPickerColor(rgbToHex(color.red, color.green, color.blue));
   }, [state.grid, state.selectedPixel, state.temporaryColors]);
 
-  // const { invoke: launchNewRound } = useInvoke({
-  //   contract: pixelDrawerContract,
-  //   method: "launchNewRoundIfNecessary",
-  // });
-
   const { invoke: setPixelsColors } = useInvoke({
     contract: pixelDrawerContract,
     method: "setPixelsColors",

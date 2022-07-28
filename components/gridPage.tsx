@@ -20,7 +20,6 @@ import Button from "./button";
 import ConnectToStarknet from "./connectToStarknet";
 import GridComponent from "./grid";
 import GridLoader from "./gridLoader";
-import PreviousRtwrk from "./previousRtwrk";
 import ScrollingText from "./scrollingText";
 import TopNav from "./topNav";
 import Window from "./window";
@@ -399,7 +398,7 @@ const GridPage = () => {
           <div className={styles.palmTree}>
             <Image src="/palmtree.png" alt="Palm Tree" layout="fill" />
           </div>
-          <PreviousRtwrk maxRound={round} matrixSize={matrixSize} />
+          {/* <PreviousRtwrk maxRound={round} matrixSize={matrixSize} /> */}
           <a
             className={styles.wtf}
             href="https://pxlswtf.notion.site/Pxls-wtf-d379e6b48f2749c2a047813815ed038f"

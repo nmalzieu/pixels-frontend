@@ -1,20 +1,20 @@
-import type { NextPage } from "next";
+import { NextPage } from "next";
 
-import GridPage from "../components/gridPage";
+import HomeDesktop from "../components/homeDesktop";
 import HomeMobile from "../components/homeMobile";
 
 interface Props {
   isMobileView: boolean;
 }
 
-const Grid: NextPage<Props> = ({ isMobileView }) => {
+const Home: NextPage<Props> = ({ isMobileView }) => {
   if (isMobileView) {
     return <HomeMobile />;
   }
-  return <GridPage />;
+  return <HomeDesktop />;
 };
 
-Grid.getInitialProps = async ({ req }) => {
+Home.getInitialProps = async ({ req }) => {
   const userAgent = req ? req.headers["user-agent"] : navigator.userAgent;
   const isMobileView = !!userAgent?.match(
     /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
@@ -22,4 +22,4 @@ Grid.getInitialProps = async ({ req }) => {
   return { isMobileView };
 };
 
-export default Grid;
+export default Home;

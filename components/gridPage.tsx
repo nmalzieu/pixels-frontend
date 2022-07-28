@@ -265,7 +265,7 @@ const GridPage = () => {
       message = (
         <span>
           ✅️ Your pxl’s color is set in the virtual stone of the blockchain -
-          you can still modify them and re-commit if you want.
+          you can still modify it and re-commit if you want.
         </span>
       );
     } else if (pixelsOfOwnerData && pixelsOwned?.length === 0) {
@@ -310,106 +310,110 @@ const GridPage = () => {
         state.eyedropperMode ? styles.eyeDropper : ""
       }`}
     >
-      <TopNav white logo />
-      <div className={styles.container}>
-        <Window style={{ width: 405, padding: "16px 29px", top: 0, left: 164 }}>
-          {state.grid.length > 0 &&
-          pixelsOfOwnerData &&
-          pixelsOwned?.length > 0 ? (
-            <img src="/click-pxl-title.png" alt="title" />
-          ) : (
-            <>
-              <div style={{ marginTop: 12 }} />
-              <DoubleSeparator />
-            </>
-          )}
-          <div className={styles.gridContainer}>{gridComponent}</div>
-          <DoubleSeparator />
-          {isGridReady && !noCurrentRound && round >= 1 && (
-            <>
-              <div className={styles.windowTitle}>TODAY’S RTWRK</div>
-              <div>
-                Will be fixed foverer <b>{fixedInText}</b>
-                <br />
-                <b>{pxlsColorizedText}</b> have been colorized
-              </div>
-            </>
-          )}
-        </Window>
-        <Window style={{ width: 446, top: -20, left: 665 }}>
-          <div className={windowStyles.rainbowBar}>{title}</div>
-          <div className={windowStyles.windowContent}>
-            {message}
-            {cta}
-            {subMessage}
-          </div>
-        </Window>
-        {state.selectedPixel && (
-          <Window style={{ width: 225, top: 248, left: 679 }} border>
-            <div className={styles.windowCloseTitle}>
-              <CloseImage
-                onClick={() => {
-                  dispatch.setEyeDropperMode(false);
-                  dispatch.setSelectedPixel(undefined);
-                }}
-              />
-              PXL {state.selectedPixel.tokenId}
-            </div>
-            <ChromePicker
-              color={colorPickerColor}
-              disableAlpha
-              onChange={handleColorPickerChange}
-              onChangeComplete={handleColorPickerChangeComplete}
-            />
-            <div className={styles.colorPickerPick}>
-              Or{" "}
-              <span
-                style={{
-                  textDecoration: "underline",
-                  cursor: state.eyedropperMode ? undefined : "pointer",
-                }}
-                onClick={() => dispatch.setEyeDropperMode(true)}
-              >
-                pick a pxl&apos;s color
-              </span>
+      <div className={styles.gridPageContent}>
+        <TopNav white logo />
+        <div className={styles.container}>
+          <Window
+            style={{ width: 405, padding: "16px 29px", top: 0, left: 164 }}
+          >
+            {state.grid.length > 0 &&
+            pixelsOfOwnerData &&
+            pixelsOwned?.length > 0 ? (
+              <img src="/click-pxl-title.png" alt="title" />
+            ) : (
+              <>
+                <div style={{ marginTop: 12 }} />
+                <DoubleSeparator />
+              </>
+            )}
+            <div className={styles.gridContainer}>{gridComponent}</div>
+            <DoubleSeparator />
+            {isGridReady && !noCurrentRound && round >= 1 && (
+              <>
+                <div className={styles.windowTitle}>TODAY’S RTWRK</div>
+                <div>
+                  Will be fixed foverer <b>{fixedInText}</b>
+                  <br />
+                  <b>{pxlsColorizedText}</b> have been colorized
+                </div>
+              </>
+            )}
+          </Window>
+          <Window style={{ width: 446, top: -20, left: 665 }}>
+            <div className={windowStyles.rainbowBar}>{title}</div>
+            <div className={windowStyles.windowContent}>
+              {message}
+              {cta}
+              {subMessage}
             </div>
           </Window>
-        )}
-        <Window style={{ width: 928, top: 643, right: 0 }}>
-          <ScrollingText small />
-        </Window>
-        <div className={styles.palmTree}>
-          <Image src="/palmtree.png" alt="Palm Tree" layout="fill" />
+          {state.selectedPixel && (
+            <Window style={{ width: 225, top: 248, left: 679 }} border>
+              <div className={styles.windowCloseTitle}>
+                <CloseImage
+                  onClick={() => {
+                    dispatch.setEyeDropperMode(false);
+                    dispatch.setSelectedPixel(undefined);
+                  }}
+                />
+                PXL {state.selectedPixel.tokenId}
+              </div>
+              <ChromePicker
+                color={colorPickerColor}
+                disableAlpha
+                onChange={handleColorPickerChange}
+                onChangeComplete={handleColorPickerChangeComplete}
+              />
+              <div className={styles.colorPickerPick}>
+                Or{" "}
+                <span
+                  style={{
+                    textDecoration: "underline",
+                    cursor: state.eyedropperMode ? undefined : "pointer",
+                  }}
+                  onClick={() => dispatch.setEyeDropperMode(true)}
+                >
+                  pick a pxl&apos;s color
+                </span>
+              </div>
+            </Window>
+          )}
+          <Window style={{ width: 928, top: 643, right: 0 }}>
+            <ScrollingText small />
+          </Window>
+          <div className={styles.palmTree}>
+            <Image src="/palmtree.png" alt="Palm Tree" layout="fill" />
+          </div>
+          <PreviousRtwrk maxRound={round} matrixSize={matrixSize} />
+          <a
+            className={styles.wtf}
+            href="https://pxlswtf.notion.site/Pxls-wtf-d379e6b48f2749c2a047813815ed038f"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <WtfImage />
+          </a>
+          <WhatWillYouDrawImage className={styles.whatWillYouDraw} />
+          <a
+            className={styles.twitter}
+            href="https://twitter.com/PxlsWtf"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <img src="/twitter-text.png" alt="Twitter" />
+          </a>
+
+          <a
+            className={styles.discord}
+            href="https://discord.com/invite/ufafywMTQh"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <img src="/discord-text.png" alt="Discord" />
+          </a>
+
+          <div className={styles.bottom} />
         </div>
-        <PreviousRtwrk maxRound={round} matrixSize={matrixSize} />
-        <a
-          className={styles.wtf}
-          href="https://pxlswtf.notion.site/Pxls-wtf-d379e6b48f2749c2a047813815ed038f"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <WtfImage />
-        </a>
-        <WhatWillYouDrawImage className={styles.whatWillYouDraw} />
-        <a
-          className={styles.twitter}
-          href="https://twitter.com/PxlsWtf"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <img src="/twitter-text.png" alt="Twitter" />
-        </a>
-
-        <a
-          className={styles.discord}
-          href="https://discord.com/invite/ufafywMTQh"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <img src="/discord-text.png" alt="Discord" />
-        </a>
-
-        <div className={styles.bottom} />
       </div>
     </div>
   );

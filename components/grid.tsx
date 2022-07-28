@@ -33,7 +33,7 @@ const getPixel = (
     ? state.temporaryColors[thisPixel.tokenId]
     : null;
   const color = temporaryColor || pixelColor.color;
-  const showQuestionMark = owned && !color;
+  const showQuestionMark = owned && !temporaryColor && !pixelColor.set;
 
   const pixelClick = async () => {
     if (state.currentlyColoringHash) return;

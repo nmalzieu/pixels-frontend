@@ -1,11 +1,20 @@
 .gridPage {
-  background-image: url(/background-live.jpg);
-  background-size: cover;
-  display: flex;
   height: 100%;
   overflow-x: hidden;
-  flex-direction: column;
-  padding-top: 60px;
+
+  .gridPageContent {
+    background-image: url(/background-live.jpg);
+    background-size: cover;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: auto;
+    padding-top: 60px;
+    height: 2580px;
+    display: flex;
+    flex-direction: column;
+  }
 
   div {
     z-index: 1;

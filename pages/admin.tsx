@@ -149,18 +149,8 @@ const Admin: NextPage = () => {
               : "loading..."}
           </li>
           {currentDrawingRoundData && (
-            <button
-              onClick={() =>
-                currentDrawingRoundData[0].toNumber() == 0
-                  ? startDrawing({
-                      args: [],
-                    })
-                  : launchNewRoundIfNecessary({ args: [] })
-              }
-            >
-              {currentDrawingRoundData[0].toNumber() == 0
-                ? "Start drawing"
-                : "Launch next round"}
+            <button onClick={() => launchNewRoundIfNecessary({ args: [] })}>
+              Launch next round
             </button>
           )}
         </ul>

@@ -15,7 +15,7 @@
       display: inline-block;
 
       &.pixelOwned {
-        border: 1px dashed #000000;
+        border: 2px dotted #000000;
 
         &.pixelCommitted {
           border: 2px solid #000000;
@@ -30,13 +30,13 @@
         padding-bottom: 100%;
 
         .questionMark {
-          font-size: 14px;
-          font-weight: 400;
+          font-size: 13px;
+          font-weight: 300;
           font-family: "Arial";
           position: absolute;
           text-align: center;
-          left: 3px;
-          top: 8px;
+          left: 2.5px;
+          top: 7px;
         }
       }
     }

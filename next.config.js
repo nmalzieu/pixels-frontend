@@ -16,6 +16,11 @@ const nextConfig = {
         destination: "/",
         permanent: false,
       },
+      {
+        source: "/grid",
+        destination: "/",
+        permanent: false,
+      },
     ];
   },
 };

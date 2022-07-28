@@ -142,8 +142,23 @@ const GridPage = () => {
       noCurrentRound = true;
       gridComponent = (
         <div className={styles.gridMessage}>
-          There is no rtwrk being drawn right now. Join our Discord or follow us
-          on Twitter to receive rtwrks notifications.
+          There is no rtwrk being drawn right now. Join our{" "}
+          <a
+            href="https://discord.com/invite/ufafywMTQh"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Discord
+          </a>{" "}
+          or follow us on{" "}
+          <a
+            href="https://twitter.com/PxlsWtf"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Twitter
+          </a>{" "}
+          to receive rtwrks notifications.
         </div>
       );
     } else {

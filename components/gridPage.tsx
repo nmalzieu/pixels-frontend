@@ -399,7 +399,10 @@ const GridPage = () => {
           <div className={styles.palmTree}>
             <Image src="/palmtree.png" alt="Palm Tree" layout="fill" />
           </div>
-          <PreviousRtwrk maxRound={round} matrixSize={matrixSize} />
+          <PreviousRtwrk
+            maxRound={noCurrentRound ? round + 1 : round}
+            matrixSize={matrixSize}
+          />{" "}
           <a
             className={styles.wtf}
             href="https://pxlswtf.notion.site/Pxls-wtf-d379e6b48f2749c2a047813815ed038f"
@@ -417,7 +420,6 @@ const GridPage = () => {
           >
             <img src="/twitter-text.png" alt="Twitter" />
           </a>
-
           <a
             className={styles.discord}
             href="https://discord.com/invite/ufafywMTQh"
@@ -426,7 +428,6 @@ const GridPage = () => {
           >
             <img src="/discord-text.png" alt="Discord" />
           </a>
-
           <div className={styles.bottom} />
         </div>
       </div>

@@ -11,8 +11,7 @@
     width: 100%;
     height: auto;
     padding-top: 60px;
-    // height: 2580px;
-    height: 2104px;
+    height: 2580px;
     display: flex;
     flex-direction: column;
   }
@@ -103,18 +102,13 @@
   top: 50%;
   width: 230px;
   text-align: center;
-
-  a {
-    text-decoration: underline;
-  }
 }
 
 .wtf {
   position: absolute;
   display: block;
   left: 217px;
-  // top: 1750px;
-  top: 1274px;
+  top: 1750px;
 }
 
 .whatWillYouDraw {
@@ -122,23 +116,20 @@
   display: block;
   left: 60%;
   transform: translateX(-50%);
-  // top: 1850px;
-  top: 1374px;
+  top: 1850px;
 }
 
 .twitter {
   position: absolute;
   display: block;
-  // top: 2200px;
-  top: 1724px;
+  top: 2200px;
   left: 588px;
 }
 
 .discord {
   position: absolute;
   display: block;
-  // top: 2300px;
-  top: 1824px;
+  top: 2300px;
   left: 358px;
 }
 
@@ -146,7 +137,6 @@
   height: 1px;
   width: 1px;
   position: absolute;
-  // top: 2400px;
-  top: 1924px;
+  top: 2400px;
   left: 358px;
 }

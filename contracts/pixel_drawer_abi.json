@@ -2,23 +2,6 @@
     {
         "members": [
             {
-                "name": "low",
-                "offset": 0,
-                "type": "felt"
-            },
-            {
-                "name": "high",
-                "offset": 1,
-                "type": "felt"
-            }
-        ],
-        "name": "Uint256",
-        "size": 2,
-        "type": "struct"
-    },
-    {
-        "members": [
-            {
                 "name": "set",
                 "offset": 0,
                 "type": "felt"
@@ -56,6 +39,40 @@
         "type": "struct"
     },
     {
+        "members": [
+            {
+                "name": "low",
+                "offset": 0,
+                "type": "felt"
+            },
+            {
+                "name": "high",
+                "offset": 1,
+                "type": "felt"
+            }
+        ],
+        "name": "Uint256",
+        "size": 2,
+        "type": "struct"
+    },
+    {
+        "members": [
+            {
+                "name": "pixel_index",
+                "offset": 0,
+                "type": "felt"
+            },
+            {
+                "name": "color_index",
+                "offset": 1,
+                "type": "felt"
+            }
+        ],
+        "name": "Colorization",
+        "size": 2,
+        "type": "struct"
+    },
+    {
         "data": [
             {
                 "name": "previousOwner",
@@ -73,65 +90,15 @@
     {
         "inputs": [
             {
-                "name": "input",
-                "type": "felt"
-            },
-            {
-                "name": "at",
-                "type": "felt"
-            },
-            {
-                "name": "number_of_bits",
-                "type": "felt"
-            }
-        ],
-        "name": "actual_get_element_at",
-        "outputs": [
-            {
-                "name": "response",
-                "type": "felt"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "input",
-                "type": "felt"
-            },
-            {
-                "name": "at",
-                "type": "felt"
-            },
-            {
-                "name": "number_of_bits",
-                "type": "felt"
-            },
-            {
-                "name": "element",
-                "type": "felt"
-            }
-        ],
-        "name": "actual_set_element_at",
-        "outputs": [
-            {
-                "name": "response",
-                "type": "felt"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
                 "name": "owner",
                 "type": "felt"
             },
             {
                 "name": "pixel_erc721_address",
+                "type": "felt"
+            },
+            {
+                "name": "max_colorizations",
                 "type": "felt"
             }
         ],
@@ -158,61 +125,6 @@
             {
                 "name": "owner",
                 "type": "felt"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "Uint256"
-            }
-        ],
-        "name": "currentTokenPixelIndex",
-        "outputs": [
-            {
-                "name": "pixelIndex",
-                "type": "felt"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "round",
-                "type": "felt"
-            },
-            {
-                "name": "tokenId",
-                "type": "Uint256"
-            }
-        ],
-        "name": "tokenPixelIndex",
-        "outputs": [
-            {
-                "name": "pixelIndex",
-                "type": "felt"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "tokenId",
-                "type": "Uint256"
-            }
-        ],
-        "name": "pixelColor",
-        "outputs": [
-            {
-                "name": "color",
-                "type": "PixelColor"
             }
         ],
         "stateMutability": "view",
@@ -262,6 +174,23 @@
     {
         "inputs": [
             {
+                "name": "pixelIndex",
+                "type": "felt"
+            }
+        ],
+        "name": "currentDrawingPixelColor",
+        "outputs": [
+            {
+                "name": "color",
+                "type": "PixelColor"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "name": "round",
                 "type": "felt"
             },
@@ -270,7 +199,7 @@
                 "type": "felt"
             }
         ],
-        "name": "pixelIndexToPixelColor",
+        "name": "pixelColor",
         "outputs": [
             {
                 "name": "color",
@@ -316,28 +245,104 @@
     {
         "inputs": [
             {
-                "name": "tokenIds_len",
+                "name": "round",
                 "type": "felt"
             },
             {
-                "name": "tokenIds",
-                "type": "Uint256*"
-            },
-            {
-                "name": "colors_len",
-                "type": "felt"
-            },
-            {
-                "name": "colors",
-                "type": "Color*"
+                "name": "tokenId",
+                "type": "Uint256"
             }
         ],
-        "name": "setPixelsColors",
-        "outputs": [],
+        "name": "numberOfColorizations",
+        "outputs": [
+            {
+                "name": "count",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [],
+        "name": "maxColorizationsPerToken",
+        "outputs": [
+            {
+                "name": "max",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "drawing_round",
+                "type": "felt"
+            }
+        ],
+        "name": "numberOfColorizers",
+        "outputs": [
+            {
+                "name": "count",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "drawing_round",
+                "type": "felt"
+            }
+        ],
+        "name": "drawingTheme",
+        "outputs": [
+            {
+                "name": "theme_len",
+                "type": "felt"
+            },
+            {
+                "name": "theme",
+                "type": "felt*"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "tokenId",
+                "type": "Uint256"
+            },
+            {
+                "name": "colorizations_len",
+                "type": "felt"
+            },
+            {
+                "name": "colorizations",
+                "type": "Colorization*"
+            }
+        ],
+        "name": "colorizePixels",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "theme_len",
+                "type": "felt"
+            },
+            {
+                "name": "theme",
+                "type": "felt*"
+            }
+        ],
         "name": "launchNewRoundIfNecessary",
         "outputs": [
             {
@@ -372,6 +377,17 @@
     {
         "inputs": [],
         "name": "renounceOwnership",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "new_max",
+                "type": "felt"
+            }
+        ],
+        "name": "setMaxColorizationsPerToken",
         "outputs": [],
         "type": "function"
     }

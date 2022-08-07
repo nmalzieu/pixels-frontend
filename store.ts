@@ -95,15 +95,7 @@ export const state = createModel<RootModel>()({
       const newState = { ...state, currentlyColoringHash: hash };
       if (hash) {
         localStorage.setItem("pxls-coloring", hash);
-        // newState.message =
-        //   "⏳️ Your color changes are currently commiting to the blockchain; it can take a moment. You can go and drink a coffee or a tea or whatever.";
       } else {
-        // if (
-        //   state.message ===
-        //   "⏳️ Your color changes are currently commiting to the blockchain; it can take a moment. You can go and drink a coffee or a tea or whatever."
-        // ) {
-        //   newState.message = "";
-        // }
         localStorage.removeItem("pxls-coloring");
       }
       return newState;

@@ -6,7 +6,6 @@ import { usePixelDrawerContract } from "../contracts/pixelDrawer";
 import {
   Dispatch,
   GridPixel,
-  OwnedPixel,
   RootState,
   useStoreDispatch,
   useStoreState,
@@ -18,60 +17,64 @@ const getPixel = (
   pixelIndex: number,
   pixelColor: GridPixel,
   gridSize: number,
-  myPixels: OwnedPixel[],
   state: RootState["state"],
   dispatch: Dispatch["state"]
 ) => {
   const pixelSizePercent = 100 / gridSize;
 
-  // Get pixel tokenId
-  const thisPixel = myPixels.find((p) => p.pixelIndex === pixelIndex);
-
-  const owned = !!myPixels.find((p) => p.pixelIndex === pixelIndex);
-
-  const temporaryColor = thisPixel?.tokenId
-    ? state.temporaryColors[thisPixel.tokenId]
-    : null;
+  const temporaryColor = state.temporaryColors[pixelIndex];
   const color = temporaryColor || pixelColor.color;
-  const showQuestionMark = owned && !temporaryColor && !pixelColor.set;
 
   const pixelClick = async () => {
     if (state.currentlyColoringHash) return;
-    if (owned && !state.eyedropperMode && thisPixel) {
-      dispatch.setSelectedPixel(thisPixel);
-    } else if (state.eyedropperMode && state.selectedPixel) {
+    if (state.colorPickerMode === "eraser") {
       dispatch.setPixelTemporaryColor({
-        tokenId: state.selectedPixel.tokenId,
-        color: color,
+        pixelIndex,
+        color: undefined,
       });
-      dispatch.setEyeDropperMode(false);
+    } else if (state.colorPickerMode === "eyedropper") {
+      dispatch.setColorPickerColor(color);
+      dispatch.setColorPickerMode(undefined);
+    } else {
+      dispatch.setPixelTemporaryColor({
+        pixelIndex,
+        color: state.colorPickerColor,
+      });
     }
+    // if (owned && !state.eyedropperMode && thisPixel) {
+    //   dispatch.setSelectedPixel(thisPixel);
+    // } else if (state.eyedropperMode && state.selectedPixel) {
+    //   dispatch.setPixelTemporaryColor({
+    //     tokenId: state.selectedPixel.tokenId,
+    //     color: color,
+    //   });
+    //   dispatch.setEyeDropperMode(false);
+    // }
   };
 
   return (
     <div
       key={pixelIndex}
-      className={`${styles.pixelWrapper} ${owned ? styles.pixelOwned : ""} ${
-        owned && !state.currentlyColoringHash ? styles.pointer : ""
-      } ${
-        owned && pixelColor.set && !temporaryColor ? styles.pixelCommitted : ""
-      }`}
+      className={styles.pixelWrapper}
       style={{
         width: `${pixelSizePercent}%`,
-        cursor:
-          owned && !state.currentlyColoringHash && !state.eyedropperMode
-            ? "pointer"
-            : undefined,
+        cursor: state.colorPickerMode ? "inherit" : "pointer",
       }}
+      onClick={pixelClick}
     >
       <div
         className={styles.pixel}
-        onClick={pixelClick}
         style={{
           backgroundColor: `rgb(${color.red},${color.green},${color.blue})`,
         }}
       >
-        {showQuestionMark && <span className={styles.questionMark}>?</span>}
+        <div
+          className={styles.whiteOverlay}
+          style={{
+            visibility:
+              state.mouseOverGrid && !temporaryColor ? "visible" : "hidden",
+          }}
+        />
       </div>
     </div>
   );
@@ -81,21 +84,11 @@ type GridProps = {
   round: number;
   gridSize: number;
   timestamp: number;
-  myPixels: {
-    tokenId: number;
-    pixelIndex: number;
-  }[];
   viewerOnly?: boolean;
   saveGrid?: boolean;
 };
 
-const Grid = ({
-  round,
-  gridSize,
-  myPixels,
-  viewerOnly,
-  saveGrid,
-}: GridProps) => {
+const Grid = ({ round, gridSize, viewerOnly, saveGrid }: GridProps) => {
   const { contract: pixelDrawerContract } = usePixelDrawerContract();
   const dispatch = useStoreDispatch();
   const state = useStoreState();
@@ -155,7 +148,7 @@ const Grid = ({
     >
       <div className={styles.grid}>
         {pixelDataToDisplay.map((pixelColor: GridPixel, pixelIndex: number) =>
-          getPixel(pixelIndex, pixelColor, gridSize, myPixels, state, dispatch)
+          getPixel(pixelIndex, pixelColor, gridSize, state, dispatch)
         )}
       </div>
     </div>

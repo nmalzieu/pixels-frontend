@@ -1,5 +1,6 @@
 import { useStarknetCall } from "@starknet-react/core";
 import type { NextPage } from "next";
+import { useRef } from "react";
 
 import ConnectToStarknet from "../components/connectToStarknet";
 import { useInvoke } from "../contracts/helpers";
@@ -41,12 +42,11 @@ const Admin: NextPage = () => {
     args: [],
   });
 
-  const { data: pixelsOfOwnerData, loading: pixelsOfOwnerLoading } =
-    useStarknetCall({
-      contract: pixelERC721Contract,
-      method: "pixelsOfOwner",
-      args: [storeState.account],
-    });
+  const { data: pixelsOfOwnerData } = useStarknetCall({
+    contract: pixelERC721Contract,
+    method: "pixelsOfOwner",
+    args: [storeState.account],
+  });
 
   const pixelsOwned = (pixelsOfOwnerData as any)?.pixels?.map((p: any) =>
     p.toNumber()
@@ -78,6 +78,8 @@ const Admin: NextPage = () => {
     contract: pixelDrawerContract,
     method: "launchNewRoundIfNecessary",
   });
+
+  const themeRef = useRef(null);
 
   return (
     <div>
@@ -149,9 +151,20 @@ const Admin: NextPage = () => {
               : "loading..."}
           </li>
           {currentDrawingRoundData && (
-            <button onClick={() => launchNewRoundIfNecessary({ args: [] })}>
-              Launch next round
-            </button>
+            <div>
+              <input placeholder="theme" ref={themeRef} />
+              <button
+                onClick={() => {
+                  const themeValue = (themeRef?.current as any)?.value;
+                  const themeArray = themeValue
+                    .split(",")
+                    .map((s: any) => s.trim());
+                  launchNewRoundIfNecessary({ args: [themeArray] });
+                }}
+              >
+                Launch next round
+              </button>
+            </div>
           )}
         </ul>
       </div>

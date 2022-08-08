@@ -29,12 +29,12 @@ export type GridPixel = {
 };
 
 type SetPixelTemporaryColorPayload = {
-  tokenId: number;
-  color: Color;
+  pixelIndex: number;
+  color: Color | undefined;
 };
 
 type TemporaryColors = {
-  [tokenId: number]: Color;
+  [pixelIndex: string]: Color;
 };
 
 const mintingMessages = [
@@ -43,6 +43,8 @@ const mintingMessages = [
   "minting in progress (can take up to several hours).. ",
   "minting in progress (can take up to several hours)...",
 ];
+
+type ColorPickerMode = undefined | "eyedropper" | "eraser";
 
 export const state = createModel<RootModel>()({
   state: {
@@ -55,11 +57,16 @@ export const state = createModel<RootModel>()({
     currentlyColoringHash: "",
     failedColoringHash: "",
     grid: [] as GridPixel[],
-    temporaryColors: [] as TemporaryColors,
+    temporaryColors: {} as TemporaryColors,
+    colorPickerColor: { red: 183, green: 28, blue: 28 } as Color,
+    colorPickerMode: undefined as ColorPickerMode,
     selectedPixel: undefined as OwnedPixel | undefined,
-    eyedropperMode: false,
+    mouseOverGrid: false,
   },
   reducers: {
+    setColorPickerColor(state, color: Color) {
+      return { ...state, colorPickerColor: color };
+    },
     setMessage(state, message: string) {
       return { ...state, message };
     },
@@ -120,11 +127,15 @@ export const state = createModel<RootModel>()({
     },
     setPixelTemporaryColor(state, payload: SetPixelTemporaryColorPayload) {
       const temporaryColors = state.temporaryColors;
-      temporaryColors[payload.tokenId] = payload.color;
+      if (payload.color) {
+        temporaryColors[payload.pixelIndex] = payload.color;
+      } else if (temporaryColors[payload.pixelIndex]) {
+        delete temporaryColors[payload.pixelIndex];
+      }
       return { ...state, temporaryColors };
     },
     resetColoringState(state) {
-      return { ...state, temporaryColors: [] };
+      return { ...state, temporaryColors: {} };
     },
     setFailedMintHash(state, payload: string) {
       const newState = { ...state, failedMintHash: payload };
@@ -141,8 +152,11 @@ export const state = createModel<RootModel>()({
       // }
       return newState;
     },
-    setEyeDropperMode(state, mode) {
-      return { ...state, eyedropperMode: mode };
+    setColorPickerMode(state, mode: ColorPickerMode) {
+      return { ...state, colorPickerMode: mode };
+    },
+    setMouseOverGrid(state, mouseOverGrid: boolean) {
+      return { ...state, mouseOverGrid };
     },
   },
 });

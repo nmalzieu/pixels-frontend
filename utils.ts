@@ -1,5 +1,7 @@
 import { useStarknet } from "@starknet-react/core";
 import { uint256 } from "starknet";
+import { toBN, toHex } from "starknet/dist/utils/number";
+import { decodeShortString } from "starknet/dist/utils/shortString";
 
 export const getAddressFromBN = (bn: any) => {
   const hexString = bn.toString(16);
@@ -39,4 +41,13 @@ const componentToHex = (c: number): string => {
 
 export const rgbToHex = (r: number, g: number, b: number): string => {
   return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+};
+
+export const feltArrayToStr = (feltArray: number[]) => {
+  return feltArray.map((n: number) => {
+    if (n === 0) {
+      return "";
+    }
+    return decodeShortString(toHex(toBN(n)));
+  });
 };

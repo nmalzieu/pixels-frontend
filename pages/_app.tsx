@@ -34,7 +34,7 @@ const StarknetStatusComponent = () => {
       (t) => t.metadata?.method === "mint"
     );
     const coloringTransaction = transactions.find(
-      (t) => t.metadata?.method === "setPixelsColors"
+      (t) => t.metadata?.method === "colorizePixels"
     );
     const pendingStatuses = [
       "TRANSACTION_RECEIVED",
@@ -67,7 +67,7 @@ const StarknetStatusComponent = () => {
       addTransaction({
         status: "TRANSACTION_RECEIVED",
         transactionHash: state.currentlyColoringHash,
-        metadata: { method: "setPixelsColors" },
+        metadata: { method: "colorizePixels" },
       });
     }
 

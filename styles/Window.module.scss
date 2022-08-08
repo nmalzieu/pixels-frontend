@@ -21,6 +21,42 @@
   border: 1px solid white;
   line-height: 18.4px;
   padding: 10px 20px;
+
+  &.rainbowBar1 {
+    background: linear-gradient(270deg, #80ffe8 0%, #ff8097 100%),
+      linear-gradient(
+        90deg,
+        #ff5151 0%,
+        #fff16f 25%,
+        #62fff6 54.17%,
+        #7a6fff 77.8%,
+        #44ff4b 100%
+      );
+  }
+
+  &.rainbowBar2 {
+    background: linear-gradient(270deg, #ffdb80 0%, #92ff80 100%),
+      linear-gradient(
+        90deg,
+        #ff5151 0%,
+        #fff16f 25%,
+        #62fff6 54.17%,
+        #7a6fff 77.8%,
+        #44ff4b 100%
+      );
+  }
+
+  &.rainbowBar3 {
+    background: linear-gradient(270deg, #9280ff 0%, #80f7ff 100%),
+      linear-gradient(
+        90deg,
+        #ff5151 0%,
+        #fff16f 25%,
+        #62fff6 54.17%,
+        #7a6fff 77.8%,
+        #44ff4b 100%
+      );
+  }
 }
 
 .windowContent {

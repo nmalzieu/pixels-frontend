@@ -14,13 +14,13 @@
     .pixelWrapper {
       display: inline-block;
 
-      &.pixelOwned {
-        border: 2px dotted #000000;
+      // &.pixelOwned {
+      //   border: 2px dotted #000000;
 
-        &.pixelCommitted {
-          border: 2px solid #000000;
-        }
-      }
+      //   &.pixelCommitted {
+      //     border: 2px solid #000000;
+      //   }
+      // }
       &:hover {
         border: 2px solid white;
       }
@@ -28,6 +28,15 @@
       .pixel {
         position: relative;
         padding-bottom: 100%;
+
+        .whiteOverlay {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(255, 255, 255, 0.7);
+        }
 
         .questionMark {
           font-size: 13px;

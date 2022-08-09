@@ -381,7 +381,7 @@ const GridPage = () => {
                   }}
                 >
                   <option value="change">change pxl</option>
-                  {pixelsOwned.map((p) => {
+                  {pixelsOwned.map((p: any) => {
                     if (p === selectedPxlNFT) return;
                     return (
                       <option key={p} value={p}>

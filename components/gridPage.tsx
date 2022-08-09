@@ -8,7 +8,7 @@ import { uint256 } from "starknet";
 import { bnToUint256 } from "starknet/dist/utils/uint256";
 
 import { useInvoke } from "../contracts/helpers";
-import { usePixelDrawerContract } from "../contracts/pixelDrawer";
+import { usePixelDrawer2Contract } from "../contracts/pixelDrawer2";
 import { usePixelERC721Contract } from "../contracts/pixelERC721";
 import WhatWillYouDrawImage from "../public/what_will_you_draw.svg";
 import WtfImage from "../public/wtf.svg";
@@ -38,7 +38,7 @@ const GridPage = () => {
   );
 
   const { contract: pixelERC721Contract } = usePixelERC721Contract();
-  const { contract: pixelDrawerContract } = usePixelDrawerContract();
+  const { contract: pixelDrawerContract } = usePixelDrawer2Contract();
 
   const [fixedInText, setFixedInText] = useState("");
 
@@ -202,7 +202,10 @@ const GridPage = () => {
   );
 
   let theme = "...";
-  if (themeData) {
+  if (noCurrentRound) {
+    theme =
+      "Each rtwrk has a theme that is defined by the community. It will be displayed here once rtwrk creation begins.";
+  } else if (themeData) {
     const themeArray = (themeData as any).theme;
     const themeStrings = feltArrayToStr(themeArray);
     const newTheme = themeStrings.join("").trim();
@@ -239,7 +242,14 @@ const GridPage = () => {
     let showCta = true;
     let hasColorizedGrid = false;
     if (noCurrentRound) {
-      message = <span>There is no rtwrk being drawn for now.</span>;
+      message = (
+        <span>
+          Hey, pxl #{selectedPxlNFT}. We’re glad to see you here! We plan on
+          having daily rtwrk drawings in the future but for now we prefer to do
+          it smoothly and code iterations between two rtwrks. Thanks for your
+          patience!
+        </span>
+      );
       showCta = false;
     }
     if (state.grid.length === 0) {
@@ -247,8 +257,8 @@ const GridPage = () => {
     } else if (state.currentlyColoringHash) {
       message = (
         <span>
-          ⏳️ Your color changes are currently commiting to the blockchain; it
-          can take a moment. You can go and drink a coffee or a tea or whatever.
+          your last colorizations are in progress. you can carry on and commit
+          other colorizations.
         </span>
       );
     } else if (state.failedColoringHash) {
@@ -284,31 +294,46 @@ const GridPage = () => {
         });
       message = (
         <span className={windowStyles.danger}>
-          ⚠️ Your color changes are not stored on the blockchain yet - click
-          below to save your work.
+          your color changes are not stored on the blockchain yet - click below
+          to save your work.
         </span>
       );
     } else if (hasColorizedGrid) {
       message = (
-        <span>
-          ✅️ Your pxl’s color is set in the virtual stone of the blockchain -
-          you can still modify it and re-commit if you want.
-        </span>
+        <span>you’re good for today! you can now leave the pxlverse.</span>
       );
-    } else if (pixelsOfOwnerData && pixelsOwned?.length === 0) {
-      message = (
-        <span>
-          🤔️ It seems like you don’t have any PXL NFT in your wallet. If you
-          want to join the pxlrs, you’ll have to get one first.
-        </span>
-      );
-      showCta = false;
     } else if (isGridReady) {
       message = (
         <span>
           hey pxl #{selectedPxlNFT}! Select a color and start colorizing.
         </span>
       );
+    }
+    if (pixelsOfOwnerData && pixelsOwned?.length === 0) {
+      message = (
+        <span>
+          🤔️ It seems like you don’t have any PXL NFT in your wallet. If you
+          want to join the pxlrs, you’ll have to get one first. View the
+          collection on{" "}
+          <a
+            href="https://aspect.co/collection/0x045963ea13d95f22b58a5f0662ed172278e6b420cded736f846ca9bde8ea476a"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Aspect
+          </a>{" "}
+          or{" "}
+          <a
+            href="https://mintsquare.io/collection/starknet/0x045963ea13d95f22b58a5f0662ed172278e6b420cded736f846ca9bde8ea476a/nfts"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Mintsquare
+          </a>
+          .
+        </span>
+      );
+      showCta = false;
     }
     cta = showCta ? (
       <Button
@@ -420,23 +445,32 @@ const GridPage = () => {
                 {subMessage}
               </div>
             </Window>
-            <Window
-              style={{
-                width: 320,
-                top: 33,
-                right: 30,
-                height: 124,
-                padding: "16px 25px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <div className={styles.themeContent}>{theme}</div>
+            {state.account && (
+              <Window
+                style={{
+                  width: 320,
+                  top: 33,
+                  right: 30,
+                  height: 124,
+                  padding: "16px 25px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <div
+                  className={styles.themeContent}
+                  style={{
+                    textTransform: noCurrentRound ? "none" : "uppercase",
+                  }}
+                >
+                  {theme}
+                </div>
 
-              <div className={styles.themeTitle}>Today’s theme</div>
-            </Window>
-            {state.account && !noCurrentRound && (
+                <div className={styles.themeTitle}>Today’s theme</div>
+              </Window>
+            )}
+            {state.account && !noCurrentRound && isGridReady && (
               <>
                 <Window style={{ width: 320, top: 0, left: 0 }}>
                   <div
@@ -526,7 +560,7 @@ const GridPage = () => {
               <Image src="/palmtree.png" alt="Palm Tree" layout="fill" />
             </div>
             <PreviousRtwrk
-              maxRound={noCurrentRound ? round + 1 : round}
+              maxRound={(noCurrentRound ? round + 1 : round) + 1} // Adding 1 more to shift because there is already one drawing on drawer 1
               matrixSize={matrixSize}
             />{" "}
             <a

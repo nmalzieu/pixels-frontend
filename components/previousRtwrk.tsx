@@ -2,7 +2,8 @@ import { useStarknetCall } from "@starknet-react/core";
 import moment from "moment-timezone";
 import { useEffect, useRef, useState } from "react";
 
-import { usePixelDrawerContract } from "../contracts/pixelDrawer";
+import { usePixelDrawer1Contract } from "../contracts/pixelDrawer1";
+import { usePixelDrawer2Contract } from "../contracts/pixelDrawer2";
 import LeftArrow from "../public/left-arrow.svg";
 import RightArrow from "../public/right-arrow.svg";
 import styles from "../styles/PreviousRtwrk.module.scss";
@@ -23,14 +24,25 @@ const TripleSeparator = () => (
 );
 
 const PreviousRtwrk = ({ matrixSize, maxRound }: Props) => {
-  const [round, setRound] = useState(maxRound - 1);
+  // Round 1 is on contract 1
+  // Round >= 2 are on contract 2
 
-  const { contract: pixelDrawerContract } = usePixelDrawerContract();
+  const [round, setRound] = useState(-1);
+  const [clickedOnce, setClickedOnce] = useState(false);
+
+  const { contract: pixelDrawer1Contract } = usePixelDrawer1Contract();
+  const { contract: pixelDrawer2Contract } = usePixelDrawer2Contract();
+
+  const pixelDrawerContract =
+    round >= 2 ? pixelDrawer2Contract : pixelDrawer1Contract;
+  const roundFromContract = round >= 2 ? round - 1 : round;
+
   const { data: drawingTimestampData } = useStarknetCall({
     contract: pixelDrawerContract,
     method: "drawingTimestamp",
-    args: [round],
+    args: [roundFromContract],
   });
+
   const roundRef = useRef(round);
   const [timestamp, setTimestamp] = useState(0);
 
@@ -42,10 +54,10 @@ const PreviousRtwrk = ({ matrixSize, maxRound }: Props) => {
   }, [round, setTimestamp]);
 
   useEffect(() => {
-    if (round === -1 && maxRound > 0) {
+    if (!clickedOnce) {
       setRound(maxRound - 1);
     }
-  }, [maxRound, round]);
+  }, [maxRound, clickedOnce]);
 
   useEffect(() => {
     if (drawingTimestampData) {
@@ -62,7 +74,6 @@ const PreviousRtwrk = ({ matrixSize, maxRound }: Props) => {
       <GridComponent
         gridSize={matrixSize}
         round={round}
-        myPixels={[]}
         timestamp={timestamp}
         viewerOnly
       />
@@ -95,6 +106,7 @@ const PreviousRtwrk = ({ matrixSize, maxRound }: Props) => {
             <LeftArrow
               onClick={() => {
                 if (round > 1) {
+                  setClickedOnce(true);
                   setRound(round - 1);
                 }
               }}
@@ -108,6 +120,7 @@ const PreviousRtwrk = ({ matrixSize, maxRound }: Props) => {
             <RightArrow
               onClick={() => {
                 if (round < maxRound) {
+                  setClickedOnce(true);
                   setRound(round + 1);
                 }
               }}

@@ -1,7 +1,9 @@
 import { useStarknetCall } from "@starknet-react/core";
+import { useEffect } from "react";
 import { bnToUint256 } from "starknet/dist/utils/uint256";
 
-import { usePixelDrawerContract } from "../contracts/pixelDrawer";
+import { usePixelDrawer2Contract } from "../contracts/pixelDrawer2";
+import { useStoreDispatch } from "../store";
 import styles from "../styles/Colorizations.module.scss";
 import windowStyles from "../styles/Window.module.scss";
 import Window from "./window";
@@ -13,7 +15,8 @@ type Props = {
 };
 
 const Colorizations = ({ round, tokenId, temporaryColorizations }: Props) => {
-  const { contract: pixelDrawerContract } = usePixelDrawerContract();
+  const { contract: pixelDrawerContract } = usePixelDrawer2Contract();
+  const dispatch = useStoreDispatch();
 
   const { data: numberOfColorizationsData } = useStarknetCall({
     contract: pixelDrawerContract,
@@ -21,14 +24,19 @@ const Colorizations = ({ round, tokenId, temporaryColorizations }: Props) => {
     args: [round, bnToUint256(tokenId)],
   });
 
-  console.log("wooooot", numberOfColorizationsData, round, tokenId);
-
   const numberOfCommittedColorizations = numberOfColorizationsData
     ? numberOfColorizationsData[0].toNumber()
     : "...";
 
   const remainingColorizations =
     40 - numberOfCommittedColorizations - temporaryColorizations;
+
+  useEffect(() => {
+    const num = numberOfColorizationsData
+      ? numberOfColorizationsData[0].toNumber()
+      : undefined;
+    dispatch.setCommittedColorizations(num);
+  }, [dispatch, numberOfColorizationsData]);
 
   return (
     <Window style={{ width: 320, top: 393, left: 0 }}>

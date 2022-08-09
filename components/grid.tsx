@@ -2,7 +2,8 @@ import { useStarknetCall } from "@starknet-react/core";
 import { useEffect, useState } from "react";
 import { BigNumberish } from "starknet/dist/utils/number";
 
-import { usePixelDrawerContract } from "../contracts/pixelDrawer";
+import { usePixelDrawer1Contract } from "../contracts/pixelDrawer1";
+import { usePixelDrawer2Contract } from "../contracts/pixelDrawer2";
 import {
   Dispatch,
   GridPixel,
@@ -26,7 +27,10 @@ const getPixel = (
   const color = temporaryColor || pixelColor.color;
 
   const pixelClick = async () => {
-    if (state.currentlyColoringHash) return;
+    const actionsLeft =
+      40 -
+      (state.committedColorizations || 0) -
+      Object.keys(state.temporaryColors).length;
     if (state.colorPickerMode === "eraser") {
       dispatch.setPixelTemporaryColor({
         pixelIndex,
@@ -35,7 +39,7 @@ const getPixel = (
     } else if (state.colorPickerMode === "eyedropper") {
       dispatch.setColorPickerColor(color);
       dispatch.setColorPickerMode(undefined);
-    } else {
+    } else if (actionsLeft > 0) {
       dispatch.setPixelTemporaryColor({
         pixelIndex,
         color: state.colorPickerColor,
@@ -89,16 +93,26 @@ type GridProps = {
 };
 
 const Grid = ({ round, gridSize, viewerOnly, saveGrid }: GridProps) => {
-  const { contract: pixelDrawerContract } = usePixelDrawerContract();
+  const { contract: pixelDrawer1Contract } = usePixelDrawer1Contract();
+  const { contract: pixelDrawer2Contract } = usePixelDrawer2Contract();
+
+  // Round 1 is on contract 1
+  // Round >= 2 are on contract 2
+
+  const pixelDrawerContract =
+    round >= 2 ? pixelDrawer2Contract : pixelDrawer1Contract;
+  const roundFromContract = round >= 2 ? round - 1 : round;
+
   const dispatch = useStoreDispatch();
   const state = useStoreState();
 
   const [pixelDataToDisplay, setPixelDataToDisplay] = useState(state.grid);
+  const [refreshing, setRefreshing] = useState(false);
 
-  const { data: gridData } = useStarknetCall({
+  const { data: gridData, refresh: refreshGrid } = useStarknetCall({
     contract: pixelDrawerContract,
     method: "getGrid",
-    args: [round],
+    args: [roundFromContract],
   });
 
   useEffect(() => {
@@ -138,9 +152,18 @@ const Grid = ({ round, gridSize, viewerOnly, saveGrid }: GridProps) => {
     }
   }, [dispatch, gridData, saveGrid]);
 
+  useEffect(() => {
+    setRefreshing(false);
+  }, [gridData]);
+
   if (!gridData) {
     return <GridLoader />;
   }
+
+  const refresh = () => {
+    setRefreshing(true);
+    refreshGrid();
+  };
 
   return (
     <div
@@ -151,6 +174,22 @@ const Grid = ({ round, gridSize, viewerOnly, saveGrid }: GridProps) => {
           getPixel(pixelIndex, pixelColor, gridSize, state, dispatch)
         )}
       </div>
+      {!viewerOnly && (
+        <div className={styles.refresh} onClick={refresh}>
+          <img
+            src="/refresh.gif"
+            alt="refresh-animated"
+            style={{ visibility: "hidden" }}
+          />
+          <img
+            src="/refresh.jpg"
+            alt="refresh"
+            style={{ visibility: "hidden" }}
+          />
+          {refreshing && <img src="/refresh.gif" alt="refresh-animated" />}
+          {!refreshing && <img src="/refresh.jpg" alt="refresh" />}
+        </div>
+      )}
     </div>
   );
 };

@@ -62,6 +62,7 @@ export const state = createModel<RootModel>()({
     colorPickerMode: undefined as ColorPickerMode,
     selectedPixel: undefined as OwnedPixel | undefined,
     mouseOverGrid: false,
+    committedColorizations: undefined as number | undefined,
   },
   reducers: {
     setColorPickerColor(state, color: Color) {
@@ -157,6 +158,9 @@ export const state = createModel<RootModel>()({
     },
     setMouseOverGrid(state, mouseOverGrid: boolean) {
       return { ...state, mouseOverGrid };
+    },
+    setCommittedColorizations(state, committedColorizations: number) {
+      return { ...state, committedColorizations };
     },
   },
 });

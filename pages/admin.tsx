@@ -4,7 +4,7 @@ import { useRef } from "react";
 
 import ConnectToStarknet from "../components/connectToStarknet";
 import { useInvoke } from "../contracts/helpers";
-import { usePixelDrawerContract } from "../contracts/pixelDrawer";
+import { usePixelDrawer2Contract } from "../contracts/pixelDrawer2";
 import { usePixelERC721Contract } from "../contracts/pixelERC721";
 import { useStoreState } from "../store";
 import {
@@ -16,7 +16,7 @@ import {
 const Admin: NextPage = () => {
   const storeState = useStoreState();
   const { contract: pixelERC721Contract } = usePixelERC721Contract();
-  const { contract: pixelDrawerContract } = usePixelDrawerContract();
+  const { contract: pixelDrawerContract } = usePixelDrawer2Contract();
 
   const { data: matrixSizeData } = useStarknetCall({
     contract: pixelERC721Contract,

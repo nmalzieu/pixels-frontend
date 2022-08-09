@@ -2,6 +2,23 @@
   width: 100%;
   position: absolute;
 
+  .refresh {
+    position: absolute;
+    right: 0;
+    bottom: -73px;
+    width: 30px;
+    height: 30px;
+    border: 1px solid black;
+    cursor: pointer;
+
+    img {
+      width: 18px;
+      position: absolute;
+      top: 5px;
+      left: 5px;
+    }
+  }
+
   &.viewerOnly {
     pointer-events: none;
   }

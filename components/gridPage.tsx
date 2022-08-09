@@ -167,7 +167,7 @@ const GridPage = () => {
       gridComponent = (
         <GridComponent
           gridSize={matrixSize}
-          round={round}
+          round={round + 1} // Adding 1 because 1 round is already in 1st drawer contract
           timestamp={currentDrawingTimestamp}
           saveGrid
         />
@@ -252,9 +252,33 @@ const GridPage = () => {
       );
       showCta = false;
     }
+    const colorizations: any = [];
+    temporaryColorIndexes.forEach((pixelIndex) => {
+      const temporaryColor = state.temporaryColors[pixelIndex];
+      const hexColor = rgbToHex(
+        temporaryColor.red,
+        temporaryColor.green,
+        temporaryColor.blue
+      );
+      const hexColorIndex = allColors.indexOf(hexColor);
+      if (hexColorIndex >= 0) {
+        colorizations.push({
+          pixel_index: pixelIndex,
+          color_index: hexColorIndex,
+        });
+      }
+    });
+    const colorizationAction = () =>
+      colorizePixels({
+        args: [bnToUint256(selectedPxlNFT), colorizations],
+        metadata: {
+          method: "colorizePixels",
+        },
+      });
     if (state.grid.length === 0) {
       // Don't change, still show loading message
     } else if (state.currentlyColoringHash) {
+      action = colorizationAction;
       message = (
         <span>
           your last colorizations are in progress. you can carry on and commit
@@ -269,29 +293,7 @@ const GridPage = () => {
         </span>
       );
     } else if (hasTemporaryColors) {
-      const colorizations: any = [];
-      temporaryColorIndexes.forEach((pixelIndex) => {
-        const temporaryColor = state.temporaryColors[pixelIndex];
-        const hexColor = rgbToHex(
-          temporaryColor.red,
-          temporaryColor.green,
-          temporaryColor.blue
-        );
-        const hexColorIndex = allColors.indexOf(hexColor);
-        if (hexColorIndex >= 0) {
-          colorizations.push({
-            pixel_index: pixelIndex,
-            color_index: hexColorIndex,
-          });
-        }
-      });
-      action = () =>
-        colorizePixels({
-          args: [bnToUint256(selectedPxlNFT), colorizations],
-          metadata: {
-            method: "colorizePixels",
-          },
-        });
+      action = colorizationAction;
       message = (
         <span className={windowStyles.danger}>
           your color changes are not stored on the blockchain yet - click below
@@ -338,11 +340,7 @@ const GridPage = () => {
     cta = showCta ? (
       <Button
         text="Commit to blockchain"
-        disabled={
-          !hasTemporaryColors ||
-          !!state.currentlyColoringHash ||
-          !!state.failedColoringHash
-        }
+        disabled={!hasTemporaryColors || !!state.failedColoringHash}
         action={action}
       />
     ) : null;

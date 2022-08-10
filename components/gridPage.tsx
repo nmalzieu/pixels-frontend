@@ -250,7 +250,6 @@ const GridPage = () => {
     const hasTemporaryColors = temporaryColorIndexes.length > 0;
     let action = null;
     let showCta = true;
-    let hasColorizedGrid = false;
     if (noCurrentRound) {
       message = (
         <span>
@@ -310,7 +309,7 @@ const GridPage = () => {
           to save your work.
         </span>
       );
-    } else if (hasColorizedGrid) {
+    } else if (state.committedColorizations === 40) {
       message = (
         <span>you’re good for today! you can now leave the pxlverse.</span>
       );

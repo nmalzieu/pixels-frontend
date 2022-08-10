@@ -20,12 +20,14 @@ const ConnectToStarknet = ({ connectButton }: Props) => {
   const connector = connectors.find((c) => c.available());
 
   const disconnectAndDispatch = useCallback(() => {
-    disconnect();
+    if (starknetConnectedAccount) {
+      disconnect();
+    }
     dispatch.setAccount({
       account: "",
       accountConnected: false,
     });
-  }, [disconnect, dispatch]);
+  }, [starknetConnectedAccount, disconnect, dispatch]);
 
   useEffect(() => {
     if (

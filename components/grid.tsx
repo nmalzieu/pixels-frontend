@@ -82,7 +82,8 @@ const getPixel = (
               state.mouseOverGrid &&
               !temporaryColor &&
               !viewerOnly &&
-              !state.colorPickerMode
+              !state.currentlyColoringHash &&
+              state.colorPickerMode !== "eyedropper"
                 ? "visible"
                 : "hidden",
           }}
@@ -189,6 +190,11 @@ const Grid = ({ round, gridSize, viewerOnly, saveGrid }: GridProps) => {
           )
         )}
       </div>
+      {state.currentlyColoringHash && state.mouseOverGrid && (
+        <div className={styles.currentlyColoringMessage}>
+          Your colorizations are currently committing...
+        </div>
+      )}
       {!viewerOnly && (
         <div className={styles.refresh} onClick={refresh}>
           <img

@@ -53,7 +53,7 @@ const ConnectToStarknet = ({ connectButton }: Props) => {
   const disconnectButton = () => {
     if (Object.keys(state.temporaryColors).length > 0) {
       const leave = confirm(
-        "You have uncommitted colorizations. Do you want to disconnect?"
+        "If you disconnect your wallet, you will lose your uncommitted work. Do you want to proceed?"
       );
       if (leave) {
         disconnectAndDispatch();

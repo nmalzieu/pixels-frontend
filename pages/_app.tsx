@@ -40,7 +40,6 @@ const StarknetStatusComponent = () => {
       "TRANSACTION_RECEIVED",
       "NOT_RECEIVED",
       "RECEIVED",
-      "PENDING",
     ];
 
     if (
@@ -53,7 +52,7 @@ const StarknetStatusComponent = () => {
       if (coloringTransaction.status === "REJECTED") {
         dispatch.setFailedColoringHash(coloringTransaction.transactionHash);
       } else {
-        // ACCEPTED, let's reset coloring state
+        // ACCEPTED / PENDING, let's reset coloring state
         dispatch.resetColoringState();
       }
     } else if (

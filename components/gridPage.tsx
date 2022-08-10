@@ -2,7 +2,7 @@
 import { useStarknetCall } from "@starknet-react/core";
 import moment from "moment-timezone";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SwatchesPicker } from "react-color";
 import { uint256 } from "starknet";
 import { bnToUint256 } from "starknet/dist/utils/uint256";
@@ -36,7 +36,15 @@ const GridPage = () => {
   const [selectedPxlNFT, setSelectedPxlNFT] = useState<number | undefined>(
     undefined
   );
-  const [loadingPixelsOfOwner, setLoadingPixelsOfOwner] = useState(false);
+  const [loadingPixelsOfOwner, setLoadingPixelsOfOwner] = useState(true);
+  const [lastCommitAt, setLastCommitAt] = useState(0);
+  const currentlyColoringHashRef = useRef(state.currentlyColoringHash);
+  useEffect(() => {
+    if (!state.currentlyColoringHash && currentlyColoringHashRef.current) {
+      setLastCommitAt(new Date().getTime());
+    }
+    currentlyColoringHashRef.current = state.currentlyColoringHash;
+  }, [state.currentlyColoringHash]);
 
   const { contract: pixelERC721Contract } = usePixelERC721Contract();
   const { contract: pixelDrawerContract } = usePixelDrawer2Contract();
@@ -46,7 +54,10 @@ const GridPage = () => {
   const { data: pixelsOfOwnerData } = useStarknetCall({
     contract: pixelERC721Contract,
     method: "pixelsOfOwner",
-    args: [state.account || "0x000000000000000000000000000000000000dead"],
+    args: [state.account || ""],
+    options: {
+      watch: false,
+    },
   });
 
   useEffect(() => {
@@ -60,7 +71,7 @@ const GridPage = () => {
   useEffect(() => {
     const pixelsOwned =
       (pixelsOfOwnerData as any)?.pixels?.map((p: any) => p.toNumber()) || [];
-    if (pixelsOwned.length === 0) {
+    if (pixelsOwned.length === 0 || !state.account) {
       setSelectedPxlNFT(undefined);
       return;
     }
@@ -192,6 +203,7 @@ const GridPage = () => {
           timestamp={currentDrawingTimestamp}
           saveGrid
           viewerOnly={!state.account || !selectedPxlNFT}
+          key={`grid-${lastCommitAt}`}
         />
       );
     }
@@ -287,11 +299,10 @@ const GridPage = () => {
     if (state.grid.length === 0) {
       // Don't change, still show loading message
     } else if (state.currentlyColoringHash) {
-      action = colorizationAction;
       message = (
         <span>
-          your last colorizations are in progress. you can carry on and commit
-          other colorizations.
+          your last colorizations are in progress. please wait a moment before
+          colorizing other pixels.
         </span>
       );
     } else if (state.failedColoringHash) {
@@ -320,10 +331,11 @@ const GridPage = () => {
         </span>
       );
     }
-    if (pixelsOfOwnerData && pixelsOwned?.length === 0) {
+    if (pixelsOfOwnerData) {
       if (loadingPixelsOfOwner) {
         message = <span>Loading your PXL NFTs...</span>;
-      } else {
+        showCta = false;
+      } else if (pixelsOwned?.length === 0) {
         message = (
           <span>
             🤔️ It seems like you don’t have any PXL NFT in your wallet. If you
@@ -347,14 +359,17 @@ const GridPage = () => {
             .
           </span>
         );
+        showCta = false;
       }
-
-      showCta = false;
     }
     cta = showCta ? (
       <Button
         text="Commit to blockchain"
-        disabled={!hasTemporaryColors || !!state.failedColoringHash}
+        disabled={
+          !hasTemporaryColors ||
+          !!state.failedColoringHash ||
+          !!state.currentlyColoringHash
+        }
         action={action}
       />
     ) : null;
@@ -390,7 +405,7 @@ const GridPage = () => {
                     let changePXL = false;
                     if (Object.keys(state.temporaryColors).length > 0) {
                       const leave = confirm(
-                        "You have uncommitted colorizations. Do you want to change PXL?"
+                        "If you switch to another pxl NFT, you will lose your uncommitted work. Do you want to proceed?"
                       );
                       if (leave) {
                         changePXL = true;
@@ -494,89 +509,93 @@ const GridPage = () => {
 
               <div className={styles.themeTitle}>Today’s theme</div>
             </Window>
-            {state.account && !noCurrentRound && isGridReady && selectedPxlNFT && (
-              <>
-                <Window style={{ width: 320, top: 0, left: 0 }}>
-                  <div
-                    className={`${windowStyles.rainbowBar} ${windowStyles.rainbowBar2}`}
-                  >
-                    🎨 Color pickr
-                  </div>
-                  {/* <ChromePicker
+            {state.account &&
+              !noCurrentRound &&
+              isGridReady &&
+              selectedPxlNFT &&
+              !loadingPixelsOfOwner && (
+                <>
+                  <Window style={{ width: 320, top: 0, left: 0 }}>
+                    <div
+                      className={`${windowStyles.rainbowBar} ${windowStyles.rainbowBar2}`}
+                    >
+                      🎨 Color pickr
+                    </div>
+                    {/* <ChromePicker
                   color={colorPickerColor}
                   disableAlpha
                   onChange={handleColorPickerChange}
                   onChangeComplete={handleColorPickerChangeComplete}
                 /> */}
-                  <div className={styles.colorPickerContainer}>
-                    <SwatchesPicker
-                      color={{
-                        r: state.colorPickerColor.red,
-                        g: state.colorPickerColor.green,
-                        b: state.colorPickerColor.blue,
-                      }}
-                      colors={colors}
-                      onChange={handleColorPickerChange}
-                      // onChangeComplete={handleColorPickerChangeComplete}
-                    />
-                  </div>
+                    <div className={styles.colorPickerContainer}>
+                      <SwatchesPicker
+                        color={{
+                          r: state.colorPickerColor.red,
+                          g: state.colorPickerColor.green,
+                          b: state.colorPickerColor.blue,
+                        }}
+                        colors={colors}
+                        onChange={handleColorPickerChange}
+                        // onChangeComplete={handleColorPickerChangeComplete}
+                      />
+                    </div>
 
-                  <div className={styles.colorPickerBottom}>
-                    <img
-                      alt="eyedroppper button"
-                      src={
-                        state.colorPickerMode === "eyedropper"
-                          ? "/eyedropper-button-clicked.png"
-                          : "/eyedropper-button.png"
-                      }
-                      style={{
-                        cursor:
+                    <div className={styles.colorPickerBottom}>
+                      <img
+                        alt="eyedroppper button"
+                        src={
                           state.colorPickerMode === "eyedropper"
-                            ? undefined
-                            : "pointer",
-                      }}
-                      onClick={() => {
-                        if (state.colorPickerMode === "eyedropper") {
-                          dispatch.setColorPickerMode(undefined);
-                        } else {
-                          dispatch.setColorPickerMode("eyedropper");
+                            ? "/eyedropper-button-clicked.png"
+                            : "/eyedropper-button.png"
                         }
-                      }}
-                    />
-                    <img
-                      alt="eraser button"
-                      src={
-                        state.colorPickerMode === "eraser"
-                          ? "/eraser-button-clicked.png"
-                          : "/eraser-button.png"
-                      }
-                      style={{
-                        cursor:
+                        style={{
+                          cursor:
+                            state.colorPickerMode === "eyedropper"
+                              ? undefined
+                              : "pointer",
+                        }}
+                        onClick={() => {
+                          if (state.colorPickerMode === "eyedropper") {
+                            dispatch.setColorPickerMode(undefined);
+                          } else {
+                            dispatch.setColorPickerMode("eyedropper");
+                          }
+                        }}
+                      />
+                      <img
+                        alt="eraser button"
+                        src={
                           state.colorPickerMode === "eraser"
-                            ? undefined
-                            : "pointer",
-                      }}
-                      onClick={() => {
-                        if (state.colorPickerMode === "eraser") {
-                          dispatch.setColorPickerMode(undefined);
-                        } else {
-                          dispatch.setColorPickerMode("eraser");
+                            ? "/eraser-button-clicked.png"
+                            : "/eraser-button.png"
                         }
-                      }}
+                        style={{
+                          cursor:
+                            state.colorPickerMode === "eraser"
+                              ? undefined
+                              : "pointer",
+                        }}
+                        onClick={() => {
+                          if (state.colorPickerMode === "eraser") {
+                            dispatch.setColorPickerMode(undefined);
+                          } else {
+                            dispatch.setColorPickerMode("eraser");
+                          }
+                        }}
+                      />
+                    </div>
+                  </Window>
+                  {round && !noCurrentRound && selectedPxlNFT && (
+                    <Colorizations
+                      round={round}
+                      tokenId={selectedPxlNFT}
+                      temporaryColorizations={
+                        Object.keys(state.temporaryColors).length
+                      }
                     />
-                  </div>
-                </Window>
-                {round && !noCurrentRound && selectedPxlNFT && (
-                  <Colorizations
-                    round={round}
-                    tokenId={selectedPxlNFT}
-                    temporaryColorizations={
-                      Object.keys(state.temporaryColors).length
-                    }
-                  />
-                )}
-              </>
-            )}
+                  )}
+                </>
+              )}
             <Window style={{ width: 928, top: 713, right: 100 }}>
               <ScrollingText small />
             </Window>

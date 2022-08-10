@@ -113,6 +113,7 @@ export const state = createModel<RootModel>()({
     setColoringHash(state, hash: string) {
       const newState = { ...state, currentlyColoringHash: hash };
       if (hash) {
+        unsetAlertIfLeave();
         localStorage.setItem("pxls-coloring", hash);
       } else {
         localStorage.removeItem("pxls-coloring");
@@ -144,7 +145,11 @@ export const state = createModel<RootModel>()({
       } else if (temporaryColors[payload.pixelIndex]) {
         delete temporaryColors[payload.pixelIndex];
       }
-      setAlertIfLeave();
+      if (Object.keys(temporaryColors).length > 0) {
+        setAlertIfLeave();
+      } else {
+        unsetAlertIfLeave();
+      }
       return { ...state, temporaryColors };
     },
     resetColoringState(state) {

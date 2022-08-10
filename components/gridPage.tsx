@@ -36,6 +36,7 @@ const GridPage = () => {
   const [selectedPxlNFT, setSelectedPxlNFT] = useState<number | undefined>(
     undefined
   );
+  const [loadingPixelsOfOwner, setLoadingPixelsOfOwner] = useState(false);
 
   const { contract: pixelERC721Contract } = usePixelERC721Contract();
   const { contract: pixelDrawerContract } = usePixelDrawer2Contract();
@@ -49,13 +50,33 @@ const GridPage = () => {
   });
 
   useEffect(() => {
+    setLoadingPixelsOfOwner(false);
+  }, [pixelsOfOwnerData]);
+
+  useEffect(() => {
+    setLoadingPixelsOfOwner(true);
+  }, [state.account]);
+
+  useEffect(() => {
     const pixelsOwned =
       (pixelsOfOwnerData as any)?.pixels?.map((p: any) => p.toNumber()) || [];
-    if (pixelsOwned.length === 0) return;
-    if (!selectedPxlNFT || !pixelsOwned.includes(selectedPxlNFT)) {
+    if (pixelsOwned.length === 0) {
+      setSelectedPxlNFT(undefined);
+      return;
+    }
+    if (
+      state.account &&
+      (!selectedPxlNFT || !pixelsOwned.includes(selectedPxlNFT))
+    ) {
       setSelectedPxlNFT(pixelsOwned[0]);
     }
-  }, [pixelsOfOwnerData, selectedPxlNFT]);
+  }, [pixelsOfOwnerData, selectedPxlNFT, state.account]);
+
+  useEffect(() => {
+    if (!state.account) {
+      setSelectedPxlNFT(undefined);
+    }
+  }, [state.account]);
 
   const { data: matrixSizeData } = useStarknetCall({
     contract: pixelERC721Contract,
@@ -170,6 +191,7 @@ const GridPage = () => {
           round={round + 1} // Adding 1 because 1 round is already in 1st drawer contract
           timestamp={currentDrawingTimestamp}
           saveGrid
+          viewerOnly={!state.account || !selectedPxlNFT}
         />
       );
     }
@@ -223,19 +245,7 @@ const GridPage = () => {
     if (!noCurrentRound) {
       title = <span>🦄 Status</span>;
     }
-    // title = (
-    //   <span>
-    //     Hello, pxlr!{" "}
-    //     {pixelsOwned?.length > 0 ? (
-    //       <span>
-    //         You own PXL{pixelsOwned.length > 1 ? "s" : ""}{" "}
-    //         {pixelsOwned.join(",")}
-    //       </span>
-    //     ) : (
-    //       ""
-    //     )}
-    //   </span>
-    // );
+
     const temporaryColorIndexes = Object.keys(state.temporaryColors);
     const hasTemporaryColors = temporaryColorIndexes.length > 0;
     let action = null;
@@ -312,29 +322,34 @@ const GridPage = () => {
       );
     }
     if (pixelsOfOwnerData && pixelsOwned?.length === 0) {
-      message = (
-        <span>
-          🤔️ It seems like you don’t have any PXL NFT in your wallet. If you
-          want to join the pxlrs, you’ll have to get one first. View the
-          collection on{" "}
-          <a
-            href="https://aspect.co/collection/0x045963ea13d95f22b58a5f0662ed172278e6b420cded736f846ca9bde8ea476a"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Aspect
-          </a>{" "}
-          or{" "}
-          <a
-            href="https://mintsquare.io/collection/starknet/0x045963ea13d95f22b58a5f0662ed172278e6b420cded736f846ca9bde8ea476a/nfts"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Mintsquare
-          </a>
-          .
-        </span>
-      );
+      if (loadingPixelsOfOwner) {
+        message = <span>Loading your PXL NFTs...</span>;
+      } else {
+        message = (
+          <span>
+            🤔️ It seems like you don’t have any PXL NFT in your wallet. If you
+            want to join the pxlrs, you’ll have to get one first. View the
+            collection on{" "}
+            <a
+              href="https://aspect.co/collection/0x045963ea13d95f22b58a5f0662ed172278e6b420cded736f846ca9bde8ea476a"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Aspect
+            </a>{" "}
+            or{" "}
+            <a
+              href="https://mintsquare.io/collection/starknet/0x045963ea13d95f22b58a5f0662ed172278e6b420cded736f846ca9bde8ea476a/nfts"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Mintsquare
+            </a>
+            .
+          </span>
+        );
+      }
+
       showCta = false;
     }
     cta = showCta ? (
@@ -366,15 +381,29 @@ const GridPage = () => {
       <div className={styles.gridPageContent}>
         <div className={styles.gridPageContainer}>
           <TopNav white logo />
-          {selectedPxlNFT && (
+          {selectedPxlNFT && !loadingPixelsOfOwner && (
             <div className={styles.topPxlGM}>
               👋 gm, pxl #{selectedPxlNFT}
               {pixelsOwned.length > 0 && (
                 <select
                   className={styles.topPxlSelect}
                   onChange={(e) => {
-                    const selectedValue = e.target.value;
-                    setSelectedPxlNFT(parseInt(selectedValue, 10));
+                    let changePXL = false;
+                    if (Object.keys(state.temporaryColors).length > 0) {
+                      const leave = confirm(
+                        "You have uncommitted colorizations. Do you want to change PXL?"
+                      );
+                      if (leave) {
+                        changePXL = true;
+                      }
+                    } else {
+                      changePXL = true;
+                    }
+                    if (changePXL) {
+                      const selectedValue = e.target.value;
+                      dispatch.resetColoringState();
+                      setSelectedPxlNFT(parseInt(selectedValue, 10));
+                    }
                     e.target.value = "change";
                   }}
                 >
@@ -443,32 +472,30 @@ const GridPage = () => {
                 {subMessage}
               </div>
             </Window>
-            {state.account && (
-              <Window
+            <Window
+              style={{
+                width: 320,
+                top: 33,
+                right: 30,
+                height: 124,
+                padding: "16px 25px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <div
+                className={styles.themeContent}
                 style={{
-                  width: 320,
-                  top: 33,
-                  right: 30,
-                  height: 124,
-                  padding: "16px 25px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  textTransform: noCurrentRound ? "none" : "uppercase",
                 }}
               >
-                <div
-                  className={styles.themeContent}
-                  style={{
-                    textTransform: noCurrentRound ? "none" : "uppercase",
-                  }}
-                >
-                  {theme}
-                </div>
+                {theme}
+              </div>
 
-                <div className={styles.themeTitle}>Today’s theme</div>
-              </Window>
-            )}
-            {state.account && !noCurrentRound && isGridReady && (
+              <div className={styles.themeTitle}>Today’s theme</div>
+            </Window>
+            {state.account && !noCurrentRound && isGridReady && selectedPxlNFT && (
               <>
                 <Window style={{ width: 320, top: 0, left: 0 }}>
                   <div

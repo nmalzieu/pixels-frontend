@@ -50,11 +50,24 @@ const ConnectToStarknet = ({ connectButton }: Props) => {
     }
   }, [dispatch, starknetConnectedAccount, state.account, state.network]);
 
+  const disconnectButton = () => {
+    if (Object.keys(state.temporaryColors).length > 0) {
+      const leave = confirm(
+        "You have uncommitted colorizations. Do you want to disconnect?"
+      );
+      if (leave) {
+        disconnectAndDispatch();
+      }
+    } else {
+      disconnectAndDispatch();
+    }
+  };
+
   if (state.account) {
     return (
       <div>
         👛 {state.account.slice(0, 8)}...{" "}
-        <span className="clickable" onClick={disconnectAndDispatch}>
+        <span className="clickable" onClick={disconnectButton}>
           (disconnect)
         </span>
       </div>

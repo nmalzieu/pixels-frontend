@@ -19,7 +19,8 @@ const getPixel = (
   pixelColor: GridPixel,
   gridSize: number,
   state: RootState["state"],
-  dispatch: Dispatch["state"]
+  dispatch: Dispatch["state"],
+  viewerOnly: boolean
 ) => {
   const pixelSizePercent = 100 / gridSize;
 
@@ -76,7 +77,12 @@ const getPixel = (
           className={styles.whiteOverlay}
           style={{
             visibility:
-              state.mouseOverGrid && !temporaryColor ? "visible" : "hidden",
+              state.mouseOverGrid &&
+              !temporaryColor &&
+              !viewerOnly &&
+              !state.colorPickerMode
+                ? "visible"
+                : "hidden",
           }}
         />
       </div>
@@ -171,7 +177,14 @@ const Grid = ({ round, gridSize, viewerOnly, saveGrid }: GridProps) => {
     >
       <div className={styles.grid}>
         {pixelDataToDisplay.map((pixelColor: GridPixel, pixelIndex: number) =>
-          getPixel(pixelIndex, pixelColor, gridSize, state, dispatch)
+          getPixel(
+            pixelIndex,
+            pixelColor,
+            gridSize,
+            state,
+            dispatch,
+            viewerOnly
+          )
         )}
       </div>
       {!viewerOnly && (

@@ -46,6 +46,16 @@ const mintingMessages = [
 
 type ColorPickerMode = undefined | "eyedropper" | "eraser";
 
+const setAlertIfLeave = () => {
+  window.onbeforeunload = function () {
+    return "You have uncommitted colorizations. Do you want to quit PXLs?";
+  };
+};
+
+const unsetAlertIfLeave = () => {
+  window.onbeforeunload = null;
+};
+
 export const state = createModel<RootModel>()({
   state: {
     message: "",
@@ -72,7 +82,7 @@ export const state = createModel<RootModel>()({
       return { ...state, message };
     },
     setAccount(state, { account, accountConnected }: SetAccountType) {
-      const newState = { ...state, account, accountConnected };
+      let newState = { ...state, account, accountConnected };
       if (account) {
         localStorage.setItem("pxls-account", account);
         if (
@@ -82,6 +92,7 @@ export const state = createModel<RootModel>()({
         }
       } else {
         localStorage.removeItem("pxls-account");
+        newState = (this as any)["state/resetColoringState"](newState);
       }
       return newState;
     },
@@ -133,9 +144,11 @@ export const state = createModel<RootModel>()({
       } else if (temporaryColors[payload.pixelIndex]) {
         delete temporaryColors[payload.pixelIndex];
       }
+      setAlertIfLeave();
       return { ...state, temporaryColors };
     },
     resetColoringState(state) {
+      unsetAlertIfLeave();
       return { ...state, temporaryColors: {} };
     },
     setFailedMintHash(state, payload: string) {

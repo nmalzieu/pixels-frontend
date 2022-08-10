@@ -20,7 +20,7 @@ const getPixel = (
   gridSize: number,
   state: RootState["state"],
   dispatch: Dispatch["state"],
-  viewerOnly: boolean
+  viewerOnly?: boolean
 ) => {
   const pixelSizePercent = 100 / gridSize;
 

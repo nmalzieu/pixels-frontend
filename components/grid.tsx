@@ -25,7 +25,9 @@ const getPixel = (
   const pixelSizePercent = 100 / gridSize;
 
   const temporaryColor = state.temporaryColors[pixelIndex];
-  const color = temporaryColor || pixelColor.color;
+  const color = viewerOnly
+    ? pixelColor.color
+    : temporaryColor || pixelColor.color;
 
   const pixelClick = async () => {
     const actionsLeft =

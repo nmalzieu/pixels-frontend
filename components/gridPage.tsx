@@ -156,7 +156,6 @@ const GridPage = () => {
   if (
     matrixSizeData &&
     currentDrawingRoundData &&
-    pixelsOfOwnerData &&
     currentDrawingTimestampData
   ) {
     matrixSize = uint256.uint256ToBN(matrixSizeData?.[0]).toNumber();

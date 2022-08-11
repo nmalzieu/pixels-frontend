@@ -190,7 +190,7 @@ const Grid = ({ round, gridSize, viewerOnly, saveGrid }: GridProps) => {
           )
         )}
       </div>
-      {state.currentlyColoringHash && state.mouseOverGrid && (
+      {state.currentlyColoringHash && (
         <div className={styles.currentlyColoringMessage}>
           Your colorizations are currently committing...
         </div>

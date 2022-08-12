@@ -30,12 +30,13 @@
     width: 100% !important;
     border-radius: 0 !important;
 
-    * {
-      box-shadow: none !important;
-    }
-
     > div {
       border-radius: 0 !important;
+      box-shadow: none !important;
+
+      > div {
+        box-shadow: none !important;
+      }
     }
   }
 
@@ -119,6 +120,10 @@
   top: 50%;
   width: 230px;
   text-align: center;
+
+  a {
+    text-decoration: underline;
+  }
 }
 
 .wtf {

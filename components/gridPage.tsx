@@ -397,7 +397,7 @@ const GridPage = () => {
           {selectedPxlNFT && !loadingPixelsOfOwner && (
             <div className={styles.topPxlGM}>
               👋 gm, pxl #{selectedPxlNFT}
-              {pixelsOwned.length > 0 && (
+              {pixelsOwned.length > 1 && (
                 <select
                   className={styles.topPxlSelect}
                   onChange={(e) => {

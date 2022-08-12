@@ -78,6 +78,7 @@ export const useInvoke = ({
               currentlyConnectingRef.current = true;
               connect(connector);
             } else {
+              currentlyConnectingRef.current = false;
               disconnectRef.current();
               dispatch.setAccount({
                 account: "",
@@ -87,6 +88,7 @@ export const useInvoke = ({
               reject("Wrong network");
             }
           } else if (!currentlyConnectingRef.current) {
+            currentlyConnectingRef.current = false;
             clearInterval(interval);
             reject("No connector found!");
           }

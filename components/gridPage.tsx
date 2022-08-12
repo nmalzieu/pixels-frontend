@@ -153,10 +153,13 @@ const GridPage = () => {
   let round = 0;
   let noCurrentRound = false;
 
+  const technicalDifficulty = process.env.NEXT_PUBLIC_TECHNICAL_DIFFICULTY;
+
   if (
     matrixSizeData &&
     currentDrawingRoundData &&
-    currentDrawingTimestampData
+    currentDrawingTimestampData &&
+    !technicalDifficulty
   ) {
     matrixSize = uint256.uint256ToBN(matrixSizeData?.[0]).toNumber();
     round = currentDrawingRoundData[0].toNumber();
@@ -208,6 +211,15 @@ const GridPage = () => {
     }
   }
 
+  if (technicalDifficulty && !noCurrentRound) {
+    gridComponent = (
+      <div className={styles.gridMessage}>
+        We&apos;re having a technical difficulty and need to postpone the rwtrk.
+        Stay tuned!
+      </div>
+    );
+  }
+
   if (state.grid && state.grid.length > 0) {
     const colorizedCount = state.grid.filter((p: any) => p.set === true).length;
     pxlsColorizedText = `${colorizedCount} pxls`;
@@ -235,7 +247,7 @@ const GridPage = () => {
   );
 
   let theme = "...";
-  if (noCurrentRound) {
+  if (noCurrentRound || technicalDifficulty) {
     theme =
       "Each rtwrk has a theme that is defined by the community. It will be displayed here once rtwrk creation begins.";
   } else if (themeData) {
@@ -379,6 +391,16 @@ const GridPage = () => {
         {state.message}
       </span>
     );
+  }
+
+  if (technicalDifficulty && !noCurrentRound) {
+    message = (
+      <span>
+        We&apos;re having a technical difficulty and need to postpone the rwtrk.
+        Stay tuned!
+      </span>
+    );
+    noCurrentRound = true;
   }
 
   return (

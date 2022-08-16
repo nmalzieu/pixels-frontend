@@ -31,7 +31,7 @@ const getPixel = (
 
   const pixelClick = async () => {
     const actionsLeft =
-      40 -
+      20 -
       (state.committedColorizations || 0) -
       Object.keys(state.temporaryColors).length;
     if (state.colorPickerMode === "eraser") {

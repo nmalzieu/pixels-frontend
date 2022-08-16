@@ -264,6 +264,23 @@
         "type": "function"
     },
     {
+        "inputs": [
+            {
+                "name": "round",
+                "type": "felt"
+            }
+        ],
+        "name": "totalNumberOfColorizations",
+        "outputs": [
+            {
+                "name": "count",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [],
         "name": "maxColorizationsPerToken",
         "outputs": [

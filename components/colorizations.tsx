@@ -41,7 +41,7 @@ const Colorizations = ({ round, tokenId, temporaryColorizations }: Props) => {
     : "...";
 
   const remainingColorizations =
-    40 - numberOfCommittedColorizations - temporaryColorizations;
+    20 - numberOfCommittedColorizations - temporaryColorizations;
 
   useEffect(() => {
     const num = numberOfColorizationsData

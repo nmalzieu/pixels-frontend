@@ -115,6 +115,14 @@ const GridPage = () => {
     ],
   });
 
+  const { data: totalNumberOfColorizationsData } = useStarknetCall({
+    contract: pixelDrawerContract,
+    method: "totalNumberOfColorizations",
+    args: [
+      currentDrawingRoundData ? currentDrawingRoundData[0].toNumber() : "",
+    ],
+  });
+
   useEffect(() => {
     const interval = setInterval(() => {
       if (!currentDrawingTimestampData) return;
@@ -145,7 +153,7 @@ const GridPage = () => {
 
   let gridComponent = <GridLoader />;
 
-  let pxlsColorizedText = "... pxls";
+  let pxlsColorizedText = "... / 2000";
   const pixelsOwned =
     (pixelsOfOwnerData as any)?.pixels?.map((p: any) => p.toNumber()) || [];
 
@@ -220,9 +228,19 @@ const GridPage = () => {
     );
   }
 
-  if (state.grid && state.grid.length > 0) {
-    const colorizedCount = state.grid.filter((p: any) => p.set === true).length;
-    pxlsColorizedText = `${colorizedCount} pxls`;
+  let overTotalLimit = false;
+
+  if (totalNumberOfColorizationsData) {
+    const totalNumberOfColorizationsCount =
+      totalNumberOfColorizationsData[0].toNumber();
+    if (
+      totalNumberOfColorizationsCount +
+        Object.keys(state.temporaryColors).length >
+      3
+    ) {
+      overTotalLimit = true;
+    }
+    pxlsColorizedText = `${totalNumberOfColorizationsCount} / 2000`;
   }
 
   const handleColorPickerChange = (color: any) => {
@@ -331,7 +349,17 @@ const GridPage = () => {
           to save your work.
         </span>
       );
-    } else if (state.committedColorizations === 40) {
+      if (overTotalLimit) {
+        message = (
+          <span>
+            you can&apos;t commit you colorizations. there is a total limit of
+            2000 pixels colorized per rtwrk and your colorization will exceed
+            this limit.
+          </span>
+        );
+        showCta = false;
+      }
+    } else if (state.committedColorizations === 20) {
       message = (
         <span>you’re good for today! you can now leave the pxlverse.</span>
       );
@@ -479,7 +507,7 @@ const GridPage = () => {
                   <div>
                     Will be fixed foverer <b>{fixedInText}</b>
                     <br />
-                    <b>{pxlsColorizedText}</b> are already colorized
+                    <b>{pxlsColorizedText}</b> colorizations committed by pxlrs
                   </div>
                 </>
               )}

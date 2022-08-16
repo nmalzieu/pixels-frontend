@@ -236,7 +236,7 @@ const GridPage = () => {
     if (
       totalNumberOfColorizationsCount +
         Object.keys(state.temporaryColors).length >
-      3
+      2000
     ) {
       overTotalLimit = true;
     }

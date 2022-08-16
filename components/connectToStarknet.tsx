@@ -21,7 +21,11 @@ const ConnectToStarknet = ({ connectButton }: Props) => {
 
   const disconnectAndDispatch = useCallback(() => {
     if (starknetConnectedAccount) {
-      disconnect();
+      try {
+        disconnect();
+      } catch (e) {
+        console.error(e);
+      }
     }
     dispatch.setAccount({
       account: "",

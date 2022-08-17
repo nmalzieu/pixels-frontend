@@ -11,11 +11,11 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      // {
-      //   source: "/admin",
-      //   destination: "/",
-      //   permanent: false,
-      // },
+      {
+        source: "/admin",
+        destination: "/",
+        permanent: false,
+      },
     ];
   },
 };

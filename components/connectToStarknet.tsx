@@ -1,4 +1,4 @@
-import { useStarknet } from "@starknet-react/core";
+import { useConnectors, useStarknet } from "@starknet-react/core";
 import { useCallback, useEffect } from "react";
 
 import { useStoreDispatch, useStoreState } from "../store";
@@ -11,13 +11,10 @@ const ConnectToStarknet = ({ connectButton }: Props) => {
   const state = useStoreState();
   const dispatch = useStoreDispatch();
 
-  const {
-    account: starknetConnectedAccount,
-    connect,
-    disconnect,
-    connectors,
-  } = useStarknet();
-  const connector = connectors.find((c) => c.available());
+  const { connect, disconnect, available } = useConnectors();
+
+  const { account: starknetConnectedAccount } = useStarknet();
+  const connector = available.length > 0 ? available[0] : null;
 
   const disconnectAndDispatch = useCallback(() => {
     if (starknetConnectedAccount) {
@@ -78,9 +75,16 @@ const ConnectToStarknet = ({ connectButton }: Props) => {
         </span>
       </div>
     );
-  } else if (!starknetConnectedAccount && connector) {
+  } else if (!starknetConnectedAccount) {
     return (
-      <div onClick={() => connect(connector)} className="clickable">
+      <div
+        onClick={() => {
+          if (connector) {
+            connect(connector);
+          }
+        }}
+        className="clickable"
+      >
         {connectButton}
       </div>
     );

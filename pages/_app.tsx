@@ -2,7 +2,7 @@ import "../styles/reset.css";
 import "../styles/globals.css";
 
 import {
-  InjectedConnector,
+  getInstalledInjectedConnectors,
   StarknetProvider,
   useStarknetTransactionManager,
 } from "@starknet-react/core";
@@ -107,10 +107,11 @@ const StarknetStatusComponent = () => {
 };
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const connectors = getInstalledInjectedConnectors();
   return (
     <ReactReduxProvider store={store}>
       <StarknetProvider
-        connectors={[new InjectedConnector()]}
+        connectors={connectors}
         defaultProvider={
           new Starknet({
             baseUrl:

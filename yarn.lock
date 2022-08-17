@@ -1223,10 +1223,10 @@
     "@noble/hashes" "~1.1.1"
     "@scure/base" "~1.1.0"
 
-"@starknet-react/core@^0.11.1":
-  version "0.11.1"
-  resolved "https://registry.npmjs.org/@starknet-react/core/-/core-0.11.1.tgz"
-  integrity sha512-nEpSd00ux6pv0+cYgATE4EVu+JYaXAQfoBeQpI5j5ZfV7Vo/+UEhNHlNQR+6ThTWDW0rMu/4WrEg9R/QO4NlAg==
+"@starknet-react/core@^0.13.2":
+  version "0.13.2"
+  resolved "https://registry.yarnpkg.com/@starknet-react/core/-/core-0.13.2.tgz#0af7e0c882125d05bee7912ecdde03cd72348b26"
+  integrity sha512-SimSePRVVk4EtbSFzuohgOSUmPZ1Q049ky00togG8kdjCWklh4ZlI2SLkHH1AoMIge0BzdyT8qjxvU5k791Q5Q==
   dependencies:
     immutable "^4.0.0"
 

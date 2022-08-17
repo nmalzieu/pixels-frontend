@@ -63,10 +63,40 @@ const Admin: NextPage = () => {
     args: [],
   });
 
-  const { data: currentDrawingRoundData } = useStarknetCall({
+  const { data: currentDrawingRoundDataPending } = useStarknetCall({
     contract: pixelDrawerContract,
     method: "currentDrawingRound",
     args: [],
+    options: {
+      blockIdentifier: "pending",
+    },
+  });
+
+  const { data: currentDrawingTimestampDataPending } = useStarknetCall({
+    contract: pixelDrawerContract,
+    method: "currentDrawingTimestamp",
+    args: [],
+    options: {
+      blockIdentifier: "pending",
+    },
+  });
+
+  const { data: currentDrawingRoundDataLatest } = useStarknetCall({
+    contract: pixelDrawerContract,
+    method: "currentDrawingRound",
+    args: [],
+    options: {
+      blockIdentifier: "latest",
+    },
+  });
+
+  const { data: currentDrawingTimestampDataLatest } = useStarknetCall({
+    contract: pixelDrawerContract,
+    method: "currentDrawingTimestamp",
+    args: [],
+    options: {
+      blockIdentifier: "latest",
+    },
   });
 
   const { invoke: startDrawing } = useInvoke({
@@ -145,12 +175,30 @@ const Admin: NextPage = () => {
           </li>
 
           <li>
-            currentDrawingRound :{" "}
-            {currentDrawingRoundData
-              ? currentDrawingRoundData[0].toNumber()
+            currentDrawingRound (pending) :{" "}
+            {currentDrawingRoundDataPending
+              ? currentDrawingRoundDataPending[0].toNumber()
               : "loading..."}
           </li>
-          {currentDrawingRoundData && (
+          <li>
+            currentDrawingRound (latest) :{" "}
+            {currentDrawingRoundDataLatest
+              ? currentDrawingRoundDataLatest[0].toNumber()
+              : "loading..."}
+          </li>
+          <li>
+            currentDrawingTimestamp (pending) :{" "}
+            {currentDrawingTimestampDataPending
+              ? currentDrawingTimestampDataPending[0].toNumber()
+              : "loading..."}
+          </li>
+          <li>
+            currentDrawingTimestamp (latest) :{" "}
+            {currentDrawingTimestampDataLatest
+              ? currentDrawingTimestampDataLatest[0].toNumber()
+              : "loading..."}
+          </li>
+          {currentDrawingTimestampDataLatest && (
             <div>
               <input placeholder="theme" ref={themeRef} />
               <button

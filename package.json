@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@rematch/core": "^2.2.0",
-    "@starknet-react/core": "^0.13.2",
+    "@starknet-react/core": "https://gitpkg.now.sh/nmalzieu/starknet-react/packages/core?77c21a4d780d3c669f9f4517c41250a96742b1d2",
     "@svgr/webpack": "^6.2.1",
     "@types/material-colors": "^1.2.0",
     "get-starknet": "^1.4.2",

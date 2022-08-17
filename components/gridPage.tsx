@@ -99,12 +99,14 @@ const GridPage = () => {
     contract: pixelDrawerContract,
     method: "currentDrawingRound",
     args: [],
+    options: { blockIdentifier: "latest" },
   });
 
   const { data: currentDrawingTimestampData } = useStarknetCall({
     contract: pixelDrawerContract,
     method: "currentDrawingTimestamp",
     args: [],
+    options: { blockIdentifier: "latest" },
   });
 
   const { data: themeData } = useStarknetCall({

@@ -311,7 +311,7 @@ const GridPage = () => {
         temporaryColor.red,
         temporaryColor.green,
         temporaryColor.blue
-      );
+      ).toLowerCase();
       const hexColorIndex = allColors.indexOf(hexColor);
       if (hexColorIndex >= 0) {
         colorizations.push({

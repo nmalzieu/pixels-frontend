@@ -10,7 +10,7 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import { useEffect } from "react";
 import { Provider as ReactReduxProvider } from "react-redux";
-import { Provider as Starknet } from "starknet";
+import { Provider as StrkProvider } from "starknet";
 
 import { store, useStoreDispatch, useStoreState } from "../store";
 import { useStarknetNetwork } from "../utils";
@@ -113,10 +113,17 @@ function MyApp({ Component, pageProps }: AppProps) {
       <StarknetProvider
         connectors={connectors}
         defaultProvider={
-          new Starknet({
-            baseUrl:
-              process.env.NEXT_PUBLIC_STARKNET_PROVIDER ||
-              "http://alpha4.starknet.io",
+          new StrkProvider({
+            sequencer: {
+              baseUrl:
+                process.env.NEXT_PUBLIC_STARKNET_PROVIDER ||
+                "http://alpha4.starknet.io",
+              feederGatewayUrl: "feeder_gateway",
+              gatewayUrl: "gateway",
+            },
+            // rpc: {
+            //   nodeUrl: "https://starknet.cartridge.gg/",
+            // },
           })
         }
       >

@@ -122,7 +122,7 @@ function MyApp({ Component, pageProps }: AppProps) {
               gatewayUrl: "gateway",
             },
             // rpc: {
-            //   nodeUrl: "https://starknet.cartridge.gg/",
+            //   nodeUrl: "https://starknet-mainnet.infura.io/v3/...",
             // },
           })
         }

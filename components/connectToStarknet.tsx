@@ -22,10 +22,16 @@ const ConnectToStarknet = ({ connectButton }: Props) => {
 
   const installedInjectedConnectors = getInstalledInjectedConnectors();
   console.log("[DEBUG] Injected connectors:", installedInjectedConnectors);
+  const injectedAvailableConnectors = installedInjectedConnectors.filter((c) =>
+    c.available()
+  );
 
   const { account: starknetConnectedAccount } = useStarknet();
   console.log("[DEBUG] Current account", starknetConnectedAccount);
-  const connector = available.length > 0 ? available[0] : null;
+  const connector =
+    injectedAvailableConnectors.length > 0
+      ? injectedAvailableConnectors[0]
+      : null;
 
   const disconnectAndDispatch = useCallback(() => {
     const windowStarknet = (window as any).starknet;

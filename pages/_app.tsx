@@ -115,14 +115,17 @@ function MyApp({ Component, pageProps }: AppProps) {
   console.log("[DEBUG] Injected connectors are :", connectors);
   // Also re-inject connectors after a few seconds
   useEffect(() => {
-    setTimeout(() => {
+    const reinjectConnectors = () => {
       const installedInjectedConnectors = getInstalledInjectedConnectors();
       console.log(
         "[DEBUG] Re-injecting connectors just in case",
         installedInjectedConnectors
       );
       setConnectors(installedInjectedConnectors);
-    }, 5000);
+    };
+    setTimeout(reinjectConnectors, 500);
+    setTimeout(reinjectConnectors, 1000);
+    setTimeout(reinjectConnectors, 5000);
   }, []);
   return (
     <ReactReduxProvider store={store}>

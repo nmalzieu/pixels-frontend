@@ -11,7 +11,10 @@ const ConnectToStarknet = ({ connectButton }: Props) => {
   const state = useStoreState();
   const dispatch = useStoreDispatch();
 
-  const { connect, disconnect, available } = useConnectors();
+  const { connect, disconnect, available, connectors } = useConnectors();
+
+  console.log("Available connectors:", available);
+  console.log("All connectors:", connectors);
 
   const { account: starknetConnectedAccount } = useStarknet();
   const connector = available.length > 0 ? available[0] : null;
@@ -21,7 +24,8 @@ const ConnectToStarknet = ({ connectButton }: Props) => {
       try {
         disconnect();
       } catch (e) {
-        console.error(e);
+        // console.error(e);
+        console.log("Could not disconnect", e);
       }
     }
     dispatch.setAccount({

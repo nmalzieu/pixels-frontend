@@ -99,11 +99,6 @@ const Admin: NextPage = () => {
     },
   });
 
-  const { invoke: startDrawing } = useInvoke({
-    contract: pixelDrawerContract,
-    method: "start",
-  });
-
   const { invoke: launchNewRoundIfNecessary } = useInvoke({
     contract: pixelDrawerContract,
     method: "launchNewRoundIfNecessary",

@@ -70,6 +70,12 @@ export const useInvoke = ({
           }
         } else {
           const connector = connectors.find((c) => c.available());
+          console.log(
+            "Connectors:",
+            connectors,
+            "available:",
+            connectors.filter((c) => c.available())
+          );
           if (connector && !currentlyConnectingRef.current) {
             if (
               messageRef.current !==
@@ -87,10 +93,12 @@ export const useInvoke = ({
               clearInterval(interval);
               reject("Wrong network");
             }
-          } else if (!currentlyConnectingRef.current) {
+          } else if (!connector && !currentlyConnectingRef.current) {
             currentlyConnectingRef.current = false;
             clearInterval(interval);
             reject("No connector found!");
+          } else {
+            console.log("OTHER ERROR?");
           }
         }
       }, 100);

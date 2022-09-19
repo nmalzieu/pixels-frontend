@@ -23,7 +23,7 @@ export const useStarknetNetwork = () => {
     return;
   }
   try {
-    const { baseUrl } = library;
+    const { baseUrl } = library as any;
     if (baseUrl.includes("alpha-mainnet.starknet.io")) {
       return "mainnet";
     } else if (baseUrl.includes("alpha4.starknet.io")) {

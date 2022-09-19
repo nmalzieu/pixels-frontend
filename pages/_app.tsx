@@ -8,7 +8,7 @@ import {
 } from "@starknet-react/core";
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Provider as ReactReduxProvider } from "react-redux";
 import { Provider as StrkProvider } from "starknet";
 
@@ -108,8 +108,22 @@ const StarknetStatusComponent = () => {
 };
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const connectors = getInstalledInjectedConnectors();
+  const [connectors, setConnectors] = useState(
+    getInstalledInjectedConnectors()
+  );
+  // const connectors = getInstalledInjectedConnectors();
   console.log("[DEBUG] Injected connectors are :", connectors);
+  // Also re-inject connectors after a few seconds
+  useEffect(() => {
+    setTimeout(() => {
+      const installedInjectedConnectors = getInstalledInjectedConnectors();
+      console.log(
+        "[DEBUG] Re-injecting connectors just in case",
+        installedInjectedConnectors
+      );
+      setConnectors(installedInjectedConnectors);
+    }, 5000);
+  }, []);
   return (
     <ReactReduxProvider store={store}>
       <StarknetProvider

@@ -1215,9 +1215,10 @@
     "@noble/hashes" "~1.1.1"
     "@scure/base" "~1.1.0"
 
-"@starknet-react/core@https://gitpkg.now.sh/nmalzieu/starknet-react/packages/core?77c21a4d780d3c669f9f4517c41250a96742b1d2":
-  version "0.13.2"
-  resolved "https://gitpkg.now.sh/nmalzieu/starknet-react/packages/core?77c21a4d780d3c669f9f4517c41250a96742b1d2#c5aef41b3522464d18116386d7f3f5b49281705b"
+"@starknet-react/core@^0.13.4":
+  version "0.13.4"
+  resolved "https://registry.yarnpkg.com/@starknet-react/core/-/core-0.13.4.tgz#feff59363caa9be97602fd7723774bb802d56b45"
+  integrity sha512-aACYPHGVNtPNEFFPxIMvmld23VSeWqJpBJ1reapnndAXlDO9SQSy9vc6jLtCic3WWkAnc4jFlRpXCnBzWFxKtA==
   dependencies:
     immutable "^4.0.0"
 

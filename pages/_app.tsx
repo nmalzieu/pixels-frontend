@@ -23,6 +23,7 @@ const StarknetStatusComponent = () => {
 
   // Save starknet network to state
   const network = useStarknetNetwork();
+  console.log("[DEBUG] Network - ", network);
   useEffect(() => {
     dispatch.setNetwork(network || "");
   }, [dispatch, network]);

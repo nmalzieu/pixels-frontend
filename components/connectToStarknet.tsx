@@ -13,21 +13,25 @@ const ConnectToStarknet = ({ connectButton }: Props) => {
 
   const { connect, disconnect, available, connectors } = useConnectors();
 
-  console.log("Available connectors:", available);
-  console.log("All connectors:", connectors);
+  console.log("[DEBUG] Available connectors:", available);
+  console.log("[DEBUG] All connectors:", connectors);
 
   const { account: starknetConnectedAccount } = useStarknet();
+  console.log("[DEBUG] Current account", starknetConnectedAccount);
   const connector = available.length > 0 ? available[0] : null;
 
   const disconnectAndDispatch = useCallback(() => {
+    const windowStarknet = (window as any).starknet;
+    console.log("[DEBUG] ", windowStarknet);
     if (starknetConnectedAccount) {
       try {
         disconnect();
       } catch (e) {
         // console.error(e);
-        console.log("Could not disconnect", e);
+        console.log("[DEBUG] Could not disconnect", e);
       }
     }
+    console.log("[DEBUG] Going to set account to null");
     dispatch.setAccount({
       account: "",
       accountConnected: false,

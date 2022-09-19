@@ -71,7 +71,7 @@ export const useInvoke = ({
         } else {
           const connector = connectors.find((c) => c.available());
           console.log(
-            "Connectors:",
+            "[DEBUG] Connectors:",
             connectors,
             "available:",
             connectors.filter((c) => c.available())
@@ -98,7 +98,7 @@ export const useInvoke = ({
             clearInterval(interval);
             reject("No connector found!");
           } else {
-            console.log("OTHER ERROR?");
+            console.log("[DEBUG] OTHER ERROR");
           }
         }
       }, 100);

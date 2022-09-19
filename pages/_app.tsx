@@ -109,6 +109,7 @@ const StarknetStatusComponent = () => {
 
 function MyApp({ Component, pageProps }: AppProps) {
   const connectors = getInstalledInjectedConnectors();
+  console.log("[DEBUG] Injected connectors are :", connectors);
   return (
     <ReactReduxProvider store={store}>
       <StarknetProvider

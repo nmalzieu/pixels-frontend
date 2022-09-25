@@ -1,7 +1,7 @@
 import { useStarknetCall } from "@starknet-react/core";
 import { useRef, useState } from "react";
 
-import { usePixelERC721Contract } from "../contracts/pixelERC721";
+import { usePxlERC721Contract } from "../contracts/pxlERC721";
 import { useStoreState } from "../store";
 import styles from "../styles/Home.module.scss";
 import windowStyles from "../styles/Window.module.scss";
@@ -15,10 +15,10 @@ import Window from "./window";
 const HomeDesktop = () => {
   const state = useStoreState();
 
-  const { contract: pixelERC721Contract } = usePixelERC721Contract();
+  const { contract: pxlERC721Contract } = usePxlERC721Contract();
 
   const { data: pixelsOfOwnerData } = useStarknetCall({
-    contract: pixelERC721Contract,
+    contract: pxlERC721Contract,
     method: "pixelsOfOwner",
     args: [state.account],
   });

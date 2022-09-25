@@ -2,8 +2,7 @@ import { useStarknetCall } from "@starknet-react/core";
 import moment from "moment-timezone";
 import { useEffect, useRef, useState } from "react";
 
-import { usePixelDrawer1Contract } from "../contracts/pixelDrawer1";
-import { usePixelDrawer2Contract } from "../contracts/pixelDrawer2";
+import { useRtwrkDrawerContract } from "../contracts/rtwrkDrawer";
 import LeftArrow from "../public/left-arrow.svg";
 import RightArrow from "../public/right-arrow.svg";
 import styles from "../styles/PreviousRtwrk.module.scss";
@@ -24,23 +23,15 @@ const TripleSeparator = () => (
 );
 
 const PreviousRtwrk = ({ matrixSize, maxRound }: Props) => {
-  // Round 1 is on contract 1
-  // Round >= 2 are on contract 2
-
   const [round, setRound] = useState(-1);
   const [clickedOnce, setClickedOnce] = useState(false);
 
-  const { contract: pixelDrawer1Contract } = usePixelDrawer1Contract();
-  const { contract: pixelDrawer2Contract } = usePixelDrawer2Contract();
+  const { contract: rtwrkDrawerContract } = useRtwrkDrawerContract();
 
-  const pixelDrawerContract =
-    round >= 2 ? pixelDrawer2Contract : pixelDrawer1Contract;
-  const roundFromContract = round >= 2 ? round - 1 : round;
-
-  const { data: drawingTimestampData } = useStarknetCall({
-    contract: pixelDrawerContract,
-    method: "drawingTimestamp",
-    args: [roundFromContract],
+  const { data: rtwrkTimestampData } = useStarknetCall({
+    contract: rtwrkDrawerContract,
+    method: "rtwrkTimestamp",
+    args: [round],
   });
 
   const roundRef = useRef(round);
@@ -60,13 +51,13 @@ const PreviousRtwrk = ({ matrixSize, maxRound }: Props) => {
   }, [maxRound, clickedOnce]);
 
   useEffect(() => {
-    if (drawingTimestampData) {
-      const t = drawingTimestampData[0].toNumber();
+    if (rtwrkTimestampData) {
+      const t = rtwrkTimestampData[0].toNumber();
       if (t !== timestamp) {
         setTimestamp(t);
       }
     }
-  }, [drawingTimestampData, setTimestamp, timestamp]);
+  }, [rtwrkTimestampData, setTimestamp, timestamp]);
 
   let component = <GridLoader />;
   if (round > 0 && matrixSize && timestamp) {

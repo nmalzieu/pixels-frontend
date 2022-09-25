@@ -8,8 +8,8 @@ import { uint256 } from "starknet";
 import { bnToUint256 } from "starknet/dist/utils/uint256";
 
 import { useInvoke } from "../contracts/helpers";
-import { usePixelDrawer2Contract } from "../contracts/pixelDrawer2";
-import { usePixelERC721Contract } from "../contracts/pixelERC721";
+import { usePxlERC721Contract } from "../contracts/pxlERC721";
+import { useRtwrkDrawerContract } from "../contracts/rtwrkDrawer";
 import WhatWillYouDrawImage from "../public/what_will_you_draw.svg";
 import WtfImage from "../public/wtf.svg";
 import { useStoreDispatch, useStoreState } from "../store";
@@ -46,13 +46,13 @@ const GridPage = () => {
     currentlyColoringHashRef.current = state.currentlyColoringHash;
   }, [state.currentlyColoringHash]);
 
-  const { contract: pixelERC721Contract } = usePixelERC721Contract();
-  const { contract: pixelDrawerContract } = usePixelDrawer2Contract();
+  const { contract: pxlERC721Contract } = usePxlERC721Contract();
+  const { contract: rtwrkDrawerContract } = useRtwrkDrawerContract();
 
   const [fixedInText, setFixedInText] = useState("");
 
   const { data: pixelsOfOwnerData } = useStarknetCall({
-    contract: pixelERC721Contract,
+    contract: pxlERC721Contract,
     method: "pixelsOfOwner",
     args: [state.account || ""],
     options: {
@@ -90,46 +90,42 @@ const GridPage = () => {
   }, [state.account]);
 
   const { data: matrixSizeData } = useStarknetCall({
-    contract: pixelERC721Contract,
+    contract: pxlERC721Contract,
     method: "matrixSize",
     args: [],
   });
 
-  const { data: currentDrawingRoundData } = useStarknetCall({
-    contract: pixelDrawerContract,
-    method: "currentDrawingRound",
+  const { data: currentRtwrkIdData } = useStarknetCall({
+    contract: rtwrkDrawerContract,
+    method: "currentRtwrkId",
     args: [],
     options: { blockIdentifier: "latest" },
   });
 
-  const { data: currentDrawingTimestampData } = useStarknetCall({
-    contract: pixelDrawerContract,
-    method: "currentDrawingTimestamp",
+  const { data: currentRtwrkTimestampData } = useStarknetCall({
+    contract: rtwrkDrawerContract,
+    method: "currentRtwrkTimestamp",
     args: [],
     options: { blockIdentifier: "latest" },
   });
 
   const { data: themeData } = useStarknetCall({
-    contract: pixelDrawerContract,
-    method: "drawingTheme",
-    args: [
-      currentDrawingRoundData ? currentDrawingRoundData[0].toNumber() : "",
-    ],
+    contract: rtwrkDrawerContract,
+    method: "rtwrkTheme",
+    args: [currentRtwrkIdData ? currentRtwrkIdData[0].toNumber() : ""],
   });
 
-  const { data: totalNumberOfColorizationsData } = useStarknetCall({
-    contract: pixelDrawerContract,
-    method: "totalNumberOfColorizations",
-    args: [
-      currentDrawingRoundData ? currentDrawingRoundData[0].toNumber() : "",
-    ],
+  const { data: totalNumberOfPixelColorizationsData } = useStarknetCall({
+    contract: rtwrkDrawerContract,
+    method: "totalNumberOfPixelColorizations",
+    args: [currentRtwrkIdData ? currentRtwrkIdData[0].toNumber() : ""],
   });
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (!currentDrawingTimestampData) return;
-      const currentDrawingTimestamp = currentDrawingTimestampData[0].toNumber();
-      const beginningOfDrawing = moment.unix(currentDrawingTimestamp);
+      if (!currentRtwrkTimestampData) return;
+      const currentRtwrkTimestamp = currentRtwrkTimestampData[0].toNumber();
+      const beginningOfDrawing = moment.unix(currentRtwrkTimestamp);
       const now = moment();
       const endOfDrawing = beginningOfDrawing.add(1, "days");
       const durationInSeconds = endOfDrawing.diff(now, "seconds");
@@ -146,10 +142,10 @@ const GridPage = () => {
       }
     }, 100);
     return () => clearInterval(interval);
-  }, [currentDrawingTimestampData]);
+  }, [currentRtwrkTimestampData]);
 
   const { invoke: colorizePixels } = useInvoke({
-    contract: pixelDrawerContract,
+    contract: rtwrkDrawerContract,
     method: "colorizePixels",
   });
 
@@ -167,16 +163,16 @@ const GridPage = () => {
 
   if (
     matrixSizeData &&
-    currentDrawingRoundData &&
-    currentDrawingTimestampData &&
+    currentRtwrkIdData &&
+    currentRtwrkTimestampData &&
     !technicalDifficulty
   ) {
     matrixSize = uint256.uint256ToBN(matrixSizeData?.[0]).toNumber();
-    round = currentDrawingRoundData[0].toNumber();
-    const currentDrawingTimestamp = currentDrawingTimestampData[0].toNumber();
+    round = currentRtwrkIdData[0].toNumber();
+    const currentRtwrkTimestamp = currentRtwrkTimestampData[0].toNumber();
 
     const now = moment();
-    const beginningOfDrawing = moment.unix(currentDrawingTimestamp);
+    const beginningOfDrawing = moment.unix(currentRtwrkTimestamp);
 
     const diff = now.diff(beginningOfDrawing, "days");
 
@@ -212,7 +208,7 @@ const GridPage = () => {
         <GridComponent
           gridSize={matrixSize}
           round={round + 1} // Adding 1 because 1 round is already in 1st drawer contract
-          timestamp={currentDrawingTimestamp}
+          timestamp={currentRtwrkTimestamp}
           saveGrid
           viewerOnly={!state.account || !selectedPxlNFT}
           key={`grid-${lastCommitAt}`}
@@ -232,17 +228,17 @@ const GridPage = () => {
 
   let overTotalLimit = false;
 
-  if (totalNumberOfColorizationsData) {
-    const totalNumberOfColorizationsCount =
-      totalNumberOfColorizationsData[0].toNumber();
+  if (totalNumberOfPixelColorizationsData) {
+    const totalNumberOfPixelColorizationsCount =
+      totalNumberOfPixelColorizationsData[0].toNumber();
     if (
-      totalNumberOfColorizationsCount +
+      totalNumberOfPixelColorizationsCount +
         Object.keys(state.temporaryColors).length >
       2000
     ) {
       overTotalLimit = true;
     }
-    pxlsColorizedText = `${totalNumberOfColorizationsCount} / 2000`;
+    pxlsColorizedText = `${totalNumberOfPixelColorizationsCount} / 2000`;
   }
 
   const handleColorPickerChange = (color: any) => {
@@ -280,7 +276,7 @@ const GridPage = () => {
   }
 
   let title = <span style={{ fontSize: 16, textAlign: "left" }}>👛 👛 👛</span>;
-  const isGridReady = currentDrawingTimestampData && state.grid && fixedInText;
+  const isGridReady = currentRtwrkTimestampData && state.grid && fixedInText;
   if (state.account) {
     message = (
       <span>☀️️ Hello, pxlr! We&apos;re loading today&apos;s rtwrk...</span>
@@ -654,7 +650,7 @@ const GridPage = () => {
               <Image src="/palmtree.png" alt="Palm Tree" layout="fill" />
             </div>
             <PreviousRtwrk
-              maxRound={(noCurrentRound ? round + 1 : round) + 1} // Adding 1 more to shift because there is already one drawing on drawer 1
+              maxRound={noCurrentRound ? round + 1 : round}
               matrixSize={matrixSize}
             />{" "}
             <a

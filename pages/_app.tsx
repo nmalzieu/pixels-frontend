@@ -23,7 +23,6 @@ const StarknetStatusComponent = () => {
 
   // Save starknet network to state
   const network = useStarknetNetwork();
-  console.log("[DEBUG] Network - ", network);
   useEffect(() => {
     dispatch.setNetwork(network || "");
   }, [dispatch, network]);
@@ -111,16 +110,11 @@ function MyApp({ Component, pageProps }: AppProps) {
   const [connectors, setConnectors] = useState(
     getInstalledInjectedConnectors()
   );
-  // const connectors = getInstalledInjectedConnectors();
-  console.log("[DEBUG] Injected connectors are :", connectors);
   // Also re-inject connectors after a few seconds
   useEffect(() => {
     const reinjectConnectors = () => {
       const installedInjectedConnectors = getInstalledInjectedConnectors();
-      console.log(
-        "[DEBUG] Re-injecting connectors just in case",
-        installedInjectedConnectors
-      );
+
       setConnectors(installedInjectedConnectors);
     };
     setTimeout(reinjectConnectors, 500);

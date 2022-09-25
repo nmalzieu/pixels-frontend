@@ -4,8 +4,8 @@ import { useRef } from "react";
 
 import ConnectToStarknet from "../components/connectToStarknet";
 import { useInvoke } from "../contracts/helpers";
-import { usePixelDrawer2Contract } from "../contracts/pixelDrawer2";
-import { usePixelERC721Contract } from "../contracts/pixelERC721";
+import { usePxlERC721Contract } from "../contracts/pxlERC721";
+import { useRtwrkDrawerContract } from "../contracts/rtwrkDrawer";
 import { useStoreState } from "../store";
 import {
   getAddressFromBN,
@@ -15,35 +15,35 @@ import {
 
 const Admin: NextPage = () => {
   const storeState = useStoreState();
-  const { contract: pixelERC721Contract } = usePixelERC721Contract();
-  const { contract: pixelDrawerContract } = usePixelDrawer2Contract();
+  const { contract: pxlERC721Contract } = usePxlERC721Contract();
+  const { contract: rtwrkDrawerContract } = useRtwrkDrawerContract();
 
   const { data: matrixSizeData } = useStarknetCall({
-    contract: pixelERC721Contract,
+    contract: pxlERC721Contract,
     method: "matrixSize",
     args: [],
   });
 
   const { data: maxSupplyData } = useStarknetCall({
-    contract: pixelERC721Contract,
+    contract: pxlERC721Contract,
     method: "maxSupply",
     args: [],
   });
 
   const { data: totalSupplyData } = useStarknetCall({
-    contract: pixelERC721Contract,
+    contract: pxlERC721Contract,
     method: "totalSupply",
     args: [],
   });
 
   const { data: drawerOwnerData } = useStarknetCall({
-    contract: pixelDrawerContract,
+    contract: rtwrkDrawerContract,
     method: "owner",
     args: [],
   });
 
   const { data: pixelsOfOwnerData } = useStarknetCall({
-    contract: pixelERC721Contract,
+    contract: pxlERC721Contract,
     method: "pixelsOfOwner",
     args: [storeState.account],
   });
@@ -53,55 +53,55 @@ const Admin: NextPage = () => {
   );
 
   const { invoke: transfer } = useInvoke({
-    contract: pixelERC721Contract,
+    contract: pxlERC721Contract,
     method: "transferFrom",
   });
 
-  const { data: pixelERC721AddressData } = useStarknetCall({
-    contract: pixelDrawerContract,
-    method: "pixelERC721Address",
+  const { data: pxlERC721AddressData } = useStarknetCall({
+    contract: rtwrkDrawerContract,
+    method: "pxlERC721Address",
     args: [],
   });
 
-  const { data: currentDrawingRoundDataPending } = useStarknetCall({
-    contract: pixelDrawerContract,
-    method: "currentDrawingRound",
-    args: [],
-    options: {
-      blockIdentifier: "pending",
-    },
-  });
-
-  const { data: currentDrawingTimestampDataPending } = useStarknetCall({
-    contract: pixelDrawerContract,
-    method: "currentDrawingTimestamp",
+  const { data: currentRtwrkIdDataPending } = useStarknetCall({
+    contract: rtwrkDrawerContract,
+    method: "currentRtwrkId",
     args: [],
     options: {
       blockIdentifier: "pending",
     },
   });
 
-  const { data: currentDrawingRoundDataLatest } = useStarknetCall({
-    contract: pixelDrawerContract,
-    method: "currentDrawingRound",
+  const { data: currentRtwrkTimestampDataPending } = useStarknetCall({
+    contract: rtwrkDrawerContract,
+    method: "currentRtwrkTimestamp",
+    args: [],
+    options: {
+      blockIdentifier: "pending",
+    },
+  });
+
+  const { data: currentRtwrkIdDataLatest } = useStarknetCall({
+    contract: rtwrkDrawerContract,
+    method: "currentRtwrkId",
     args: [],
     options: {
       blockIdentifier: "latest",
     },
   });
 
-  const { data: currentDrawingTimestampDataLatest } = useStarknetCall({
-    contract: pixelDrawerContract,
-    method: "currentDrawingTimestamp",
+  const { data: currentRtwrkTimestampDataLatest } = useStarknetCall({
+    contract: rtwrkDrawerContract,
+    method: "currentRtwrkTimestamp",
     args: [],
     options: {
       blockIdentifier: "latest",
     },
   });
 
-  const { invoke: launchNewRoundIfNecessary } = useInvoke({
-    contract: pixelDrawerContract,
-    method: "launchNewRoundIfNecessary",
+  const { invoke: launchNewRtwrkIfNecessary } = useInvoke({
+    contract: rtwrkDrawerContract,
+    method: "launchNewRtwrkIfNecessary",
   });
 
   const themeRef = useRef(null);
@@ -113,7 +113,7 @@ const Admin: NextPage = () => {
       <div>
         <h2>PixelERC721</h2>
         <ul>
-          <li>address : {pixelERC721Contract?.address}</li>
+          <li>address : {pxlERC721Contract?.address}</li>
           <li>
             matrixSize :{" "}
             {matrixSizeData
@@ -155,7 +155,7 @@ const Admin: NextPage = () => {
       <div>
         <h2>PixelDrawer</h2>
         <ul>
-          <li>address : {pixelDrawerContract?.address}</li>
+          <li>address : {rtwrkDrawerContract?.address}</li>
           <li>
             owner :{" "}
             {drawerOwnerData
@@ -163,37 +163,37 @@ const Admin: NextPage = () => {
               : "loading..."}
           </li>
           <li>
-            pixelERC721Address :{" "}
-            {pixelERC721AddressData
-              ? getAddressFromBN(pixelERC721AddressData[0])
+            pxlERC721Address :{" "}
+            {pxlERC721AddressData
+              ? getAddressFromBN(pxlERC721AddressData[0])
               : "loading..."}
           </li>
 
           <li>
-            currentDrawingRound (pending) :{" "}
-            {currentDrawingRoundDataPending
-              ? currentDrawingRoundDataPending[0].toNumber()
+            currentRtwrkId (pending) :{" "}
+            {currentRtwrkIdDataPending
+              ? currentRtwrkIdDataPending[0].toNumber()
               : "loading..."}
           </li>
           <li>
-            currentDrawingRound (latest) :{" "}
-            {currentDrawingRoundDataLatest
-              ? currentDrawingRoundDataLatest[0].toNumber()
+            currentRtwrkId (latest) :{" "}
+            {currentRtwrkIdDataLatest
+              ? currentRtwrkIdDataLatest[0].toNumber()
               : "loading..."}
           </li>
           <li>
-            currentDrawingTimestamp (pending) :{" "}
-            {currentDrawingTimestampDataPending
-              ? currentDrawingTimestampDataPending[0].toNumber()
+            currentRtwrkTimestamp (pending) :{" "}
+            {currentRtwrkTimestampDataPending
+              ? currentRtwrkTimestampDataPending[0].toNumber()
               : "loading..."}
           </li>
           <li>
-            currentDrawingTimestamp (latest) :{" "}
-            {currentDrawingTimestampDataLatest
-              ? currentDrawingTimestampDataLatest[0].toNumber()
+            currentRtwrkTimestamp (latest) :{" "}
+            {currentRtwrkTimestampDataLatest
+              ? currentRtwrkTimestampDataLatest[0].toNumber()
               : "loading..."}
           </li>
-          {currentDrawingTimestampDataLatest && (
+          {currentRtwrkTimestampDataLatest && (
             <div>
               <input placeholder="theme" ref={themeRef} />
               <button
@@ -202,7 +202,7 @@ const Admin: NextPage = () => {
                   const themeArray = themeValue
                     .split(",")
                     .map((s: any) => s.trim());
-                  launchNewRoundIfNecessary({ args: [themeArray] });
+                  launchNewRtwrkIfNecessary({ args: [themeArray] });
                 }}
               >
                 Launch next round

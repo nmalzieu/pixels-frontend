@@ -2,8 +2,7 @@ import { useStarknetCall } from "@starknet-react/core";
 import { useEffect, useState } from "react";
 import { BigNumberish } from "starknet/dist/utils/number";
 
-import { usePixelDrawer1Contract } from "../contracts/pixelDrawer1";
-import { usePixelDrawer2Contract } from "../contracts/pixelDrawer2";
+import { useRtwrkDrawerContract } from "../contracts/rtwrkDrawer";
 import {
   Dispatch,
   GridPixel,
@@ -102,15 +101,7 @@ type GridProps = {
 };
 
 const Grid = ({ round, gridSize, viewerOnly, saveGrid }: GridProps) => {
-  const { contract: pixelDrawer1Contract } = usePixelDrawer1Contract();
-  const { contract: pixelDrawer2Contract } = usePixelDrawer2Contract();
-
-  // Round 1 is on contract 1
-  // Round >= 2 are on contract 2
-
-  const pixelDrawerContract =
-    round >= 2 ? pixelDrawer2Contract : pixelDrawer1Contract;
-  const roundFromContract = round >= 2 ? round - 1 : round;
+  const { contract: rtwrkDrawerContract } = useRtwrkDrawerContract();
 
   const dispatch = useStoreDispatch();
   const state = useStoreState();
@@ -119,9 +110,9 @@ const Grid = ({ round, gridSize, viewerOnly, saveGrid }: GridProps) => {
   const [refreshing, setRefreshing] = useState(false);
 
   const { data: gridData, refresh: refreshGrid } = useStarknetCall({
-    contract: pixelDrawerContract,
-    method: "getGrid",
-    args: [roundFromContract],
+    contract: rtwrkDrawerContract,
+    method: "getRtwrkGrid",
+    args: [round, 0],
   });
 
   useEffect(() => {

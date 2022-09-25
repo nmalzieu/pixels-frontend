@@ -70,12 +70,7 @@ export const useInvoke = ({
           }
         } else {
           const connector = connectors.find((c) => c.available());
-          console.log(
-            "[DEBUG] Connectors:",
-            connectors,
-            "available:",
-            connectors.filter((c) => c.available())
-          );
+
           if (connector && !currentlyConnectingRef.current) {
             if (
               messageRef.current !==
@@ -98,7 +93,7 @@ export const useInvoke = ({
             clearInterval(interval);
             reject("No connector found!");
           } else {
-            console.log("[DEBUG] OTHER ERROR");
+            console.log("An error occured connectThenInvoke");
           }
         }
       }, 100);

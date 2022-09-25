@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { uint256 } from "starknet";
 
 import { useInvoke } from "../contracts/helpers";
-import { usePixelERC721Contract } from "../contracts/pixelERC721";
+import { usePxlERC721Contract } from "../contracts/pxlERC721";
 import MintButtonImage from "../public/mint-button.svg";
 import MintButtonImageHover from "../public/mint-button-hover.svg";
 import { useStoreDispatch, useStoreState } from "../store";
@@ -16,22 +16,22 @@ const Mint = () => {
   const state = useStoreState();
   const dispatch = useStoreDispatch();
 
-  const { contract: pixelERC721Contract } = usePixelERC721Contract();
+  const { contract: pxlERC721Contract } = usePxlERC721Contract();
 
   const { data: totalSupplyData } = useStarknetCall({
-    contract: pixelERC721Contract,
+    contract: pxlERC721Contract,
     method: "totalSupply",
     args: [],
   });
 
   const { data: maxSupplyData } = useStarknetCall({
-    contract: pixelERC721Contract,
+    contract: pxlERC721Contract,
     method: "maxSupply",
     args: [],
   });
 
   const { invoke: mint } = useInvoke({
-    contract: pixelERC721Contract,
+    contract: pxlERC721Contract,
     method: "mint",
   });
 

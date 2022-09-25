@@ -1,8 +1,4 @@
-import {
-  getInstalledInjectedConnectors,
-  useConnectors,
-  useStarknet,
-} from "@starknet-react/core";
+import { useConnectors, useStarknet } from "@starknet-react/core";
 import { useCallback, useEffect } from "react";
 
 import { useStoreDispatch, useStoreState } from "../store";
@@ -15,21 +11,12 @@ const ConnectToStarknet = ({ connectButton }: Props) => {
   const state = useStoreState();
   const dispatch = useStoreDispatch();
 
-  const { connect, disconnect, available, connectors } = useConnectors();
-
-  console.log("[DEBUG] Available connectors:", available);
-  console.log("[DEBUG] All connectors:", connectors);
-
-  const installedInjectedConnectors = getInstalledInjectedConnectors();
-  console.log("[DEBUG] Injected connectors:", installedInjectedConnectors);
+  const { connect, disconnect, available } = useConnectors();
 
   const { account: starknetConnectedAccount } = useStarknet();
-  console.log("[DEBUG] Current account", starknetConnectedAccount);
   const connector = available.length > 0 ? available[0] : null;
 
   const disconnectAndDispatch = useCallback(() => {
-    const windowStarknet = (window as any).starknet;
-    console.log("[DEBUG] ", windowStarknet);
     if (starknetConnectedAccount) {
       try {
         disconnect();
@@ -38,7 +25,6 @@ const ConnectToStarknet = ({ connectButton }: Props) => {
         console.log("[DEBUG] Could not disconnect", e);
       }
     }
-    console.log("[DEBUG] Going to set account to null");
     dispatch.setAccount({
       account: "",
       accountConnected: false,

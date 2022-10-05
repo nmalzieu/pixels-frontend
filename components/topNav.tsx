@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import LogoImage from "../public/logo.svg";
 import styles from "../styles/TopNav.module.scss";
 import ConnectToStarknet from "./connectToStarknet";
@@ -10,7 +12,19 @@ type Props = {
 const TopNav = ({ white, logo }: Props) => (
   <div className={`${styles.top} ${white ? styles.topWhite : ""}`}>
     <div className={styles.topElement}>
-      <ConnectToStarknet connectButton="👛 connect wallet" />
+      <Link href="/">
+        <a className="clickable">🦄 home</a>
+      </Link>
+    </div>
+    <div className={styles.topElement}>
+      <Link href="/draw">
+        <a className="clickable">🎨 draw</a>
+      </Link>
+    </div>
+    <div className={styles.topElement}>
+      <Link href="/collection">
+        <a className="clickable">🖼 my collection</a>
+      </Link>
     </div>
     <div className={styles.topElement}>
       <a
@@ -21,6 +35,12 @@ const TopNav = ({ white, logo }: Props) => (
       >
         🙄 wtf?
       </a>
+    </div>
+    <div
+      className={styles.topElement}
+      style={{ marginLeft: "auto", marginRight: 0 }}
+    >
+      <ConnectToStarknet connectButton="👛 connect wallet" />
     </div>
     {logo && (
       <div className={styles.logo}>

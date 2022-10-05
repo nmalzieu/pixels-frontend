@@ -12,7 +12,7 @@ import Star from "./star";
 import TopNav from "./topNav";
 import Window from "./window";
 
-const HomeDesktop = () => {
+const MintHomeDesktop = () => {
   const state = useStoreState();
 
   const { contract: pxlERC721Contract } = usePxlERC721Contract();
@@ -216,4 +216,4 @@ const HomeDesktop = () => {
   );
 };
 
-export default HomeDesktop;
+export default MintHomeDesktop;

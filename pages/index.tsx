@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 
-import GridPage from "../components/gridPage";
 import HomeMobile from "../components/homeMobile";
+import HomePage from "../components/homePage";
 
 interface Props {
   isMobileView: boolean;
@@ -11,7 +11,7 @@ const Grid: NextPage<Props> = ({ isMobileView }) => {
   if (isMobileView) {
     return <HomeMobile />;
   }
-  return <GridPage />;
+  return <HomePage />;
 };
 
 Grid.getInitialProps = async ({ req }) => {

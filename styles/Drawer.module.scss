@@ -1,59 +1,8 @@
-.gridPage {
-  height: 100%;
-  overflow-x: hidden;
-
-  .gridPageContent {
-    background-image: url(/background-live.png);
-    background-size: cover;
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 2580px;
-
-    .gridPageContainer {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      top: 0;
-      width: 1220px;
-      height: 2580px;
-      padding-top: 60px;
-    }
-  }
-
-  div {
-    z-index: 1;
-  }
-
-  :global(.swatches-picker) {
-    width: 100% !important;
-    border-radius: 0 !important;
-
-    > div {
-      border-radius: 0 !important;
-      box-shadow: none !important;
-
-      > div {
-        box-shadow: none !important;
-      }
-    }
-  }
-
-  &.eyeDropper {
-    cursor: url(/eyedropper-cursor.png) 0 15, auto;
-  }
-
-  &.eraser {
-    cursor: url(/eraser-cursor.png) 5 10, auto;
-  }
-}
-
 .container {
   width: 1240px;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 75px;
+  margin-top: 108px;
   position: relative;
 }
 
@@ -94,10 +43,10 @@
 
 .palmTree {
   position: absolute;
-  top: 866px;
+  top: 640px;
   width: 474px;
   height: 276px;
-  left: 134px;
+  left: 90px;
 }
 
 .colorPickerContainer {
@@ -136,30 +85,30 @@
 .whatWillYouDraw {
   position: absolute;
   display: block;
-  left: 60%;
+  left: 50%;
   transform: translateX(-50%);
-  top: 1850px;
+  top: 930px;
 }
 
 .twitter {
   position: absolute;
   display: block;
-  top: 2200px;
-  left: 588px;
+  top: 780px;
+  left: 1000px;
 }
 
 .discord {
   position: absolute;
   display: block;
-  top: 2300px;
-  left: 358px;
+  top: 680px;
+  left: 758px;
 }
 
 .bottom {
   height: 1px;
   width: 1px;
   position: absolute;
-  top: 2400px;
+  top: 1300px;
   left: 358px;
 }
 
@@ -195,8 +144,9 @@
 
 .topPxlGM {
   position: absolute;
-  top: 60px;
-  left: 0;
+  top: 137px;
+  left: 50%;
+  transform: translateX(-50%);
   color: white;
 
   .topPxlSelect {

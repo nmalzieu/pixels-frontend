@@ -6,6 +6,7 @@ import ConnectToStarknet from "../components/connectToStarknet";
 import { useInvoke } from "../contracts/helpers";
 import { usePxlERC721Contract } from "../contracts/pxlERC721";
 import { useRtwrkDrawerContract } from "../contracts/rtwrkDrawer";
+import { useRtwrkThemeAuctionContract } from "../contracts/rtwrkThemeAuction";
 import { useStoreState } from "../store";
 import {
   getAddressFromBN,
@@ -17,6 +18,8 @@ const Admin: NextPage = () => {
   const storeState = useStoreState();
   const { contract: pxlERC721Contract } = usePxlERC721Contract();
   const { contract: rtwrkDrawerContract } = useRtwrkDrawerContract();
+  const { contract: rtwrkThemeAuctionContract } =
+    useRtwrkThemeAuctionContract();
 
   const { data: matrixSizeData } = useStarknetCall({
     contract: pxlERC721Contract,
@@ -94,6 +97,24 @@ const Admin: NextPage = () => {
     contract: rtwrkDrawerContract,
     method: "currentRtwrkTimestamp",
     args: [],
+    options: {
+      blockIdentifier: "latest",
+    },
+  });
+
+  const { data: currentAuctionIdData } = useStarknetCall({
+    contract: rtwrkThemeAuctionContract,
+    method: "currentAuctionId",
+    args: [],
+    options: {
+      blockIdentifier: "latest",
+    },
+  });
+
+  const { data: currentAuctionTimestampData } = useStarknetCall({
+    contract: rtwrkThemeAuctionContract,
+    method: "auctionTimestamp",
+    args: [currentAuctionIdData ? currentAuctionIdData[0].toNumber() : ""],
     options: {
       blockIdentifier: "latest",
     },
@@ -209,6 +230,24 @@ const Admin: NextPage = () => {
               </button>
             </div>
           )}
+        </ul>
+      </div>
+      <div>
+        <h2>ThemeAuction</h2>
+        <ul>
+          <li>address : {rtwrkThemeAuctionContract?.address}</li>
+          <li>
+            currentAuctionId (latest):{" "}
+            {currentAuctionIdData
+              ? currentAuctionIdData[0].toNumber()
+              : "loading..."}
+          </li>
+          <li>
+            currentAuctionTimestampData (latest) :{" "}
+            {currentAuctionTimestampData && currentAuctionIdData
+              ? currentAuctionTimestampData[0].toNumber()
+              : "loading..."}
+          </li>
         </ul>
       </div>
     </div>

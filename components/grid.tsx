@@ -111,7 +111,7 @@ const Grid = ({ round, gridSize, viewerOnly, saveGrid }: GridProps) => {
 
   const { data: gridData, refresh: refreshGrid } = useStarknetCall({
     contract: rtwrkDrawerContract,
-    method: "getRtwrkGrid",
+    method: "rtwrkGrid",
     args: [round, 0],
   });
 

@@ -51,3 +51,11 @@ export const feltArrayToStr = (feltArray: number[]) => {
     return decodeShortString(toHex(toBN(n)));
   });
 };
+
+export const shortAddress = (address: string) => {
+  const addressWith0x = address.slice(0, 2) === "0x" ? address : `0x${address}`;
+  return `${addressWith0x.slice(0, 6)}...${address.slice(
+    address.length - 3,
+    address.length
+  )}`;
+};

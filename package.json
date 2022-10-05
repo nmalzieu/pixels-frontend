@@ -15,6 +15,7 @@
     "@starknet-react/core": "^0.13.4",
     "@svgr/webpack": "^6.2.1",
     "@types/material-colors": "^1.2.0",
+    "axios": "^0.27.2",
     "get-starknet": "^1.4.2",
     "material-colors": "^1.2.6",
     "moment-timezone": "^0.5.34",

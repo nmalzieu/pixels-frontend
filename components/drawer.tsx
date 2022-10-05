@@ -11,9 +11,8 @@ import { useInvoke } from "../contracts/helpers";
 import { usePxlERC721Contract } from "../contracts/pxlERC721";
 import { useRtwrkDrawerContract } from "../contracts/rtwrkDrawer";
 import WhatWillYouDrawImage from "../public/what_will_you_draw.svg";
-import WtfImage from "../public/wtf.svg";
 import { useStoreDispatch, useStoreState } from "../store";
-import styles from "../styles/GridPage.module.scss";
+import styles from "../styles/Drawer.module.scss";
 import windowStyles from "../styles/Window.module.scss";
 import { feltArrayToStr, rgbToHex } from "../utils";
 import Button from "./button";
@@ -22,21 +21,21 @@ import colors, { allColors } from "./colorPickerColors";
 import ConnectToStarknet from "./connectToStarknet";
 import GridComponent from "./grid";
 import GridLoader from "./gridLoader";
-import PreviousRtwrk from "./previousRtwrk";
-import ScrollingText from "./scrollingText";
-import TopNav from "./topNav";
 import Window from "./window";
 
 const DoubleSeparator = () => <div className={styles.doubleSeparator}></div>;
 
-const GridPage = () => {
+type Props = {
+  pixelsOwned: number[];
+};
+
+const Drawer = ({ pixelsOwned }: Props) => {
   const state = useStoreState();
   const dispatch = useStoreDispatch();
 
   const [selectedPxlNFT, setSelectedPxlNFT] = useState<number | undefined>(
     undefined
   );
-  const [loadingPixelsOfOwner, setLoadingPixelsOfOwner] = useState(true);
   const [lastCommitAt, setLastCommitAt] = useState(0);
   const currentlyColoringHashRef = useRef(state.currentlyColoringHash);
   useEffect(() => {
@@ -51,26 +50,7 @@ const GridPage = () => {
 
   const [fixedInText, setFixedInText] = useState("");
 
-  const { data: pixelsOfOwnerData } = useStarknetCall({
-    contract: pxlERC721Contract,
-    method: "pixelsOfOwner",
-    args: [state.account || ""],
-    options: {
-      watch: false,
-    },
-  });
-
   useEffect(() => {
-    setLoadingPixelsOfOwner(false);
-  }, [pixelsOfOwnerData]);
-
-  useEffect(() => {
-    setLoadingPixelsOfOwner(true);
-  }, [state.account]);
-
-  useEffect(() => {
-    const pixelsOwned =
-      (pixelsOfOwnerData as any)?.pixels?.map((p: any) => p.toNumber()) || [];
     if (pixelsOwned.length === 0 || !state.account) {
       setSelectedPxlNFT(undefined);
       return;
@@ -81,7 +61,7 @@ const GridPage = () => {
     ) {
       setSelectedPxlNFT(pixelsOwned[0]);
     }
-  }, [pixelsOfOwnerData, selectedPxlNFT, state.account]);
+  }, [pixelsOwned, selectedPxlNFT, state.account]);
 
   useEffect(() => {
     if (!state.account) {
@@ -152,8 +132,6 @@ const GridPage = () => {
   let gridComponent = <GridLoader />;
 
   let pxlsColorizedText = "... / 2000";
-  const pixelsOwned =
-    (pixelsOfOwnerData as any)?.pixels?.map((p: any) => p.toNumber()) || [];
 
   let matrixSize = 0;
   let round = 0;
@@ -368,36 +346,31 @@ const GridPage = () => {
         </span>
       );
     }
-    if (pixelsOfOwnerData) {
-      if (loadingPixelsOfOwner) {
-        message = <span>Loading your PXL NFTs...</span>;
-        showCta = false;
-      } else if (pixelsOwned?.length === 0) {
-        message = (
-          <span>
-            🤔️ It seems like you don’t have any PXL NFT in your wallet. If you
-            want to join the pxlrs, you’ll have to get one first. View the
-            collection on{" "}
-            <a
-              href="https://aspect.co/collection/0x045963ea13d95f22b58a5f0662ed172278e6b420cded736f846ca9bde8ea476a"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Aspect
-            </a>{" "}
-            or{" "}
-            <a
-              href="https://mintsquare.io/collection/starknet/0x045963ea13d95f22b58a5f0662ed172278e6b420cded736f846ca9bde8ea476a/nfts"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Mintsquare
-            </a>
-            .
-          </span>
-        );
-        showCta = false;
-      }
+    if (pixelsOwned?.length === 0) {
+      message = (
+        <span>
+          🤔️ It seems like you don’t have any PXL NFT in your wallet. If you
+          want to join the pxlrs, you’ll have to get one first. View the
+          collection on{" "}
+          <a
+            href="https://aspect.co/collection/0x045963ea13d95f22b58a5f0662ed172278e6b420cded736f846ca9bde8ea476a"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Aspect
+          </a>{" "}
+          or{" "}
+          <a
+            href="https://mintsquare.io/collection/starknet/0x045963ea13d95f22b58a5f0662ed172278e6b420cded736f846ca9bde8ea476a/nfts"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Mintsquare
+          </a>
+          .
+        </span>
+      );
+      showCta = false;
     }
     cta = showCta ? (
       <Button
@@ -430,260 +403,231 @@ const GridPage = () => {
   }
 
   return (
-    <div
-      className={`${styles.gridPage} ${
-        state.colorPickerMode === "eyedropper"
-          ? styles.eyeDropper
-          : state.colorPickerMode === "eraser"
-          ? styles.eraser
-          : ""
-      }`}
-    >
-      <div className={styles.gridPageContent}>
-        <div className={styles.gridPageContainer}>
-          <TopNav white logo />
-          {selectedPxlNFT && !loadingPixelsOfOwner && (
-            <div className={styles.topPxlGM}>
-              👋 gm, pxl #{selectedPxlNFT}
-              {pixelsOwned.length > 1 && (
-                <select
-                  className={styles.topPxlSelect}
-                  onChange={(e) => {
-                    let changePXL = false;
-                    if (Object.keys(state.temporaryColors).length > 0) {
-                      const leave = confirm(
-                        "If you switch to another pxl NFT, you will lose your uncommitted work. Do you want to proceed?"
-                      );
-                      if (leave) {
-                        changePXL = true;
-                      }
-                    } else {
-                      changePXL = true;
-                    }
-                    if (changePXL) {
-                      const selectedValue = e.target.value;
-                      dispatch.resetColoringState();
-                      setSelectedPxlNFT(parseInt(selectedValue, 10));
-                    }
-                    e.target.value = "change";
-                  }}
-                >
-                  <option value="change">change pxl</option>
-                  {pixelsOwned.map((p: any) => {
-                    if (p === selectedPxlNFT) return;
-                    return (
-                      <option key={p} value={p}>
-                        pxl #{p}
-                      </option>
-                    );
-                  })}
-                </select>
-              )}
-            </div>
+    <div>
+      {selectedPxlNFT && (
+        <div className={styles.topPxlGM}>
+          👋 gm, pxl #{selectedPxlNFT}
+          {pixelsOwned.length > 1 && (
+            <select
+              className={styles.topPxlSelect}
+              onChange={(e) => {
+                let changePXL = false;
+                if (Object.keys(state.temporaryColors).length > 0) {
+                  const leave = confirm(
+                    "If you switch to another pxl NFT, you will lose your uncommitted work. Do you want to proceed?"
+                  );
+                  if (leave) {
+                    changePXL = true;
+                  }
+                } else {
+                  changePXL = true;
+                }
+                if (changePXL) {
+                  const selectedValue = e.target.value;
+                  dispatch.resetColoringState();
+                  setSelectedPxlNFT(parseInt(selectedValue, 10));
+                }
+                e.target.value = "change";
+              }}
+            >
+              <option value="change">change pxl</option>
+              {pixelsOwned.map((p: any) => {
+                if (p === selectedPxlNFT) return;
+                return (
+                  <option key={p} value={p}>
+                    pxl #{p}
+                  </option>
+                );
+              })}
+            </select>
           )}
-          <div className={styles.container}>
-            <Window
-              style={{ width: 440, padding: "16px 29px", top: 0, left: 382 }}
-            >
-              <div style={{ marginTop: 12 }} />
-              <DoubleSeparator />
-              <div
-                className={styles.gridContainer}
-                onMouseEnter={() => {
-                  dispatch.setMouseOverGrid(true);
-                }}
-                onMouseLeave={() => {
-                  dispatch.setMouseOverGrid(false);
-                }}
-              >
-                {gridComponent}
+        </div>
+      )}
+      <div className={styles.container}>
+        <Window style={{ width: 440, padding: "16px 29px", top: 0, left: 382 }}>
+          <div style={{ marginTop: 12 }} />
+          <DoubleSeparator />
+          <div
+            className={styles.gridContainer}
+            onMouseEnter={() => {
+              dispatch.setMouseOverGrid(true);
+            }}
+            onMouseLeave={() => {
+              dispatch.setMouseOverGrid(false);
+            }}
+          >
+            {gridComponent}
+          </div>
+          <DoubleSeparator />
+          {isGridReady && !noCurrentRound && round >= 1 && (
+            <>
+              <div className={styles.windowTitle}>TODAY’S RTWRK</div>
+              <div>
+                Will be fixed foverer <b>{fixedInText}</b>
+                <br />
+                <b>{pxlsColorizedText}</b> colorizations committed by pxlrs
               </div>
-              <DoubleSeparator />
-              {isGridReady && !noCurrentRound && round >= 1 && (
-                <>
-                  <div className={styles.windowTitle}>TODAY’S RTWRK</div>
-                  <div>
-                    Will be fixed foverer <b>{fixedInText}</b>
-                    <br />
-                    <b>{pxlsColorizedText}</b> colorizations committed by pxlrs
-                  </div>
-                </>
-              )}
-            </Window>
-            <Window
-              style={{
-                width: 320,
-                top: state.account && !noCurrentRound ? 200 : 0,
-                left: state.account && !noCurrentRound ? "auto" : 0,
-                right: state.account && !noCurrentRound ? 30 : "auto",
-              }}
-            >
-              <div
-                className={`${windowStyles.rainbowBar} ${
-                  state.account && !noCurrentRound
-                    ? windowStyles.rainbowBar3
-                    : windowStyles.rainbowBar1
-                }`}
-              >
-                {title}
-              </div>
-              <div className={windowStyles.windowContent}>
-                {message}
-                {cta}
-                {subMessage}
-              </div>
-            </Window>
-            <Window
-              style={{
-                width: 320,
-                top: 33,
-                right: 30,
-                height: 124,
-                padding: "16px 25px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <div
-                className={styles.themeContent}
-                style={{
-                  textTransform: noCurrentRound ? "none" : "uppercase",
-                }}
-              >
-                {theme}
-              </div>
+            </>
+          )}
+        </Window>
+        <Window
+          style={{
+            width: 320,
+            top: state.account && !noCurrentRound ? 200 : 0,
+            left: state.account && !noCurrentRound ? "auto" : 0,
+            right: state.account && !noCurrentRound ? 30 : "auto",
+          }}
+        >
+          <div
+            className={`${windowStyles.rainbowBar} ${
+              state.account && !noCurrentRound
+                ? windowStyles.rainbowBar3
+                : windowStyles.rainbowBar1
+            }`}
+          >
+            {title}
+          </div>
+          <div className={windowStyles.windowContent}>
+            {message}
+            {cta}
+            {subMessage}
+          </div>
+        </Window>
+        <Window
+          style={{
+            width: 320,
+            top: 33,
+            right: 30,
+            height: 124,
+            padding: "16px 25px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <div
+            className={styles.themeContent}
+            style={{
+              textTransform: noCurrentRound ? "none" : "uppercase",
+            }}
+          >
+            {theme}
+          </div>
 
-              <div className={styles.themeTitle}>Today’s theme</div>
-            </Window>
-            {state.account &&
-              !noCurrentRound &&
-              isGridReady &&
-              selectedPxlNFT &&
-              !loadingPixelsOfOwner && (
-                <>
-                  <Window style={{ width: 320, top: 0, left: 0 }}>
-                    <div
-                      className={`${windowStyles.rainbowBar} ${windowStyles.rainbowBar2}`}
-                    >
-                      🎨 Color pickr
-                    </div>
-                    {/* <ChromePicker
+          <div className={styles.themeTitle}>Today’s theme</div>
+        </Window>
+        {state.account &&
+          !noCurrentRound &&
+          isGridReady &&
+          selectedPxlNFT &&
+          !loadingPixelsOfOwner && (
+            <>
+              <Window style={{ width: 320, top: 0, left: 0 }}>
+                <div
+                  className={`${windowStyles.rainbowBar} ${windowStyles.rainbowBar2}`}
+                >
+                  🎨 Color pickr
+                </div>
+                {/* <ChromePicker
                   color={colorPickerColor}
                   disableAlpha
                   onChange={handleColorPickerChange}
                   onChangeComplete={handleColorPickerChangeComplete}
                 /> */}
-                    <div className={styles.colorPickerContainer}>
-                      <SwatchesPicker
-                        color={{
-                          r: state.colorPickerColor.red,
-                          g: state.colorPickerColor.green,
-                          b: state.colorPickerColor.blue,
-                        }}
-                        colors={colors}
-                        onChange={handleColorPickerChange}
-                        // onChangeComplete={handleColorPickerChangeComplete}
-                      />
-                    </div>
+                <div className={styles.colorPickerContainer}>
+                  <SwatchesPicker
+                    color={{
+                      r: state.colorPickerColor.red,
+                      g: state.colorPickerColor.green,
+                      b: state.colorPickerColor.blue,
+                    }}
+                    colors={colors}
+                    onChange={handleColorPickerChange}
+                    // onChangeComplete={handleColorPickerChangeComplete}
+                  />
+                </div>
 
-                    <div className={styles.colorPickerBottom}>
-                      <img
-                        alt="eyedroppper button"
-                        src={
-                          state.colorPickerMode === "eyedropper"
-                            ? "/eyedropper-button-clicked.png"
-                            : "/eyedropper-button.png"
-                        }
-                        style={{
-                          cursor:
-                            state.colorPickerMode === "eyedropper"
-                              ? undefined
-                              : "pointer",
-                        }}
-                        onClick={() => {
-                          if (state.colorPickerMode === "eyedropper") {
-                            dispatch.setColorPickerMode(undefined);
-                          } else {
-                            dispatch.setColorPickerMode("eyedropper");
-                          }
-                        }}
-                      />
-                      <img
-                        alt="eraser button"
-                        src={
-                          state.colorPickerMode === "eraser"
-                            ? "/eraser-button-clicked.png"
-                            : "/eraser-button.png"
-                        }
-                        style={{
-                          cursor:
-                            state.colorPickerMode === "eraser"
-                              ? undefined
-                              : "pointer",
-                        }}
-                        onClick={() => {
-                          if (state.colorPickerMode === "eraser") {
-                            dispatch.setColorPickerMode(undefined);
-                          } else {
-                            dispatch.setColorPickerMode("eraser");
-                          }
-                        }}
-                      />
-                    </div>
-                  </Window>
-                  {round && !noCurrentRound && selectedPxlNFT && (
-                    <Colorizations
-                      round={round}
-                      tokenId={selectedPxlNFT}
-                      temporaryColorizations={
-                        Object.keys(state.temporaryColors).length
+                <div className={styles.colorPickerBottom}>
+                  <img
+                    alt="eyedroppper button"
+                    src={
+                      state.colorPickerMode === "eyedropper"
+                        ? "/eyedropper-button-clicked.png"
+                        : "/eyedropper-button.png"
+                    }
+                    style={{
+                      cursor:
+                        state.colorPickerMode === "eyedropper"
+                          ? undefined
+                          : "pointer",
+                    }}
+                    onClick={() => {
+                      if (state.colorPickerMode === "eyedropper") {
+                        dispatch.setColorPickerMode(undefined);
+                      } else {
+                        dispatch.setColorPickerMode("eyedropper");
                       }
-                    />
-                  )}
-                </>
+                    }}
+                  />
+                  <img
+                    alt="eraser button"
+                    src={
+                      state.colorPickerMode === "eraser"
+                        ? "/eraser-button-clicked.png"
+                        : "/eraser-button.png"
+                    }
+                    style={{
+                      cursor:
+                        state.colorPickerMode === "eraser"
+                          ? undefined
+                          : "pointer",
+                    }}
+                    onClick={() => {
+                      if (state.colorPickerMode === "eraser") {
+                        dispatch.setColorPickerMode(undefined);
+                      } else {
+                        dispatch.setColorPickerMode("eraser");
+                      }
+                    }}
+                  />
+                </div>
+              </Window>
+              {round && !noCurrentRound && selectedPxlNFT && (
+                <Colorizations
+                  round={round}
+                  tokenId={selectedPxlNFT}
+                  temporaryColorizations={
+                    Object.keys(state.temporaryColors).length
+                  }
+                />
               )}
-            <Window style={{ width: 928, top: 713, right: 100 }}>
-              <ScrollingText small />
-            </Window>
-            <div className={styles.palmTree}>
-              <Image src="/palmtree.png" alt="Palm Tree" layout="fill" />
-            </div>
-            <PreviousRtwrk
-              maxRound={noCurrentRound ? round + 1 : round}
-              matrixSize={matrixSize}
-            />{" "}
-            <a
-              className={styles.wtf}
-              href="https://pxlswtf.notion.site/Pxls-wtf-d379e6b48f2749c2a047813815ed038f"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <WtfImage />
-            </a>
-            <WhatWillYouDrawImage className={styles.whatWillYouDraw} />
-            <a
-              className={styles.twitter}
-              href="https://twitter.com/PxlsWtf"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <img src="/twitter-text.png" alt="Twitter" />
-            </a>
-            <a
-              className={styles.discord}
-              href="https://discord.com/invite/ufafywMTQh"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <img src="/discord-text.png" alt="Discord" />
-            </a>
-            <div className={styles.bottom} />
-          </div>
+            </>
+          )}
+
+        <div className={styles.palmTree}>
+          <Image src="/palmtree.png" alt="Palm Tree" layout="fill" />
         </div>
+        <WhatWillYouDrawImage className={styles.whatWillYouDraw} />
+        <a
+          className={styles.twitter}
+          href="https://twitter.com/PxlsWtf"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <img src="/twitter-text.png" alt="Twitter" />
+        </a>
+        <a
+          className={styles.discord}
+          href="https://discord.com/invite/ufafywMTQh"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <img src="/discord-text.png" alt="Discord" />
+        </a>
+        {/* <div className={styles.bottom} /> */}
       </div>
     </div>
   );
 };
 
-export default GridPage;
+export default Drawer;

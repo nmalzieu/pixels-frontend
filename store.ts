@@ -58,6 +58,7 @@ const unsetAlertIfLeave = () => {
 
 export const state = createModel<RootModel>()({
   state: {
+    rehydrated: false,
     message: "",
     account: "",
     accountConnected: false,
@@ -180,6 +181,9 @@ export const state = createModel<RootModel>()({
     setCommittedColorizations(state, committedColorizations: number) {
       return { ...state, committedColorizations };
     },
+    setRehydrated(state) {
+      return { ...state, rehydrated: true };
+    },
   },
 });
 
@@ -219,8 +223,12 @@ setTimeout(() => {
         payload: coloringHash,
       });
     }
+    store.dispatch({
+      type: "state/setRehydrated",
+      payload: true,
+    });
   }
-}, 150);
+}, 100);
 
 setInterval(() => {
   // Making the "minting in progress (can take up to several hours)..."

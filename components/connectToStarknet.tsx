@@ -78,7 +78,7 @@ const ConnectToStarknet = ({ connectButton }: Props) => {
     );
   } else if (!starknetConnectedAccount) {
     return (
-      <div
+      <span
         onClick={() => {
           if (connector) {
             connect(connector);
@@ -87,7 +87,7 @@ const ConnectToStarknet = ({ connectButton }: Props) => {
         className="clickable"
       >
         {connectButton}
-      </div>
+      </span>
     );
   }
   return <div></div>;

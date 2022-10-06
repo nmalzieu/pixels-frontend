@@ -110,8 +110,8 @@ const RtwrkAndBidCarousel = ({
   let component = <GridLoader />;
 
   const isAuctionPage = round === currentRwrkId + 1;
-  const isCurrentDrawing =
-    !isAuctionPage && new Date().getTime() - timestamp <= 24 * 3600;
+  const drawingStartedSince = new Date().getTime() / 1000 - timestamp;
+  const isCurrentDrawing = !isAuctionPage && drawingStartedSince <= 24 * 3600;
   console.log("mintedCount is", mintedCount, "round is", round);
 
   if (!isAuctionPage && round <= mintedCount) {
@@ -182,14 +182,14 @@ const RtwrkAndBidCarousel = ({
             </div>
             <div className={styles.labelAndValue}>
               <div className={styles.label}>Theme</div>
-              <div>{!themeLoading && theme ? theme : "..."}</div>
+              <div>{!themeLoading && theme ? theme : "--"}</div>
             </div>
             <div className={styles.singleSeparator} />
             <div className={styles.dual}>
               <div className={styles.labelAndValue}>
                 <div className={styles.label}>Holder</div>
                 <div title={owner}>
-                  {owner && !ownerLoading ? shortAddress(owner) : "..."}
+                  {owner && !ownerLoading ? shortAddress(owner) : "--"}
                 </div>
               </div>
               <div className={styles.labelAndValue}>
@@ -197,7 +197,7 @@ const RtwrkAndBidCarousel = ({
                 <div>
                   {timestamp && !timestampLoading
                     ? beginningOfDrawing.format("MMM DD YYYY")
-                    : "..."}
+                    : "--"}
                 </div>
               </div>
             </div>
@@ -215,6 +215,7 @@ const RtwrkAndBidCarousel = ({
           <Auction
             auctionId={currentAuctionId}
             auctionTimestamp={currentAuctionTimestamp}
+            nextRwrkId={currentRwrkId + 1}
           />
         )}
 

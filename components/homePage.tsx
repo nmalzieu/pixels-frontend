@@ -1,7 +1,7 @@
 import { useStarknetCall } from "@starknet-react/core";
 
 import { useRtwrkDrawerContract } from "../contracts/rtwrkDrawer";
-// import { useRtwrkERC721Contract } from "../contracts/rtwrkERC721";
+import { useRtwrkERC721Contract } from "../contracts/rtwrkERC721";
 import { useRtwrkThemeAuctionContract } from "../contracts/rtwrkThemeAuction";
 import styles from "../styles/HomePage.module.scss";
 import RtwrkAndBidCarousel from "./rtwrkAndBidCarousel";
@@ -9,7 +9,7 @@ import TopNav from "./topNav";
 
 const HomePage = () => {
   const { contract: rtwrkDrawerContract } = useRtwrkDrawerContract();
-  // const { contract: rtwrkERC721Contract } = useRtwrkERC721Contract();
+  const { contract: rtwrkERC721Contract } = useRtwrkERC721Contract();
   const { contract: rtwrkThemeAuctionContract } =
     useRtwrkThemeAuctionContract();
   const { data: currentRtwrkIdData } = useStarknetCall({
@@ -31,16 +31,15 @@ const HomePage = () => {
     ? currentRtwrkTimestampData[0].toNumber()
     : 0;
 
-  // const { data: totalRtwrkSupplyData } = useStarknetCall({
-  //   contract: rtwrkERC721Contract,
-  //   method: "totalSupply",
-  //   args: [],
-  //   options: { blockIdentifier: "latest" },
-  // });
-  // const totalRtwrkSupply = totalRtwrkSupplyData
-  //   ? totalRtwrkSupplyData[0].toNumber()
-  //   : 0;
-  const totalRtwrkSupply = 0;
+  const { data: totalRtwrkSupplyData } = useStarknetCall({
+    contract: rtwrkERC721Contract,
+    method: "totalSupply",
+    args: [],
+    options: { blockIdentifier: "latest" },
+  });
+  const totalRtwrkSupply = totalRtwrkSupplyData
+    ? totalRtwrkSupplyData[0].toNumber()
+    : 0;
 
   const { data: currentAuctionIdData } = useStarknetCall({
     contract: rtwrkThemeAuctionContract,

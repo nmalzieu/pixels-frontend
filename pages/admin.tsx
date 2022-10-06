@@ -6,6 +6,7 @@ import ConnectToStarknet from "../components/connectToStarknet";
 import { useInvoke } from "../contracts/helpers";
 import { usePxlERC721Contract } from "../contracts/pxlERC721";
 import { useRtwrkDrawerContract } from "../contracts/rtwrkDrawer";
+import { useRtwrkERC721Contract } from "../contracts/rtwrkERC721";
 import { useRtwrkThemeAuctionContract } from "../contracts/rtwrkThemeAuction";
 import { useStoreState } from "../store";
 import {
@@ -18,6 +19,7 @@ const Admin: NextPage = () => {
   const storeState = useStoreState();
   const { contract: pxlERC721Contract } = usePxlERC721Contract();
   const { contract: rtwrkDrawerContract } = useRtwrkDrawerContract();
+  const { contract: rtwrkERC721Contract } = useRtwrkERC721Contract();
   const { contract: rtwrkThemeAuctionContract } =
     useRtwrkThemeAuctionContract();
 
@@ -63,6 +65,12 @@ const Admin: NextPage = () => {
   const { data: pxlERC721AddressData } = useStarknetCall({
     contract: rtwrkDrawerContract,
     method: "pxlERC721Address",
+    args: [],
+  });
+
+  const { data: auctionAddressOnDrawerData } = useStarknetCall({
+    contract: rtwrkDrawerContract,
+    method: "rtwrkThemeAuctionContractAddress",
     args: [],
   });
 
@@ -120,19 +128,38 @@ const Admin: NextPage = () => {
     },
   });
 
+  const { invoke: setAuctionAddressOnDrawer } = useInvoke({
+    contract: rtwrkDrawerContract,
+    method: "setRtwrkThemeAuctionContractAddress",
+  });
+
+  const { invoke: setAuctionAddressOnRtwrkERC721 } = useInvoke({
+    contract: rtwrkERC721Contract,
+    method: "setRtwrkThemeAuctionContractAddress",
+  });
+
   const { invoke: launchNewRtwrkIfNecessary } = useInvoke({
     contract: rtwrkDrawerContract,
     method: "launchNewRtwrkIfNecessary",
   });
 
+  const { data: auctionAddressOnRtwrkERC721Data } = useStarknetCall({
+    contract: rtwrkERC721Contract,
+    method: "rtwrkThemeAuctionContractAddress",
+    args: [],
+  });
+
   const themeRef = useRef(null);
+
+  const auctionAddressOnDrawerRef = useRef(null);
+  const auctionAddressOnERC721Ref = useRef(null);
 
   return (
     <div>
       <h1>Admin</h1>
       <ConnectToStarknet connectButton="Connect to Starknet" />
       <div>
-        <h2>PixelERC721</h2>
+        <h2>PxlERC721</h2>
         <ul>
           <li>address : {pxlERC721Contract?.address}</li>
           <li>
@@ -174,7 +201,7 @@ const Admin: NextPage = () => {
         </ul>
       </div>
       <div>
-        <h2>PixelDrawer</h2>
+        <h2>RtwrkDrawer</h2>
         <ul>
           <li>address : {rtwrkDrawerContract?.address}</li>
           <li>
@@ -214,6 +241,28 @@ const Admin: NextPage = () => {
               ? currentRtwrkTimestampDataLatest[0].toNumber()
               : "loading..."}
           </li>
+          <li>
+            auctionAddressOnDrawer :{" "}
+            {auctionAddressOnDrawerData
+              ? `0x${auctionAddressOnDrawerData[0].toString(16)}`
+              : "loading..."}
+          </li>
+          <div>
+            <input
+              defaultValue={rtwrkThemeAuctionContract?.address}
+              placeholder="rtwrk_theme_auction_proxy_address"
+              ref={auctionAddressOnDrawerRef}
+            />
+            <button
+              onClick={() => {
+                const value = (auctionAddressOnDrawerRef?.current as any)
+                  ?.value;
+                setAuctionAddressOnDrawer({ args: [value] });
+              }}
+            >
+              Update Auction Address on Drawer
+            </button>
+          </div>
           {currentRtwrkTimestampDataLatest && (
             <div>
               <input placeholder="theme" ref={themeRef} />
@@ -249,6 +298,33 @@ const Admin: NextPage = () => {
               : "loading..."}
           </li>
         </ul>
+      </div>
+      <div>
+        <h2>RtwrkERC721</h2>
+        <ul>
+          <li>address : {rtwrkERC721Contract?.address}</li>
+          <li>
+            auctionAddressOnRtwrkERC721 :{" "}
+            {auctionAddressOnRtwrkERC721Data
+              ? `0x${auctionAddressOnRtwrkERC721Data[0].toString(16)}`
+              : "loading..."}
+          </li>
+        </ul>
+        <div>
+          <input
+            defaultValue={rtwrkThemeAuctionContract?.address}
+            placeholder="rtwrk_theme_auction_proxy_address"
+            ref={auctionAddressOnERC721Ref}
+          />
+          <button
+            onClick={() => {
+              const value = (auctionAddressOnERC721Ref?.current as any)?.value;
+              setAuctionAddressOnRtwrkERC721({ args: [value] });
+            }}
+          >
+            Update Auction Address on Rtwrk ERC721
+          </button>
+        </div>
       </div>
     </div>
   );

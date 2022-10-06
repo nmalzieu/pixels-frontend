@@ -4,11 +4,15 @@ type Props = {
   text: string;
   action?: any;
   disabled?: boolean;
+  rainbow?: boolean;
+  block?: boolean;
 };
 
-const Button = ({ text, action, disabled }: Props) => (
+const Button = ({ text, action, disabled, rainbow, block }: Props) => (
   <div
-    className={`${styles.button} ${disabled ? styles.disabled : ""}`}
+    className={`${styles.button} ${rainbow ? styles.rainbowButton : ""} ${
+      block ? styles.block : ""
+    } ${disabled ? styles.disabled : ""}`}
     onClick={action}
   >
     {text}

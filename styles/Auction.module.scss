@@ -1,3 +1,23 @@
+.singleSeparator {
+  border-bottom: 1px solid black;
+  margin-top: 7px;
+  margin-bottom: 30px;
+}
 .auction {
-    background-color: red;
+  input {
+    width: 100%;
+  }
+
+  .inputAndButton {
+    display: flex;
+    margin-top: 10px;
+    input {
+      margin-right: 12px;
+      width: 187px;
+    }
+    div {
+      margin-top: 0;
+      flex-shrink: 0;
+    }
+  }
 }

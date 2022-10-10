@@ -24,7 +24,7 @@ const Colorizations = ({ round, tokenId, temporaryColorizations }: Props) => {
     refresh: refreshNumberOfColorizations,
   } = useStarknetCall({
     contract: rtwrkDrawerContract,
-    method: "numberOfColorizations",
+    method: "numberOfPixelColorizations",
     args: [round, bnToUint256(tokenId)],
   });
 

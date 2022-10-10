@@ -8,7 +8,7 @@ type Props = {
   rtwrkId: number;
 };
 
-const MintsquareRtwrkImage = ({ rtwrkId }: Props) => {
+const AspectRtwrkImage = ({ rtwrkId }: Props) => {
   const [imageUri, setImageUri] = useState();
   useEffect(() => {
     const fetch = async () => {
@@ -25,4 +25,4 @@ const MintsquareRtwrkImage = ({ rtwrkId }: Props) => {
   return <Image src={imageUri} width={400} height={400} alt="Rtwrk" />;
 };
 
-export default MintsquareRtwrkImage;
+export default AspectRtwrkImage;

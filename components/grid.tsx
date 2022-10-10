@@ -107,9 +107,12 @@ const Grid = ({ round, gridSize, viewerOnly, saveGrid }: GridProps) => {
   const state = useStoreState();
 
   const [pixelDataToDisplay, setPixelDataToDisplay] = useState(state.grid);
-  const [refreshing, setRefreshing] = useState(false);
 
-  const { data: gridData, refresh: refreshGrid } = useStarknetCall({
+  const {
+    data: gridData,
+    refresh: refreshGrid,
+    refreshing,
+  } = useStarknetCall({
     contract: rtwrkDrawerContract,
     method: "rtwrkGrid",
     args: [round, 0],
@@ -152,18 +155,9 @@ const Grid = ({ round, gridSize, viewerOnly, saveGrid }: GridProps) => {
     }
   }, [dispatch, gridData, saveGrid]);
 
-  useEffect(() => {
-    setRefreshing(false);
-  }, [gridData]);
-
   if (!gridData) {
     return <GridLoader />;
   }
-
-  const refresh = () => {
-    setRefreshing(true);
-    refreshGrid();
-  };
 
   return (
     <div
@@ -187,7 +181,7 @@ const Grid = ({ round, gridSize, viewerOnly, saveGrid }: GridProps) => {
         </div>
       )}
       {!viewerOnly && (
-        <div className={styles.refresh} onClick={refresh}>
+        <div className={styles.refresh} onClick={refreshGrid}>
           <img
             src="/refresh.gif"
             alt="refresh-animated"

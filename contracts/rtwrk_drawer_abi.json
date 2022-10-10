@@ -343,6 +343,35 @@
                 "type": "felt"
             }
         ],
+        "name": "rtwrkMetadata",
+        "outputs": [
+            {
+                "name": "auction_winner",
+                "type": "felt"
+            },
+            {
+                "name": "auction_bid_amount",
+                "type": "Uint256"
+            },
+            {
+                "name": "theme_len",
+                "type": "felt"
+            },
+            {
+                "name": "theme",
+                "type": "felt*"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "rtwrkId",
+                "type": "felt"
+            }
+        ],
         "name": "rtwrkStepsCount",
         "outputs": [
             {
@@ -405,6 +434,14 @@
             {
                 "name": "theme",
                 "type": "felt*"
+            },
+            {
+                "name": "auction_winner",
+                "type": "felt"
+            },
+            {
+                "name": "auction_bid_amount",
+                "type": "Uint256"
             }
         ],
         "name": "launchNewRtwrk",

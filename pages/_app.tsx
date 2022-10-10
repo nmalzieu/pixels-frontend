@@ -1,129 +1,36 @@
 import "../styles/reset.css";
 import "../styles/globals.css";
 
-import {
-  getInstalledInjectedConnectors,
-  StarknetProvider,
-  useStarknetTransactionManager,
-} from "@starknet-react/core";
+import { InjectedConnector, StarknetConfig } from "@starknet-react/core";
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { Provider as ReactReduxProvider } from "react-redux";
 import { Provider as StrkProvider } from "starknet";
 
-import { store, useStoreDispatch, useStoreState } from "../store";
+import { store, useStoreDispatch } from "../store";
 import { useStarknetNetwork } from "../utils";
 
 const StarknetStatusComponent = () => {
-  const state = useStoreState();
   const dispatch = useStoreDispatch();
-  const { addTransaction, transactions, removeTransaction } =
-    useStarknetTransactionManager();
-
-  // Save starknet network to state
   const network = useStarknetNetwork();
   useEffect(() => {
     dispatch.setNetwork(network || "");
   }, [dispatch, network]);
-
-  // If the minting transaction is rejected or accepted
-  // we don't need it anymore
-  useEffect(() => {
-    const mintingTransaction = transactions.find(
-      (t) => t.metadata?.method === "mint"
-    );
-    const coloringTransaction = transactions.find(
-      (t) => t.metadata?.method === "colorizePixels"
-    );
-    const pendingStatuses = [
-      "TRANSACTION_RECEIVED",
-      "NOT_RECEIVED",
-      "RECEIVED",
-    ];
-
-    if (
-      coloringTransaction &&
-      !pendingStatuses.includes(coloringTransaction.status)
-    ) {
-      // ACCEPTED / REJECTED transaction
-      removeTransaction(coloringTransaction.transactionHash);
-      dispatch.setColoringHash("");
-      if (coloringTransaction.status === "REJECTED") {
-        dispatch.setFailedColoringHash(coloringTransaction.transactionHash);
-      } else {
-        // ACCEPTED / PENDING, let's reset coloring state
-        dispatch.resetColoringState();
-      }
-    } else if (
-      coloringTransaction &&
-      pendingStatuses.includes(coloringTransaction.status) &&
-      coloringTransaction.transactionHash !== state.currentlyColoringHash
-    ) {
-      // New minting transaction
-      dispatch.setColoringHash(coloringTransaction.transactionHash);
-    } else if (!coloringTransaction && state.currentlyColoringHash) {
-      addTransaction({
-        status: "TRANSACTION_RECEIVED",
-        transactionHash: state.currentlyColoringHash,
-        metadata: { method: "colorizePixels" },
-      });
-    }
-
-    if (
-      mintingTransaction &&
-      !pendingStatuses.includes(mintingTransaction.status)
-    ) {
-      // ACCEPTED / REJECTED transaction
-      removeTransaction(mintingTransaction.transactionHash);
-      dispatch.setMintingHash("");
-      if (mintingTransaction.status === "REJECTED") {
-        dispatch.setFailedMintHash(mintingTransaction.transactionHash);
-      }
-    } else if (
-      mintingTransaction &&
-      pendingStatuses.includes(mintingTransaction.status) &&
-      mintingTransaction.transactionHash !== state.currentlyMintingHash
-    ) {
-      // New minting transaction
-      dispatch.setMintingHash(mintingTransaction.transactionHash);
-    } else if (!mintingTransaction && state.currentlyMintingHash) {
-      addTransaction({
-        status: "TRANSACTION_RECEIVED",
-        transactionHash: state.currentlyMintingHash,
-        metadata: { method: "mint" },
-      });
-    }
-  }, [
-    addTransaction,
-    dispatch,
-    removeTransaction,
-    state.currentlyColoringHash,
-    state.currentlyMintingHash,
-    transactions,
-  ]);
-
   return <></>;
 };
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const [connectors, setConnectors] = useState(
-    getInstalledInjectedConnectors()
+  const connectors = useMemo(
+    () => [
+      new InjectedConnector({ options: { id: "argentX" } }),
+      new InjectedConnector({ options: { id: "braavos" } }),
+    ],
+    []
   );
-  // Also re-inject connectors after a few seconds
-  useEffect(() => {
-    const reinjectConnectors = () => {
-      const installedInjectedConnectors = getInstalledInjectedConnectors();
-
-      setConnectors(installedInjectedConnectors);
-    };
-    setTimeout(reinjectConnectors, 500);
-    setTimeout(reinjectConnectors, 1000);
-    setTimeout(reinjectConnectors, 5000);
-  }, []);
   return (
     <ReactReduxProvider store={store}>
-      <StarknetProvider
+      <StarknetConfig
         connectors={connectors}
         defaultProvider={
           new StrkProvider({
@@ -175,7 +82,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         </Head>
         <StarknetStatusComponent />
         <Component {...pageProps} />
-      </StarknetProvider>
+      </StarknetConfig>
     </ReactReduxProvider>
   );
 }

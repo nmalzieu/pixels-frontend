@@ -1,7 +1,11 @@
 import { useStarknet } from "@starknet-react/core";
+import { useEffect, useRef } from "react";
 import { uint256 } from "starknet";
 import { toBN, toHex } from "starknet/dist/utils/number";
-import { decodeShortString } from "starknet/dist/utils/shortString";
+import {
+  decodeShortString,
+  encodeShortString,
+} from "starknet/dist/utils/shortString";
 
 export const getAddressFromBN = (bn: any) => {
   const hexString = bn.toString(16);
@@ -52,10 +56,42 @@ export const feltArrayToStr = (feltArray: number[]) => {
   });
 };
 
+export const strToFeltArray = (str: string): string[] => {
+  const feltStrings = str.match(/.{1,31}/g);
+  if (!feltStrings) return [];
+  const felts = feltStrings.map((s) => toBN(encodeShortString(s)).toString());
+  return felts;
+};
+
+export const getExecuteParameterFromString = (str: string): string[] => {
+  const feltArray = strToFeltArray(str);
+  return [feltArray.length.toString(), ...feltArray];
+};
+
 export const shortAddress = (address: string) => {
   const addressWith0x = address.slice(0, 2) === "0x" ? address : `0x${address}`;
   return `${addressWith0x.slice(0, 6)}...${address.slice(
     address.length - 3,
     address.length
   )}`;
+};
+
+export const usePrevious = (value: any) => {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+  return ref.current;
+};
+
+export const useHasChanged = (value: any, callback: any) => {
+  const previous = usePrevious(value);
+  const hasChanged = previous !== value;
+
+  useEffect(() => {
+    if (hasChanged) {
+      callback && callback(previous);
+    }
+  }, [callback, hasChanged, previous]);
+  return [hasChanged, previous];
 };

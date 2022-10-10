@@ -18,6 +18,23 @@
     div {
       margin-top: 0;
       flex-shrink: 0;
+      max-width: initial;
+      flex-grow: 1;
+      text-align: center;
+    }
+  }
+
+  .bidError {
+    position: absolute;
+    width: 325px;
+    height: 142px;
+    background-color: white;
+    border: 1px solid #000000;
+    box-shadow: 2px 2px 0px #000000;
+    padding: 13px 16px;
+
+    svg {
+      cursor: pointer;
     }
   }
 }

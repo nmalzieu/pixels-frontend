@@ -1,20 +1,26 @@
 /* eslint-disable @next/next/no-img-element */
 import { useStarknetCall } from "@starknet-react/core";
+import BigNumber from "bignumber.js";
 import moment from "moment-timezone";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { SwatchesPicker } from "react-color";
 import { uint256 } from "starknet";
 import { bnToUint256 } from "starknet/dist/utils/uint256";
 
-import { useInvoke } from "../contracts/helpers";
+import { useCall, useInvoke, useTransactionStatus } from "../contracts/helpers";
 import { usePxlERC721Contract } from "../contracts/pxlERC721";
 import { useRtwrkDrawerContract } from "../contracts/rtwrkDrawer";
 import WhatWillYouDrawImage from "../public/what_will_you_draw.svg";
 import { useStoreDispatch, useStoreState } from "../store";
 import styles from "../styles/Drawer.module.scss";
 import windowStyles from "../styles/Window.module.scss";
-import { feltArrayToStr, rgbToHex } from "../utils";
+import {
+  feltArrayToStr,
+  getAddressFromBN,
+  rgbToHex,
+  shortAddress,
+} from "../utils";
 import Button from "./button";
 import Colorizations from "./colorizations";
 import colors, { allColors } from "./colorPickerColors";
@@ -37,13 +43,6 @@ const Drawer = ({ pixelsOwned }: Props) => {
     undefined
   );
   const [lastCommitAt, setLastCommitAt] = useState(0);
-  const currentlyColoringHashRef = useRef(state.currentlyColoringHash);
-  useEffect(() => {
-    if (!state.currentlyColoringHash && currentlyColoringHashRef.current) {
-      setLastCommitAt(new Date().getTime());
-    }
-    currentlyColoringHashRef.current = state.currentlyColoringHash;
-  }, [state.currentlyColoringHash]);
 
   const { contract: pxlERC721Contract } = usePxlERC721Contract();
   const { contract: rtwrkDrawerContract } = useRtwrkDrawerContract();
@@ -89,16 +88,18 @@ const Drawer = ({ pixelsOwned }: Props) => {
     options: { blockIdentifier: "latest" },
   });
 
-  const { data: themeData } = useStarknetCall({
+  const { data: rtwrkMetadataData } = useCall({
     contract: rtwrkDrawerContract,
-    method: "rtwrkTheme",
+    method: "rtwrkMetadata",
     args: [currentRtwrkIdData ? currentRtwrkIdData[0].toNumber() : ""],
+    condition: !!currentRtwrkIdData,
   });
 
-  const { data: totalNumberOfPixelColorizationsData } = useStarknetCall({
+  const { data: totalNumberOfPixelColorizationsData } = useCall({
     contract: rtwrkDrawerContract,
     method: "totalNumberOfPixelColorizations",
     args: [currentRtwrkIdData ? currentRtwrkIdData[0].toNumber() : ""],
+    condition: !!currentRtwrkIdData,
   });
 
   useEffect(() => {
@@ -128,6 +129,34 @@ const Drawer = ({ pixelsOwned }: Props) => {
     contract: rtwrkDrawerContract,
     method: "colorizePixels",
   });
+
+  const {
+    pending: colorizationPending,
+    accepted: colorizationAccepted,
+    rejected: colorizationRejected,
+    loading: colorizationLoading,
+  } = useTransactionStatus(state.currentlyColoringHash);
+
+  useEffect(() => {
+    console.log(state.currentlyColoringHash, colorizationLoading);
+    if (state.currentlyColoringHash && !colorizationLoading) {
+      if (colorizationPending || colorizationAccepted) {
+        dispatch.setColoringHash("");
+        dispatch.resetColoringState();
+        setLastCommitAt(new Date().getTime());
+      } else if (colorizationRejected) {
+        dispatch.setColoringHash("");
+        dispatch.setFailedColoringHash(state.currentlyColoringHash);
+      }
+    }
+  }, [
+    state.currentlyColoringHash,
+    colorizationLoading,
+    colorizationPending,
+    colorizationAccepted,
+    colorizationRejected,
+    dispatch,
+  ]);
 
   let gridComponent = <GridLoader />;
 
@@ -185,7 +214,7 @@ const Drawer = ({ pixelsOwned }: Props) => {
       gridComponent = (
         <GridComponent
           gridSize={matrixSize}
-          round={round + 1} // Adding 1 because 1 round is already in 1st drawer contract
+          round={round}
           timestamp={currentRtwrkTimestamp}
           saveGrid
           viewerOnly={!state.account || !selectedPxlNFT}
@@ -240,17 +269,28 @@ const Drawer = ({ pixelsOwned }: Props) => {
     </span>
   );
 
-  let theme = "...";
+  let theme = "--";
+  let bidAmount = "";
+  let bidWinner = "";
   if (noCurrentRound || technicalDifficulty) {
     theme =
       "Each rtwrk has a theme that is defined by the community. It will be displayed here once rtwrk creation begins.";
-  } else if (themeData) {
-    const themeArray = (themeData as any).theme;
+  } else if (rtwrkMetadataData) {
+    const themeArray = (rtwrkMetadataData as any).theme;
     const themeStrings = feltArrayToStr(themeArray);
     const newTheme = themeStrings.join("").trim();
     if (newTheme.length > 0) {
       theme = newTheme;
     }
+    bidAmount = new BigNumber(
+      uint256
+        .uint256ToBN((rtwrkMetadataData as any).auction_bid_amount)
+        .toString()
+    )
+      .multipliedBy("1e-18")
+      .toString();
+    bidAmount = `${bidAmount} eth`;
+    bidWinner = getAddressFromBN((rtwrkMetadataData as any).auction_winner);
   }
 
   let title = <span style={{ fontSize: 16, textAlign: "left" }}>👛 👛 👛</span>;
@@ -300,7 +340,11 @@ const Drawer = ({ pixelsOwned }: Props) => {
         metadata: {
           method: "colorizePixels",
         },
-      });
+      })
+        .then((a: any) => {
+          dispatch.setColoringHash(a.transaction_hash);
+        })
+        .catch(console.warn);
     if (state.grid.length === 0) {
       // Don't change, still show loading message
     } else if (state.currentlyColoringHash) {
@@ -473,7 +517,7 @@ const Drawer = ({ pixelsOwned }: Props) => {
         <Window
           style={{
             width: 320,
-            top: state.account && !noCurrentRound ? 200 : 0,
+            top: state.account && !noCurrentRound ? 300 : 0,
             left: state.account && !noCurrentRound ? "auto" : 0,
             right: state.account && !noCurrentRound ? 30 : "auto",
           }}
@@ -498,111 +542,123 @@ const Drawer = ({ pixelsOwned }: Props) => {
             width: 320,
             top: 33,
             right: 30,
-            height: 124,
+            height: 224,
             padding: "16px 25px",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            flexDirection: "column",
           }}
         >
           <div
             className={styles.themeContent}
-            style={{
-              textTransform: noCurrentRound ? "none" : "uppercase",
-            }}
+            // style={{
+            //   textTransform: noCurrentRound ? "none" : "uppercase",
+            // }}
           >
             {theme}
           </div>
+          {bidAmount && (
+            <div style={{ textAlign: "center" }}>
+              <div
+                style={{
+                  borderBottom: "1px solid black",
+                  width: 236,
+                  marginBottom: 10,
+                }}
+              />
+              Ordered by <b title={bidWinner}>{shortAddress(bidWinner)}</b>
+              <br />
+              for <b>{bidAmount}</b>
+            </div>
+          )}
 
           <div className={styles.themeTitle}>Today’s theme</div>
         </Window>
-        {state.account &&
-          !noCurrentRound &&
-          isGridReady &&
-          selectedPxlNFT &&
-          !loadingPixelsOfOwner && (
-            <>
-              <Window style={{ width: 320, top: 0, left: 0 }}>
-                <div
-                  className={`${windowStyles.rainbowBar} ${windowStyles.rainbowBar2}`}
-                >
-                  🎨 Color pickr
-                </div>
-                {/* <ChromePicker
+        {state.account && !noCurrentRound && isGridReady && selectedPxlNFT && (
+          <>
+            <Window style={{ width: 320, top: 0, left: 0 }}>
+              <div
+                className={`${windowStyles.rainbowBar} ${windowStyles.rainbowBar2}`}
+              >
+                🎨 Color pickr
+              </div>
+              {/* <ChromePicker
                   color={colorPickerColor}
                   disableAlpha
                   onChange={handleColorPickerChange}
                   onChangeComplete={handleColorPickerChangeComplete}
                 /> */}
-                <div className={styles.colorPickerContainer}>
-                  <SwatchesPicker
-                    color={{
-                      r: state.colorPickerColor.red,
-                      g: state.colorPickerColor.green,
-                      b: state.colorPickerColor.blue,
-                    }}
-                    colors={colors}
-                    onChange={handleColorPickerChange}
-                    // onChangeComplete={handleColorPickerChangeComplete}
-                  />
-                </div>
-
-                <div className={styles.colorPickerBottom}>
-                  <img
-                    alt="eyedroppper button"
-                    src={
-                      state.colorPickerMode === "eyedropper"
-                        ? "/eyedropper-button-clicked.png"
-                        : "/eyedropper-button.png"
-                    }
-                    style={{
-                      cursor:
-                        state.colorPickerMode === "eyedropper"
-                          ? undefined
-                          : "pointer",
-                    }}
-                    onClick={() => {
-                      if (state.colorPickerMode === "eyedropper") {
-                        dispatch.setColorPickerMode(undefined);
-                      } else {
-                        dispatch.setColorPickerMode("eyedropper");
-                      }
-                    }}
-                  />
-                  <img
-                    alt="eraser button"
-                    src={
-                      state.colorPickerMode === "eraser"
-                        ? "/eraser-button-clicked.png"
-                        : "/eraser-button.png"
-                    }
-                    style={{
-                      cursor:
-                        state.colorPickerMode === "eraser"
-                          ? undefined
-                          : "pointer",
-                    }}
-                    onClick={() => {
-                      if (state.colorPickerMode === "eraser") {
-                        dispatch.setColorPickerMode(undefined);
-                      } else {
-                        dispatch.setColorPickerMode("eraser");
-                      }
-                    }}
-                  />
-                </div>
-              </Window>
-              {round && !noCurrentRound && selectedPxlNFT && (
-                <Colorizations
-                  round={round}
-                  tokenId={selectedPxlNFT}
-                  temporaryColorizations={
-                    Object.keys(state.temporaryColors).length
-                  }
+              <div className={styles.colorPickerContainer}>
+                <SwatchesPicker
+                  color={{
+                    r: state.colorPickerColor.red,
+                    g: state.colorPickerColor.green,
+                    b: state.colorPickerColor.blue,
+                  }}
+                  colors={colors}
+                  onChange={handleColorPickerChange}
+                  // onChangeComplete={handleColorPickerChangeComplete}
                 />
-              )}
-            </>
-          )}
+              </div>
+
+              <div className={styles.colorPickerBottom}>
+                <img
+                  alt="eyedroppper button"
+                  src={
+                    state.colorPickerMode === "eyedropper"
+                      ? "/eyedropper-button-clicked.png"
+                      : "/eyedropper-button.png"
+                  }
+                  style={{
+                    cursor:
+                      state.colorPickerMode === "eyedropper"
+                        ? undefined
+                        : "pointer",
+                  }}
+                  onClick={() => {
+                    if (state.colorPickerMode === "eyedropper") {
+                      dispatch.setColorPickerMode(undefined);
+                    } else {
+                      dispatch.setColorPickerMode("eyedropper");
+                    }
+                  }}
+                />
+                <img
+                  alt="eraser button"
+                  src={
+                    state.colorPickerMode === "eraser"
+                      ? "/eraser-button-clicked.png"
+                      : "/eraser-button.png"
+                  }
+                  style={{
+                    cursor:
+                      state.colorPickerMode === "eraser"
+                        ? undefined
+                        : "pointer",
+                  }}
+                  onClick={() => {
+                    if (state.colorPickerMode === "eraser") {
+                      dispatch.setColorPickerMode(undefined);
+                    } else {
+                      dispatch.setColorPickerMode("eraser");
+                    }
+                  }}
+                />
+              </div>
+            </Window>
+            {round && !noCurrentRound && selectedPxlNFT && (
+              <Colorizations
+                key={`colorizations-${lastCommitAt}`}
+                round={round}
+                tokenId={selectedPxlNFT}
+                temporaryColorizations={
+                  Object.keys(state.temporaryColors).length
+                }
+              />
+            )}
+          </>
+        )}
 
         <div className={styles.palmTree}>
           <Image src="/palmtree.png" alt="Palm Tree" layout="fill" />

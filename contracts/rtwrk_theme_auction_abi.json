@@ -282,6 +282,64 @@
                 "type": "felt"
             }
         ],
+        "name": "currentAuctionBidId",
+        "outputs": [
+            {
+                "name": "currentAuctionBidId",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "auctionId",
+                "type": "felt"
+            }
+        ],
+        "name": "currentAuctionBid",
+        "outputs": [
+            {
+                "name": "bidId",
+                "type": "felt"
+            },
+            {
+                "name": "bidAccount",
+                "type": "felt"
+            },
+            {
+                "name": "bidAmount",
+                "type": "Uint256"
+            },
+            {
+                "name": "bidTimestamp",
+                "type": "felt"
+            },
+            {
+                "name": "bidReimbursementTimestamp",
+                "type": "felt"
+            },
+            {
+                "name": "theme_len",
+                "type": "felt"
+            },
+            {
+                "name": "theme",
+                "type": "felt*"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "auctionId",
+                "type": "felt"
+            }
+        ],
         "name": "auctionTimestamp",
         "outputs": [
             {

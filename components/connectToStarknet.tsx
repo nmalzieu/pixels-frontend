@@ -1,4 +1,4 @@
-import { useConnectors, useStarknet } from "@starknet-react/core";
+import { useAccount, useConnectors } from "@starknet-react/core";
 import { useCallback, useEffect } from "react";
 
 import { useStoreDispatch, useStoreState } from "../store";
@@ -11,9 +11,13 @@ const ConnectToStarknet = ({ connectButton }: Props) => {
   const state = useStoreState();
   const dispatch = useStoreDispatch();
 
-  const { connect, disconnect, available } = useConnectors();
+  const { connect, disconnect, available, refresh } = useConnectors();
+  useEffect(() => {
+    const interval = setInterval(refresh, 5000);
+    return () => clearInterval(interval);
+  }, [refresh]);
 
-  const { account: starknetConnectedAccount } = useStarknet();
+  const { address: starknetConnectedAccount } = useAccount();
   const connector = available.length > 0 ? available[0] : null;
 
   const disconnectAndDispatch = useCallback(() => {

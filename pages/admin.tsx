@@ -138,18 +138,11 @@ const Admin: NextPage = () => {
     method: "setRtwrkThemeAuctionContractAddress",
   });
 
-  const { invoke: launchNewRtwrkIfNecessary } = useInvoke({
-    contract: rtwrkDrawerContract,
-    method: "launchNewRtwrkIfNecessary",
-  });
-
   const { data: auctionAddressOnRtwrkERC721Data } = useStarknetCall({
     contract: rtwrkERC721Contract,
     method: "rtwrkThemeAuctionContractAddress",
     args: [],
   });
-
-  const themeRef = useRef(null);
 
   const auctionAddressOnDrawerRef = useRef(null);
   const auctionAddressOnERC721Ref = useRef(null);
@@ -263,22 +256,6 @@ const Admin: NextPage = () => {
               Update Auction Address on Drawer
             </button>
           </div>
-          {currentRtwrkTimestampDataLatest && (
-            <div>
-              <input placeholder="theme" ref={themeRef} />
-              <button
-                onClick={() => {
-                  const themeValue = (themeRef?.current as any)?.value;
-                  const themeArray = themeValue
-                    .split(",")
-                    .map((s: any) => s.trim());
-                  launchNewRtwrkIfNecessary({ args: [themeArray] });
-                }}
-              >
-                Launch next round
-              </button>
-            </div>
-          )}
         </ul>
       </div>
       <div>

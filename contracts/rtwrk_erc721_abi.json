@@ -356,6 +356,44 @@
     {
         "inputs": [
             {
+                "name": "owner",
+                "type": "felt"
+            }
+        ],
+        "name": "rtwrksOwned",
+        "outputs": [
+            {
+                "name": "rtwrks_len",
+                "type": "felt"
+            },
+            {
+                "name": "rtwrks",
+                "type": "felt*"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "tokenId",
+                "type": "Uint256"
+            }
+        ],
+        "name": "rtwrkStep",
+        "outputs": [
+            {
+                "name": "step",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "name": "to",
                 "type": "felt"
             },

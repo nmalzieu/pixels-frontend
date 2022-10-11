@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 
 import styles from "../styles/GridLoader.module.scss";
 
-const GridLoader = () => {
+type Props = {
+  transparent?: boolean;
+};
+
+const GridLoader = ({ transparent }: Props) => {
   const [showIndex, setShowIndex] = useState(3);
   useEffect(() => {
     const interval = setInterval(() => {
@@ -11,7 +15,11 @@ const GridLoader = () => {
     return () => clearInterval(interval);
   }, [showIndex]);
   return (
-    <div className={styles.gridLoader}>
+    <div
+      className={`${styles.gridLoader} ${
+        transparent ? styles.transparent : ""
+      }`}
+    >
       {showIndex > 0 && <div className={styles.dot1} />}
       {showIndex > 1 && <div className={styles.dot2} />}
       {showIndex > 2 && <div className={styles.dot3} />}

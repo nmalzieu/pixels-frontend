@@ -2,12 +2,11 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: "Arial Narrow", Arial, sans-serif;
+  font-family: 'Arial Narrow', Arial, sans-serif;
   height: 100%;
 
   font-size: 20px;
   line-height: 23px;
-
 
   /* NO SELECT */
   -webkit-touch-callout: none; /* iOS Safari */
@@ -31,4 +30,30 @@ a {
 
 * {
   box-sizing: border-box;
+}
+
+.slider {
+  margin-top: 30px;
+}
+
+.sliderTrack {
+  top: 8px;
+  height: 2px;
+  background: #d9d9d9;
+}
+
+.sliderTrack-0 {
+  background: black;
+}
+
+.sliderThumb {
+  cursor: pointer;
+  /*color for the thumb */
+  background: black;
+  /* shape of the thumb: circle */
+  width: 20px;
+  height: 20px;
+  border-radius: 100%;
+  /* remove default outline when selected */
+  outline: none;
 }

@@ -29,5 +29,10 @@
     );
     border: 1px solid #000000;
     padding: 9px 18px;
+
+    &.disabled {
+      pointer-events: none;
+      opacity: 0.6;
+    }
   }
 }

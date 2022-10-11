@@ -95,12 +95,12 @@ const getPixel = (
 type GridProps = {
   round: number;
   gridSize: number;
-  timestamp: number;
   viewerOnly?: boolean;
   saveGrid?: boolean;
+  step?: number;
 };
 
-const Grid = ({ round, gridSize, viewerOnly, saveGrid }: GridProps) => {
+const Grid = ({ round, gridSize, viewerOnly, saveGrid, step }: GridProps) => {
   const { contract: rtwrkDrawerContract } = useRtwrkDrawerContract();
 
   const dispatch = useStoreDispatch();
@@ -115,7 +115,7 @@ const Grid = ({ round, gridSize, viewerOnly, saveGrid }: GridProps) => {
   } = useStarknetCall({
     contract: rtwrkDrawerContract,
     method: "rtwrkGrid",
-    args: [round, 0],
+    args: [round, step || 0],
   });
 
   useEffect(() => {
@@ -155,7 +155,7 @@ const Grid = ({ round, gridSize, viewerOnly, saveGrid }: GridProps) => {
     }
   }, [dispatch, gridData, saveGrid]);
 
-  if (!gridData) {
+  if (!gridData || refreshing) {
     return <GridLoader />;
   }
 

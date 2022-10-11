@@ -7,8 +7,10 @@ import { useRtwrkDrawerContract } from "../contracts/rtwrkDrawer";
 import { useRtwrkERC721Contract } from "../contracts/rtwrkERC721";
 import { useRtwrkThemeAuctionContract } from "../contracts/rtwrkThemeAuction";
 import CommissioningImage from "../public/commissioning.svg";
+import PinkBorder from "../public/pink_border.svg";
 import { useStoreDispatch } from "../store";
 import styles from "../styles/HomePage.module.scss";
+import GridLoader from "./gridLoader";
 import RtwrkAndBidCarousel from "./rtwrkAndBidCarousel";
 import TopNav from "./topNav";
 
@@ -115,6 +117,12 @@ const HomePage = () => {
               pendingAuctionId={pendingAuctionId}
               currentAuctionTimestamp={currentAuctionTimestamp}
             />
+          )}
+          {loading && (
+            <div className={styles.previousRtwrksContent}>
+              <PinkBorder className={styles.pinkBorder} />
+              <GridLoader transparent />
+            </div>
           )}
           <CommissioningImage className={styles.commissioning} />
           <img

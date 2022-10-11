@@ -33,6 +33,7 @@ const ConnectToStarknet = ({ connectButton }: Props) => {
       account: "",
       accountConnected: false,
     });
+    dispatch.setLastBidAction(undefined);
   }, [starknetConnectedAccount, disconnect, dispatch]);
 
   useEffect(() => {

@@ -47,7 +47,7 @@ const Auction = ({
   const dispatch = useStoreDispatch();
   const { contract: rtwrkThemeAuctionContract } =
     useRtwrkThemeAuctionContract();
-  const now = new Date().getTime() / 1000;
+  const now = new Date().getTime() / 1000 + 60 * 3600;
   const auctionEnd = auctionTimestamp + 24 * 3600;
   const auctionStartedSince = now - auctionTimestamp;
   const isCurrentAuction = auctionStartedSince <= 24 * 3600;
@@ -55,7 +55,7 @@ const Auction = ({
     useState(auctionEnd - Math.floor(new Date().getTime() / 1000));
   useEffect(() => {
     const refresh = () => {
-      const now = new Date().getTime() / 1000;
+      const now = new Date().getTime() / 1000 + 60 * 3600;
       const sUntilFinished = auctionEnd - Math.floor(now);
       setSecondsUntilAuctionFinished(sUntilFinished);
     };
@@ -137,7 +137,9 @@ const Auction = ({
   const [bidTheme, setBidTheme] = useState("");
   const [showError, setShowError] = useState(false);
   const [isAuctionLaunching, setIsAuctionLaunching] = useState(
-    !!state.launchAuctionHash || pendingAuctionId != auctionId
+    !!state.launchAuctionHash ||
+      !!state.settlingAuctionHash ||
+      pendingAuctionId != auctionId
   );
   const [isRtwrkLaunching, setIsRtwrkLaunching] = useState(
     !!state.launchAuctionRtwrkHash || pendingRtwrkId === nextRwrkId
@@ -451,8 +453,6 @@ const Auction = ({
           </div>
         </>
       )}
-      {/* Auction {auctionId} - {auctionTimestamp} -{" "}
-      {isAuctionFinished ? "finished" : "non finished"} */}
     </div>
   );
 };

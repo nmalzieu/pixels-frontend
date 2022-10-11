@@ -95,6 +95,7 @@ export const state = createModel<RootModel>()({
     launchAuctionHash: "",
     launchAuctionRtwrkHash: "",
     drawingIsHappening: false,
+    settlingAuctionHash: "",
   },
   reducers: {
     setColorPickerColor(state, color: Color) {
@@ -241,6 +242,14 @@ export const state = createModel<RootModel>()({
     setDrawingIsHappening(state, happening) {
       return { ...state, drawingIsHappening: happening };
     },
+    setSettlingAuctionHash(state, hash) {
+      if (hash) {
+        localStorage.setItem("pxls-settling-auction", hash);
+      } else {
+        localStorage.removeItem("pxls-settling-auction");
+      }
+      return { ...state, settlingAuctionHash: hash };
+    },
   },
 });
 
@@ -264,6 +273,7 @@ setTimeout(() => {
     const launchAuctionRtwrkHash = localStorage.getItem(
       "pxls-launch-auction-rtwrk"
     );
+    const settlingAuctionHash = localStorage.getItem("pxls-settling-auction");
     if (previousAccount) {
       store.dispatch({
         type: "state/setAccount",
@@ -301,6 +311,12 @@ setTimeout(() => {
       store.dispatch({
         type: "state/setLaunchAuctionRtwrkHash",
         payload: launchAuctionRtwrkHash,
+      });
+    }
+    if (settlingAuctionHash) {
+      store.dispatch({
+        type: "state/setSettlingAuctionHash",
+        payload: settlingAuctionHash,
       });
     }
     store.dispatch({

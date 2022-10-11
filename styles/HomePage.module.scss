@@ -61,11 +61,25 @@
   top: 1920px;
 }
 
-
 .wtf {
   position: absolute;
   left: 220px;
   top: 2100px;
 }
 
+.previousRtwrksContent {
+  position: absolute;
+  left: 180px;
+  top: 240px;
+  width: 400px;
+  height: 400px;
+  // background: #f2f2f2;
+  outline: 2px solid #000000;
 
+  .pinkBorder {
+    position: absolute;
+    z-index: 2;
+    top: -73px;
+    left: -77px;
+  }
+}

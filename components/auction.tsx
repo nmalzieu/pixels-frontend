@@ -209,7 +209,7 @@ const Auction = ({
   const { execute: placeBid } = useExecute({
     calls: [
       {
-        contractAddress: process.env.NEXT_PUBLIC_ETH_ERC20_ADDRESS,
+        contractAddress: process.env.NEXT_PUBLIC_ETH_ERC20_ADDRESS || "",
         entrypoint: "approve",
         calldata: [
           process.env.NEXT_PUBLIC_RTWRK_THEME_AUCTION_ADDRESS,
@@ -232,7 +232,8 @@ const Auction = ({
 
   const { execute: launchAuctionRtwrkExecute } = useExecute({
     calls: {
-      contractAddress: process.env.NEXT_PUBLIC_RTWRK_THEME_AUCTION_ADDRESS,
+      contractAddress:
+        process.env.NEXT_PUBLIC_RTWRK_THEME_AUCTION_ADDRESS || "",
       entrypoint: "launchAuctionRtwrk",
       calldata: [],
     },
@@ -249,7 +250,8 @@ const Auction = ({
 
   const { execute: launchAuctionExecute } = useExecute({
     calls: {
-      contractAddress: process.env.NEXT_PUBLIC_RTWRK_THEME_AUCTION_ADDRESS,
+      contractAddress:
+        process.env.NEXT_PUBLIC_RTWRK_THEME_AUCTION_ADDRESS || "",
       entrypoint: "launchAuction",
       calldata: [],
     },

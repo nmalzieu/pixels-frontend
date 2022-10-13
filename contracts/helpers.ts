@@ -4,6 +4,7 @@ import {
   useStarknetCall,
   UseStarknetCallProps,
   useStarknetExecute,
+  UseStarknetExecuteArgs,
   useStarknetInvoke,
 } from "@starknet-react/core";
 import axios from "axios";

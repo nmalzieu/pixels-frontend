@@ -215,7 +215,6 @@ const Drawer = ({ pixelsOwned }: Props) => {
         <GridComponent
           gridSize={matrixSize}
           round={round}
-          timestamp={currentRtwrkTimestamp}
           saveGrid
           viewerOnly={!state.account || !selectedPxlNFT}
           key={`grid-${lastCommitAt}`}

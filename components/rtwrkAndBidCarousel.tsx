@@ -80,7 +80,8 @@ const RtwrkAndBidCarousel = ({
 
   const { execute: settleAuctionExecute } = useExecute({
     calls: {
-      contractAddress: process.env.NEXT_PUBLIC_RTWRK_THEME_AUCTION_ADDRESS,
+      contractAddress:
+        process.env.NEXT_PUBLIC_RTWRK_THEME_AUCTION_ADDRESS || "",
       entrypoint: "settleAuction",
       calldata: [],
     },

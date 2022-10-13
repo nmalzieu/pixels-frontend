@@ -49,7 +49,7 @@ const CollectionRtwrkEdit = ({ rtwrkId }: Props) => {
 
   const { execute: selectRtwrkStepExecute } = useExecute({
     calls: {
-      contractAddress: rtwrkERC721Contract?.address,
+      contractAddress: rtwrkERC721Contract?.address || "",
       entrypoint: "selectRtwrkStep",
       calldata: [
         bnToUint256(rtwrkId).low,

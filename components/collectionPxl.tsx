@@ -25,7 +25,8 @@ const CollectionPxl = ({ pxlId }: Props) => {
   });
   const { execute: withdrawExecute } = useExecute({
     calls: {
-      contractAddress: process.env.NEXT_PUBLIC_RTWRK_THEME_AUCTION_ADDRESS,
+      contractAddress:
+        process.env.NEXT_PUBLIC_RTWRK_THEME_AUCTION_ADDRESS || "",
       entrypoint: "withdrawColorizerBalance",
       calldata: [pxlIdUint256.low, pxlIdUint256.high],
     },

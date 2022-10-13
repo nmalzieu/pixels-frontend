@@ -20,6 +20,13 @@
     }
   }
 
+  .loading {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 300px;
+  }
+
   div {
     z-index: 1;
   }

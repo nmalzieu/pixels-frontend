@@ -92,9 +92,7 @@ const DrawPage = () => {
         >
           <TopNav white logo />
           {showLoading && (
-            <>
-              <div className={styles.whiteMessage}>Loading...</div>
-            </>
+            <img src="/loading-collection.svg" className={styles.loading} />
           )}
           {showDisconnected && (
             <>

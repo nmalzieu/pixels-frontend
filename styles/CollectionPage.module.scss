@@ -20,6 +20,13 @@
       min-height: 100vh;
       padding-top: 60px;
 
+      .loading {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        top: 300px;
+      }
+
       .twitter,
       .discord {
         position: absolute;

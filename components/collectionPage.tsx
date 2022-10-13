@@ -91,8 +91,12 @@ const CollectionPage = () => {
               </a>
             </>
           )}
+          {loading && (
+            <img src="/loading-collection.svg" className={styles.loading} />
+          )}
           {!showDisconnected &&
             state.rehydrated &&
+            !loading &&
             (loading || doesNotOwnAnything) && (
               <>
                 <img src="/skate.svg" alt="Skate" className={styles.skate} />
@@ -106,7 +110,6 @@ const CollectionPage = () => {
                     left: 650,
                   }}
                 >
-                  {loading && <>Loading...</>}
                   {!loading && (
                     <>
                       hey art lover

@@ -31,11 +31,10 @@ type Props = {
   lastDrawingToSettle: boolean;
 };
 
-const BID_INCREMENT = 0.005; // IN ETH
 const THEME_MAX_LENGTH = 155; // 5 felts
 
 const THEME_VOCABULARY =
-  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:/?[]@!$&'()*+,;=";
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:/?[]@!$&'()* ,;=";
 
 const Auction = ({
   auctionId,
@@ -117,9 +116,22 @@ const Auction = ({
     dispatch.setCurrentAuctionBid(currentAuctionBid);
   }, [currentAuctionBidData, dispatch]);
 
+  const { data: bidIncrementData, loading: bidIncrementLoading } =
+    useStarknetCall({
+      contract: rtwrkThemeAuctionContract,
+      method: "bidIncrement",
+      args: [],
+    });
+
+  const bidIncrement =
+    !bidIncrementLoading && bidIncrementData ? bidIncrementData[0] : 0;
+
+  const bidIncrementBigNumber = new BigNumber(bidIncrement);
+  const bidIncrementInEth = bidIncrementBigNumber.multipliedBy("1e-18");
+
   const currentAuctionBid = state.currentAuctionBid;
 
-  const minBid = new BigNumber(BID_INCREMENT).plus(
+  const minBid = bidIncrementInEth.plus(
     currentAuctionBid ? currentAuctionBid?.bidAmountEth : 0
   );
 
@@ -252,6 +264,13 @@ const Auction = ({
       .catch(console.warn);
   };
 
+  let isThemeValid = true;
+  for (const letter of bidTheme) {
+    if (!THEME_VOCABULARY.includes(letter)) {
+      isThemeValid = false;
+    }
+  }
+
   const validateAndPlaceBid = () => {
     if (bidAmountBigNumber.isEqualTo(0) || bidTheme.trim().length === 0) {
       setShowError(false);
@@ -259,7 +278,8 @@ const Auction = ({
     }
     if (
       bidAmountBigNumber.isLessThan(minBid) ||
-      bidTheme.trim().length > THEME_MAX_LENGTH
+      bidTheme.trim().length > THEME_MAX_LENGTH ||
+      !isThemeValid
     ) {
       setShowError(true);
       return;
@@ -285,13 +305,6 @@ const Auction = ({
     (state.drawingIsHappening || lastDrawingToSettle) &&
     !isCurrentAuction &&
     auctionHadBids;
-
-  let isThemeValid = true;
-  for (const letter of bidTheme) {
-    if (!THEME_VOCABULARY.includes(letter.replace(" ", "+"))) {
-      isThemeValid = false;
-    }
-  }
 
   return (
     <div className={styles.auction}>
@@ -370,7 +383,7 @@ const Auction = ({
         )}
       {!isAuctionFinished && !isAuctionLaunching && !lastDrawingNotFinished && (
         <>
-          {(showError || !isThemeValid) && (
+          {showError && (
             <div className={styles.bidError}>
               <CrossImage
                 onClick={() => {
@@ -390,9 +403,8 @@ const Auction = ({
               )}
               {!isThemeValid && (
                 <div style={{ color: "#FF4848" }}>
-                  Your theme can only include letters, figures and the following
-                  characters: <br />
-                  -._~:/?[]@!$&&apos;()*+,;=
+                  Your theme can only include letters, figures, spaces and the
+                  following characters: -._~:/?[]@!$&&apos;()*,;=
                 </div>
               )}
             </div>

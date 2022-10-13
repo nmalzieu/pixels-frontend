@@ -216,6 +216,10 @@
             {
                 "name": "rtwrk_erc721_address_value",
                 "type": "felt"
+            },
+            {
+                "name": "bid_increment_value",
+                "type": "felt"
             }
         ],
         "name": "initializer",
@@ -402,6 +406,18 @@
         "outputs": [
             {
                 "name": "owner",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "bidIncrement",
+        "outputs": [
+            {
+                "name": "increment",
                 "type": "felt"
             }
         ],

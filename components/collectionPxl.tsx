@@ -31,7 +31,7 @@ const CollectionPxl = ({ pxlId }: Props) => {
     },
   });
   const aspectUrl = `${process.env.NEXT_PUBLIC_ASPECT_LINK}/${process.env.NEXT_PUBLIC_PXL_ERC721_ADDRESS}/${pxlId}`;
-  const mintsquareUrl = `${process.env.NEXT_PUBLIC_MINTSQUARE_LINK}/${process.env.NEXT_PUBLIC_PXL_ERC721_ADDRESS}/${pxlId}`;
+  const mintsquareUrl = `${process.env.NEXT_PUBLIC_MINTSQUARE_ASSET_LINK}/${process.env.NEXT_PUBLIC_PXL_ERC721_ADDRESS}/${pxlId}`;
   let balance = "0";
 
   if (!balanceLoading && balanceData?.[0]) {
@@ -84,7 +84,7 @@ const CollectionPxl = ({ pxlId }: Props) => {
   return (
     <div className={styles.collectionPxl}>
       <div className={styles.gridContainer}>
-        <AspectPxlImage pxlId={pxlId} />;
+        <AspectPxlImage pxlId={pxlId} />
       </div>
       <div
         style={{

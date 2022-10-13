@@ -166,7 +166,7 @@ const RtwrkAndBidCarousel = ({
 
   let component = <GridLoader />;
 
-  const now = new Date().getTime() / 1000 + 60 * 3600;
+  const now = new Date().getTime() / 1000;
 
   const showIsAuctionLaunching =
     (!!state.launchAuctionHash ||
@@ -210,7 +210,9 @@ const RtwrkAndBidCarousel = ({
     if (lastBidProcessing && !state.drawingIsHappening) {
       component = <BidProcessingImage className={styles.bidIllustration} />;
     } else if (currentAuctionBid && !state.drawingIsHappening) {
-      if (currentAuctionBid.bidAccount === state.account) {
+      if (
+        new BigNumber(currentAuctionBid.bidAccount).isEqualTo(state.account)
+      ) {
         if (isCurrentAuction) {
           component = <BidWinnerImage className={styles.bidIllustration} />;
         } else {
@@ -234,7 +236,7 @@ const RtwrkAndBidCarousel = ({
   const isPreAuctionDrawing = round <= ORIGINAL_RTWRKS_COUNT;
 
   const aspectUrl = `${process.env.NEXT_PUBLIC_ASPECT_LINK}/${process.env.NEXT_PUBLIC_RTWRK_ERC721_ADDRESS}/${round}`;
-  const mintsquareUrl = `${process.env.NEXT_PUBLIC_MINTSQUARE_LINK}/${process.env.NEXT_PUBLIC_RTWRK_ERC721_ADDRESS}/${round}`;
+  const mintsquareUrl = `${process.env.NEXT_PUBLIC_MINTSQUARE_ASSET_LINK}/${process.env.NEXT_PUBLIC_RTWRK_ERC721_ADDRESS}/${round}`;
 
   const displayAddress = (a: string) => {
     if (state.account && BigNumber(a).isEqualTo(state.account)) {

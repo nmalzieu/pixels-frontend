@@ -27,7 +27,7 @@ const CollectionRtwtk = ({ rtwrkId, setEditingStepForRtwrk }: Props) => {
     condition: true,
   });
   const aspectUrl = `${process.env.NEXT_PUBLIC_ASPECT_LINK}/${process.env.NEXT_PUBLIC_RTWRK_ERC721_ADDRESS}/${rtwrkId}`;
-  const mintsquareUrl = `${process.env.NEXT_PUBLIC_MINTSQUARE_LINK}/${process.env.NEXT_PUBLIC_RTWRK_ERC721_ADDRESS}/${rtwrkId}`;
+  const mintsquareUrl = `${process.env.NEXT_PUBLIC_MINTSQUARE_ASSET_LINK}/${process.env.NEXT_PUBLIC_RTWRK_ERC721_ADDRESS}/${rtwrkId}`;
 
   const displayAddress = (a: string) => {
     if (state.account && BigNumber(a).isEqualTo(state.account)) {
@@ -64,7 +64,7 @@ const CollectionRtwtk = ({ rtwrkId, setEditingStepForRtwrk }: Props) => {
   return (
     <div className={styles.collectionRtwrk}>
       <div className={styles.gridContainer}>
-        <AspectRtwrkImage rtwrkId={rtwrkId} />;
+        <AspectRtwrkImage rtwrkId={rtwrkId} />
       </div>
       <div
         style={{
@@ -128,7 +128,10 @@ const CollectionRtwtk = ({ rtwrkId, setEditingStepForRtwrk }: Props) => {
         rainbow
         block
         text="Change NFT image"
-        action={() => setEditingStepForRtwrk(rtwrkId)}
+        action={() => {
+          setEditingStepForRtwrk(rtwrkId);
+          window.scrollTo(0, 0);
+        }}
       />
     </div>
   );

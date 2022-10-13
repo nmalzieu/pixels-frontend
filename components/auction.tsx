@@ -13,7 +13,7 @@ import carouselStyles from "../styles/RtwrkAndBidCarousel.module.scss";
 import {
   feltArrayToStr,
   getAddressFromBN,
-  getExecuteParameterFromString,
+  getExecuteParameterFromTheme,
   getUintFromNumber,
   shortAddress,
   useHasChanged,
@@ -34,6 +34,9 @@ type Props = {
 const BID_INCREMENT = 0.005; // IN ETH
 const THEME_MAX_LENGTH = 155; // 5 felts
 
+const THEME_VOCABULARY =
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:/?[]@!$&'()*+,;=";
+
 const Auction = ({
   auctionId,
   auctionTimestamp,
@@ -47,7 +50,7 @@ const Auction = ({
   const dispatch = useStoreDispatch();
   const { contract: rtwrkThemeAuctionContract } =
     useRtwrkThemeAuctionContract();
-  const now = new Date().getTime() / 1000 + 60 * 3600;
+  const now = new Date().getTime() / 1000;
   const auctionEnd = auctionTimestamp + 24 * 3600;
   const auctionStartedSince = now - auctionTimestamp;
   const isCurrentAuction = auctionStartedSince <= 24 * 3600;
@@ -55,7 +58,7 @@ const Auction = ({
     useState(auctionEnd - Math.floor(new Date().getTime() / 1000));
   useEffect(() => {
     const refresh = () => {
-      const now = new Date().getTime() / 1000 + 60 * 3600;
+      const now = new Date().getTime() / 1000;
       const sUntilFinished = auctionEnd - Math.floor(now);
       setSecondsUntilAuctionFinished(sUntilFinished);
     };
@@ -209,7 +212,7 @@ const Auction = ({
           auctionId,
           getUintFromNumber(bidAmountInWei).low,
           getUintFromNumber(bidAmountInWei).high,
-          ...getExecuteParameterFromString(bidTheme),
+          ...getExecuteParameterFromTheme(bidTheme),
         ],
       },
     ],
@@ -282,6 +285,13 @@ const Auction = ({
     (state.drawingIsHappening || lastDrawingToSettle) &&
     !isCurrentAuction &&
     auctionHadBids;
+
+  let isThemeValid = true;
+  for (const letter of bidTheme) {
+    if (!THEME_VOCABULARY.includes(letter.replace(" ", "+"))) {
+      isThemeValid = false;
+    }
+  }
 
   return (
     <div className={styles.auction}>
@@ -360,7 +370,7 @@ const Auction = ({
         )}
       {!isAuctionFinished && !isAuctionLaunching && !lastDrawingNotFinished && (
         <>
-          {showError && (
+          {(showError || !isThemeValid) && (
             <div className={styles.bidError}>
               <CrossImage
                 onClick={() => {
@@ -371,11 +381,20 @@ const Auction = ({
                 className={styles.singleSeparator}
                 style={{ opacity: 0.5, marginBottom: 10 }}
               />
-              <div style={{ color: "#FF4848" }}>
-                Before placing your bid, make sure your theme is{" "}
-                {THEME_MAX_LENGTH} characters long max & your bid is{" "}
-                {minBid.toFixed()} eth min.
-              </div>
+              {isThemeValid && (
+                <div style={{ color: "#FF4848" }}>
+                  Before placing your bid, make sure your theme is{" "}
+                  {THEME_MAX_LENGTH} characters long max & your bid is{" "}
+                  {minBid.toFixed()} eth min.
+                </div>
+              )}
+              {!isThemeValid && (
+                <div style={{ color: "#FF4848" }}>
+                  Your theme can only include letters, figures and the following
+                  characters: <br />
+                  -._~:/?[]@!$&&apos;()*+,;=
+                </div>
+              )}
             </div>
           )}
           <div className={carouselStyles.dual}>

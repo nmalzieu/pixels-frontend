@@ -41,11 +41,13 @@ const CollectionPage = () => {
       : rtwrksOwnedData[0].map((p: BigNumberish) => p.toNumber());
   const doesNotOwnAnything =
     pixelsOfOwner.length === 0 && rtwrksOwned.length === 0;
-  let height =
-    171 + rtwrksOwned.length * 970 + pixelsOfOwner.length * 977 + 600;
   const [editingStepForRtwrk, setEditingStepForRtwrk] = useState<
     number | undefined
-  >(6);
+  >(undefined);
+  const height = editingStepForRtwrk
+    ? 1000
+    : 171 + rtwrksOwned.length * 970 + pixelsOfOwner.length * 977 + 600;
+
   return (
     <div className={styles.collectionPage}>
       <div className={styles.collectionPageContent} style={{ height }}>
@@ -125,7 +127,7 @@ const CollectionPage = () => {
                       </a>{" "}
                       or{" "}
                       <a
-                        href={`${process.env.NEXT_PUBLIC_MINTSQUARE_LINK}/${process.env.NEXT_PUBLIC_PXL_ERC721_ADDRESS}`}
+                        href={`${process.env.NEXT_PUBLIC_MINTSQUARE_COLLECTION_LINK}/${process.env.NEXT_PUBLIC_PXL_ERC721_ADDRESS}`}
                         target="_blank"
                         rel="noreferrer"
                         style={{ textDecoration: "underline" }}

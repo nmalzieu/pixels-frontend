@@ -7,7 +7,6 @@ import { useExecute, useTransactionStatus } from "../contracts/helpers";
 import { useRtwrkDrawerContract } from "../contracts/rtwrkDrawer";
 import { useRtwrkERC721Contract } from "../contracts/rtwrkERC721";
 import SmallClock from "../public/clock-small.svg";
-import { useStoreDispatch } from "../store";
 import styles from "../styles/CollectionRtwrkEdit.module.scss";
 import Button from "./button";
 import Grid from "./grid";
@@ -18,7 +17,6 @@ type Props = {
 };
 
 const CollectionRtwrkEdit = ({ rtwrkId }: Props) => {
-  const dispatch = useStoreDispatch();
   const { contract: rtwrkDrawerContract } = useRtwrkDrawerContract();
   const { contract: rtwrkERC721Contract } = useRtwrkERC721Contract();
   const { data: rtwrkStepsCountData, loading: rtwrkStepsCountLoading } =

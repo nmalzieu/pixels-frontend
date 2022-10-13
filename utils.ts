@@ -63,8 +63,13 @@ export const strToFeltArray = (str: string): string[] => {
   return felts;
 };
 
-export const getExecuteParameterFromString = (str: string): string[] => {
-  const feltArray = strToFeltArray(str);
+export const getExecuteParameterFromTheme = (theme: string): string[] => {
+  const feltArray = [];
+  for (const letter of theme) {
+    feltArray.push(
+      toBN(encodeShortString(letter.replace(" ", "+"))).toString()
+    );
+  }
   return [feltArray.length.toString(), ...feltArray];
 };
 

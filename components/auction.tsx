@@ -3,6 +3,7 @@ import BigNumber from "bignumber.js";
 import { useEffect, useRef, useState } from "react";
 import { uint256 } from "starknet";
 
+import { useEthERC20Contract } from "../contracts/ethERC20";
 import { useExecute, useTransactionStatus } from "../contracts/helpers";
 import { useRtwrkThemeAuctionContract } from "../contracts/rtwrkThemeAuction";
 import SmallClock from "../public/clock-small.svg";
@@ -49,6 +50,7 @@ const Auction = ({
   const dispatch = useStoreDispatch();
   const { contract: rtwrkThemeAuctionContract } =
     useRtwrkThemeAuctionContract();
+  const { contract: ethERC20Contract } = useEthERC20Contract();
   const now = new Date().getTime() / 1000;
   const auctionEnd = auctionTimestamp + 24 * 3600;
   const auctionStartedSince = now - auctionTimestamp;
@@ -115,6 +117,17 @@ const Auction = ({
       : undefined;
     dispatch.setCurrentAuctionBid(currentAuctionBid);
   }, [currentAuctionBidData, dispatch]);
+
+  const { data: ethBalanceData, loading: ethBalanceLoading } = useStarknetCall({
+    contract: ethERC20Contract,
+    method: "balanceOf",
+    args: [state.account],
+  });
+
+  const ethBalanceInWei =
+    !ethBalanceLoading && ethBalanceData
+      ? new BigNumber(uint256.uint256ToBN(ethBalanceData[0]).toString())
+      : 0;
 
   const { data: bidIncrementData, loading: bidIncrementLoading } =
     useStarknetCall({
@@ -206,6 +219,11 @@ const Auction = ({
     .integerValue()
     .toFixed();
 
+  const isAmountOverBalance = bidAmountBigNumber
+    .multipliedBy("1e+18")
+    .integerValue()
+    .isGreaterThan(ethBalanceInWei);
+
   const { execute: placeBid } = useExecute({
     calls: [
       {
@@ -281,7 +299,9 @@ const Auction = ({
     if (
       bidAmountBigNumber.isLessThan(minBid) ||
       bidTheme.trim().length > THEME_MAX_LENGTH ||
-      !isThemeValid
+      !isThemeValid ||
+      state.message ||
+      isAmountOverBalance
     ) {
       setShowError(true);
       return;
@@ -396,19 +416,38 @@ const Auction = ({
                 className={styles.singleSeparator}
                 style={{ opacity: 0.5, marginBottom: 10 }}
               />
-              {isThemeValid && (
+              {!state.account && (
                 <div style={{ color: "#FF4848" }}>
-                  Before placing your bid, make sure your theme is{" "}
-                  {THEME_MAX_LENGTH} characters long max & your bid is{" "}
-                  {minBid.toFixed()} eth min.
+                  Please connect your wallet to place a bid
                 </div>
               )}
-              {!isThemeValid && (
+              {state.account && state.message && (
+                <div style={{ color: "#FF4848" }}>{state.message}</div>
+              )}
+              {state.account &&
+                isThemeValid &&
+                !isAmountOverBalance &&
+                !state.message && (
+                  <div style={{ color: "#FF4848" }}>
+                    Before placing your bid, make sure your theme is{" "}
+                    {THEME_MAX_LENGTH} characters long max & your bid is{" "}
+                    {minBid.toFixed()} eth min.
+                  </div>
+                )}
+              {state.account && isAmountOverBalance && !state.message && (
                 <div style={{ color: "#FF4848" }}>
-                  Your theme can only include letters, figures, spaces and the
-                  following characters: -._~:/?[]@!$&&apos;()*,;=
+                  Your eth balance is too low for this bid.
                 </div>
               )}
+              {state.account &&
+                !isThemeValid &&
+                !isAmountOverBalance &&
+                !state.message && (
+                  <div style={{ color: "#FF4848" }}>
+                    Your theme can only include letters, figures, spaces and the
+                    following characters: -._~:/?[]@!$&&apos;()*,;=
+                  </div>
+                )}
             </div>
           )}
           <div className={carouselStyles.dual}>

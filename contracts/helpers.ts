@@ -117,6 +117,7 @@ export const useInvoke = ({
             clearInterval(interval);
             reject("No connector found!");
           } else {
+            clearInterval(interval);
             console.log("An error occured connectThenInvoke");
           }
         }
@@ -206,7 +207,8 @@ export const useExecute = ({ calls }: UseStarknetExecuteArgs) => {
             clearInterval(interval);
             reject("No connector found!");
           } else {
-            console.log("An error occured connectThenInvoke");
+            clearInterval(interval);
+            console.log("An error occured connectThenExecute");
           }
         }
       }, 100);

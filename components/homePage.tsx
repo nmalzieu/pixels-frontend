@@ -49,12 +49,13 @@ const HomePage = () => {
     ? currentRtwrkTimestampData[0].toNumber()
     : 0;
 
-  const { data: totalRtwrkSupplyData } = useStarknetCall({
-    contract: rtwrkERC721Contract,
-    method: "totalSupply",
-    args: [],
-    options: { blockIdentifier: "latest" },
-  });
+  const { data: totalRtwrkSupplyData, loading: totalRtwrkSupplyLoading } =
+    useStarknetCall({
+      contract: rtwrkERC721Contract,
+      method: "totalSupply",
+      args: [],
+      options: { blockIdentifier: "latest" },
+    });
 
   const totalRtwrkSupply = totalRtwrkSupplyData
     ? uint256ToBN(totalRtwrkSupplyData[0]).toNumber()
@@ -95,6 +96,7 @@ const HomePage = () => {
     !currentRtwrkIdData ||
     !currentAuctionIdData ||
     !currentAuctionTimestampData ||
+    totalRtwrkSupplyLoading ||
     !state.rehydrated;
 
   const now = new Date().getTime() / 1000;

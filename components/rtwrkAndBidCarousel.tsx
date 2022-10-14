@@ -32,7 +32,7 @@ import Button from "./button";
 import GridComponent from "./grid";
 import GridLoader from "./gridLoader";
 
-const ORIGINAL_RTWRKS_COUNT = 10;
+const ORIGINAL_RTWRKS_COUNT = 11;
 
 type Props = {
   pendingRtwrkId: number;
@@ -60,11 +60,18 @@ const RtwrkAndBidCarousel = ({
     currentRwrkId: currentRwrkId,
     mintedCount: mintedCount,
   });
+  console.log(
+    "setting round to ",
+    state.drawingIsHappening || currentRwrkId > mintedCount
+      ? currentRwrkId
+      : currentRwrkId + 1
+  );
   const [round, setRound] = useState(
     state.drawingIsHappening || currentRwrkId > mintedCount
       ? currentRwrkId
       : currentRwrkId + 1
   );
+  console.log("round", round);
 
   const { contract: rtwrkDrawerContract } = useRtwrkDrawerContract();
   const { contract: rtwrkERC721Contract } = useRtwrkERC721Contract();

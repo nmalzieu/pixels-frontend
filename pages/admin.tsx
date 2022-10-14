@@ -4,8 +4,10 @@ import { useRef } from "react";
 
 import ConnectToStarknet from "../components/connectToStarknet";
 import { useInvoke } from "../contracts/helpers";
-import { usePixelDrawer2Contract } from "../contracts/pixelDrawer2";
-import { usePixelERC721Contract } from "../contracts/pixelERC721";
+import { usePxlERC721Contract } from "../contracts/pxlERC721";
+import { useRtwrkDrawerContract } from "../contracts/rtwrkDrawer";
+import { useRtwrkERC721Contract } from "../contracts/rtwrkERC721";
+import { useRtwrkThemeAuctionContract } from "../contracts/rtwrkThemeAuction";
 import { useStoreState } from "../store";
 import {
   getAddressFromBN,
@@ -15,35 +17,38 @@ import {
 
 const Admin: NextPage = () => {
   const storeState = useStoreState();
-  const { contract: pixelERC721Contract } = usePixelERC721Contract();
-  const { contract: pixelDrawerContract } = usePixelDrawer2Contract();
+  const { contract: pxlERC721Contract } = usePxlERC721Contract();
+  const { contract: rtwrkDrawerContract } = useRtwrkDrawerContract();
+  const { contract: rtwrkERC721Contract } = useRtwrkERC721Contract();
+  const { contract: rtwrkThemeAuctionContract } =
+    useRtwrkThemeAuctionContract();
 
   const { data: matrixSizeData } = useStarknetCall({
-    contract: pixelERC721Contract,
+    contract: pxlERC721Contract,
     method: "matrixSize",
     args: [],
   });
 
   const { data: maxSupplyData } = useStarknetCall({
-    contract: pixelERC721Contract,
+    contract: pxlERC721Contract,
     method: "maxSupply",
     args: [],
   });
 
   const { data: totalSupplyData } = useStarknetCall({
-    contract: pixelERC721Contract,
+    contract: pxlERC721Contract,
     method: "totalSupply",
     args: [],
   });
 
   const { data: drawerOwnerData } = useStarknetCall({
-    contract: pixelDrawerContract,
+    contract: rtwrkDrawerContract,
     method: "owner",
     args: [],
   });
 
   const { data: pixelsOfOwnerData } = useStarknetCall({
-    contract: pixelERC721Contract,
+    contract: pxlERC721Contract,
     method: "pixelsOfOwner",
     args: [storeState.account],
   });
@@ -53,67 +58,103 @@ const Admin: NextPage = () => {
   );
 
   const { invoke: transfer } = useInvoke({
-    contract: pixelERC721Contract,
+    contract: pxlERC721Contract,
     method: "transferFrom",
   });
 
-  const { data: pixelERC721AddressData } = useStarknetCall({
-    contract: pixelDrawerContract,
-    method: "pixelERC721Address",
+  const { data: pxlERC721AddressData } = useStarknetCall({
+    contract: rtwrkDrawerContract,
+    method: "pxlERC721Address",
     args: [],
   });
 
-  const { data: currentDrawingRoundDataPending } = useStarknetCall({
-    contract: pixelDrawerContract,
-    method: "currentDrawingRound",
+  const { data: auctionAddressOnDrawerData } = useStarknetCall({
+    contract: rtwrkDrawerContract,
+    method: "rtwrkThemeAuctionContractAddress",
     args: [],
-    options: {
-      blockIdentifier: "pending",
-    },
   });
 
-  const { data: currentDrawingTimestampDataPending } = useStarknetCall({
-    contract: pixelDrawerContract,
-    method: "currentDrawingTimestamp",
+  const { data: currentRtwrkIdDataPending } = useStarknetCall({
+    contract: rtwrkDrawerContract,
+    method: "currentRtwrkId",
     args: [],
     options: {
       blockIdentifier: "pending",
     },
   });
 
-  const { data: currentDrawingRoundDataLatest } = useStarknetCall({
-    contract: pixelDrawerContract,
-    method: "currentDrawingRound",
+  const { data: currentRtwrkTimestampDataPending } = useStarknetCall({
+    contract: rtwrkDrawerContract,
+    method: "currentRtwrkTimestamp",
+    args: [],
+    options: {
+      blockIdentifier: "pending",
+    },
+  });
+
+  const { data: currentRtwrkIdDataLatest } = useStarknetCall({
+    contract: rtwrkDrawerContract,
+    method: "currentRtwrkId",
     args: [],
     options: {
       blockIdentifier: "latest",
     },
   });
 
-  const { data: currentDrawingTimestampDataLatest } = useStarknetCall({
-    contract: pixelDrawerContract,
-    method: "currentDrawingTimestamp",
+  const { data: currentRtwrkTimestampDataLatest } = useStarknetCall({
+    contract: rtwrkDrawerContract,
+    method: "currentRtwrkTimestamp",
     args: [],
     options: {
       blockIdentifier: "latest",
     },
   });
 
-  const { invoke: launchNewRoundIfNecessary } = useInvoke({
-    contract: pixelDrawerContract,
-    method: "launchNewRoundIfNecessary",
+  const { data: currentAuctionIdData } = useStarknetCall({
+    contract: rtwrkThemeAuctionContract,
+    method: "currentAuctionId",
+    args: [],
+    options: {
+      blockIdentifier: "latest",
+    },
   });
 
-  const themeRef = useRef(null);
+  const { data: currentAuctionTimestampData } = useStarknetCall({
+    contract: rtwrkThemeAuctionContract,
+    method: "auctionTimestamp",
+    args: [currentAuctionIdData ? currentAuctionIdData[0].toNumber() : ""],
+    options: {
+      blockIdentifier: "latest",
+    },
+  });
+
+  const { invoke: setAuctionAddressOnDrawer } = useInvoke({
+    contract: rtwrkDrawerContract,
+    method: "setRtwrkThemeAuctionContractAddress",
+  });
+
+  const { invoke: setAuctionAddressOnRtwrkERC721 } = useInvoke({
+    contract: rtwrkERC721Contract,
+    method: "setRtwrkThemeAuctionContractAddress",
+  });
+
+  const { data: auctionAddressOnRtwrkERC721Data } = useStarknetCall({
+    contract: rtwrkERC721Contract,
+    method: "rtwrkThemeAuctionContractAddress",
+    args: [],
+  });
+
+  const auctionAddressOnDrawerRef = useRef(null);
+  const auctionAddressOnERC721Ref = useRef(null);
 
   return (
     <div>
       <h1>Admin</h1>
       <ConnectToStarknet connectButton="Connect to Starknet" />
       <div>
-        <h2>PixelERC721</h2>
+        <h2>PxlERC721</h2>
         <ul>
-          <li>address : {pixelERC721Contract?.address}</li>
+          <li>address : {pxlERC721Contract?.address}</li>
           <li>
             matrixSize :{" "}
             {matrixSizeData
@@ -153,9 +194,9 @@ const Admin: NextPage = () => {
         </ul>
       </div>
       <div>
-        <h2>PixelDrawer</h2>
+        <h2>RtwrkDrawer</h2>
         <ul>
-          <li>address : {pixelDrawerContract?.address}</li>
+          <li>address : {rtwrkDrawerContract?.address}</li>
           <li>
             owner :{" "}
             {drawerOwnerData
@@ -163,53 +204,104 @@ const Admin: NextPage = () => {
               : "loading..."}
           </li>
           <li>
-            pixelERC721Address :{" "}
-            {pixelERC721AddressData
-              ? getAddressFromBN(pixelERC721AddressData[0])
+            pxlERC721Address :{" "}
+            {pxlERC721AddressData
+              ? getAddressFromBN(pxlERC721AddressData[0])
               : "loading..."}
           </li>
 
           <li>
-            currentDrawingRound (pending) :{" "}
-            {currentDrawingRoundDataPending
-              ? currentDrawingRoundDataPending[0].toNumber()
+            currentRtwrkId (pending) :{" "}
+            {currentRtwrkIdDataPending
+              ? currentRtwrkIdDataPending[0].toNumber()
               : "loading..."}
           </li>
           <li>
-            currentDrawingRound (latest) :{" "}
-            {currentDrawingRoundDataLatest
-              ? currentDrawingRoundDataLatest[0].toNumber()
+            currentRtwrkId (latest) :{" "}
+            {currentRtwrkIdDataLatest
+              ? currentRtwrkIdDataLatest[0].toNumber()
               : "loading..."}
           </li>
           <li>
-            currentDrawingTimestamp (pending) :{" "}
-            {currentDrawingTimestampDataPending
-              ? currentDrawingTimestampDataPending[0].toNumber()
+            currentRtwrkTimestamp (pending) :{" "}
+            {currentRtwrkTimestampDataPending
+              ? currentRtwrkTimestampDataPending[0].toNumber()
               : "loading..."}
           </li>
           <li>
-            currentDrawingTimestamp (latest) :{" "}
-            {currentDrawingTimestampDataLatest
-              ? currentDrawingTimestampDataLatest[0].toNumber()
+            currentRtwrkTimestamp (latest) :{" "}
+            {currentRtwrkTimestampDataLatest
+              ? currentRtwrkTimestampDataLatest[0].toNumber()
               : "loading..."}
           </li>
-          {currentDrawingTimestampDataLatest && (
-            <div>
-              <input placeholder="theme" ref={themeRef} />
-              <button
-                onClick={() => {
-                  const themeValue = (themeRef?.current as any)?.value;
-                  const themeArray = themeValue
-                    .split(",")
-                    .map((s: any) => s.trim());
-                  launchNewRoundIfNecessary({ args: [themeArray] });
-                }}
-              >
-                Launch next round
-              </button>
-            </div>
-          )}
+          <li>
+            auctionAddressOnDrawer :{" "}
+            {auctionAddressOnDrawerData
+              ? `0x${auctionAddressOnDrawerData[0].toString(16)}`
+              : "loading..."}
+          </li>
+          <div>
+            <input
+              defaultValue={rtwrkThemeAuctionContract?.address}
+              placeholder="rtwrk_theme_auction_proxy_address"
+              ref={auctionAddressOnDrawerRef}
+            />
+            <button
+              onClick={() => {
+                const value = (auctionAddressOnDrawerRef?.current as any)
+                  ?.value;
+                setAuctionAddressOnDrawer({ args: [value] });
+              }}
+            >
+              Update Auction Address on Drawer
+            </button>
+          </div>
         </ul>
+      </div>
+      <div>
+        <h2>ThemeAuction</h2>
+        <ul>
+          <li>address : {rtwrkThemeAuctionContract?.address}</li>
+          <li>
+            currentAuctionId (latest):{" "}
+            {currentAuctionIdData
+              ? currentAuctionIdData[0].toNumber()
+              : "loading..."}
+          </li>
+          <li>
+            currentAuctionTimestampData (latest) :{" "}
+            {currentAuctionTimestampData && currentAuctionIdData
+              ? currentAuctionTimestampData[0].toNumber()
+              : "loading..."}
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h2>RtwrkERC721</h2>
+        <ul>
+          <li>address : {rtwrkERC721Contract?.address}</li>
+          <li>
+            auctionAddressOnRtwrkERC721 :{" "}
+            {auctionAddressOnRtwrkERC721Data
+              ? `0x${auctionAddressOnRtwrkERC721Data[0].toString(16)}`
+              : "loading..."}
+          </li>
+        </ul>
+        <div>
+          <input
+            defaultValue={rtwrkThemeAuctionContract?.address}
+            placeholder="rtwrk_theme_auction_proxy_address"
+            ref={auctionAddressOnERC721Ref}
+          />
+          <button
+            onClick={() => {
+              const value = (auctionAddressOnERC721Ref?.current as any)?.value;
+              setAuctionAddressOnRtwrkERC721({ args: [value] });
+            }}
+          >
+            Update Auction Address on Rtwrk ERC721
+          </button>
+        </div>
       </div>
     </div>
   );

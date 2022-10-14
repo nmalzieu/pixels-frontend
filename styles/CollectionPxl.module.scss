@@ -1,0 +1,45 @@
+.collectionPxl {
+  position: relative;
+  background: #ffffff;
+  border: 2px solid #000000;
+  box-shadow: 10px 10px 0px #000000;
+  width: 467px;
+  height: 894px;
+  margin: auto;
+  padding: 47px 33px;
+  margin-bottom: 60px;
+
+  .gridContainer {
+    width: 400px;
+    height: 400px;
+    position: relative;
+  }
+}
+
+
+.labelAndValue {
+    .label {
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 16px;
+      color: #9e9e9e;
+      margin-bottom: 3px;
+    }
+    margin-bottom: 23px;
+  }
+  
+  .dual {
+    display: flex;
+  
+    .labelAndValue:first-child {
+      margin-right: 45px;
+    }
+  
+    a {
+      text-decoration: underline;
+    }
+  
+    a:last-child {
+      margin-left: auto;
+    }
+  }

@@ -2,8 +2,7 @@ import { useStarknetCall } from "@starknet-react/core";
 import { useEffect, useState } from "react";
 import { BigNumberish } from "starknet/dist/utils/number";
 
-import { usePixelDrawer1Contract } from "../contracts/pixelDrawer1";
-import { usePixelDrawer2Contract } from "../contracts/pixelDrawer2";
+import { useRtwrkDrawerContract } from "../contracts/rtwrkDrawer";
 import {
   Dispatch,
   GridPixel,
@@ -96,32 +95,27 @@ const getPixel = (
 type GridProps = {
   round: number;
   gridSize: number;
-  timestamp: number;
   viewerOnly?: boolean;
   saveGrid?: boolean;
+  step?: number;
 };
 
-const Grid = ({ round, gridSize, viewerOnly, saveGrid }: GridProps) => {
-  const { contract: pixelDrawer1Contract } = usePixelDrawer1Contract();
-  const { contract: pixelDrawer2Contract } = usePixelDrawer2Contract();
-
-  // Round 1 is on contract 1
-  // Round >= 2 are on contract 2
-
-  const pixelDrawerContract =
-    round >= 2 ? pixelDrawer2Contract : pixelDrawer1Contract;
-  const roundFromContract = round >= 2 ? round - 1 : round;
+const Grid = ({ round, gridSize, viewerOnly, saveGrid, step }: GridProps) => {
+  const { contract: rtwrkDrawerContract } = useRtwrkDrawerContract();
 
   const dispatch = useStoreDispatch();
   const state = useStoreState();
 
   const [pixelDataToDisplay, setPixelDataToDisplay] = useState(state.grid);
-  const [refreshing, setRefreshing] = useState(false);
 
-  const { data: gridData, refresh: refreshGrid } = useStarknetCall({
-    contract: pixelDrawerContract,
-    method: "getGrid",
-    args: [roundFromContract],
+  const {
+    data: gridData,
+    refresh: refreshGrid,
+    refreshing,
+  } = useStarknetCall({
+    contract: rtwrkDrawerContract,
+    method: "rtwrkGrid",
+    args: [round, step || 0],
   });
 
   useEffect(() => {
@@ -161,18 +155,9 @@ const Grid = ({ round, gridSize, viewerOnly, saveGrid }: GridProps) => {
     }
   }, [dispatch, gridData, saveGrid]);
 
-  useEffect(() => {
-    setRefreshing(false);
-  }, [gridData]);
-
-  if (!gridData) {
+  if (!gridData || refreshing) {
     return <GridLoader />;
   }
-
-  const refresh = () => {
-    setRefreshing(true);
-    refreshGrid();
-  };
 
   return (
     <div
@@ -196,7 +181,7 @@ const Grid = ({ round, gridSize, viewerOnly, saveGrid }: GridProps) => {
         </div>
       )}
       {!viewerOnly && (
-        <div className={styles.refresh} onClick={refresh}>
+        <div className={styles.refresh} onClick={refreshGrid}>
           <img
             src="/refresh.gif"
             alt="refresh-animated"

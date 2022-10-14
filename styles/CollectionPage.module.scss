@@ -1,0 +1,60 @@
+.collectionPage {
+  height: 100%;
+  overflow-x: hidden;
+
+  .collectionPageContent {
+    background-image: url(/background-live.png);
+    background-size: cover;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    min-height: 100vh;
+
+    .collectionPageContainer {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 0;
+      width: 1220px;
+      min-height: 100vh;
+      padding-top: 60px;
+
+      .loading {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        top: 300px;
+      }
+
+      .twitter,
+      .discord {
+        position: absolute;
+      }
+      .skate {
+        position: absolute;
+        left: 370px;
+        top: 150px;
+      }
+
+      .rtwrksAndPixels {
+        margin-top: 60px;
+      }
+
+      .whiteMessage {
+        color: white;
+        max-width: 260px;
+        margin: auto;
+        text-align: center;
+
+        .connectToStarknet {
+          text-decoration: underline;
+        }
+
+        .crown {
+          margin-top: 70px;
+        }
+      }
+    }
+  }
+}

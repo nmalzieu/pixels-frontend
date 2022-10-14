@@ -1,0 +1,99 @@
+.gridPage {
+  height: 100%;
+  overflow-x: hidden;
+
+  .gridPageContent {
+    background-image: url(/background-live.png);
+    background-size: cover;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+
+    .gridPageContainer {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 0;
+      width: 1220px;
+      padding-top: 60px;
+    }
+  }
+
+  .loading {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 300px;
+  }
+
+  div {
+    z-index: 1;
+  }
+
+  :global(.swatches-picker) {
+    width: 100% !important;
+    border-radius: 0 !important;
+
+    > div {
+      border-radius: 0 !important;
+      box-shadow: none !important;
+
+      > div {
+        box-shadow: none !important;
+      }
+    }
+  }
+
+  &.eyeDropper {
+    cursor: url(/eyedropper-cursor.png) 0 15, auto;
+  }
+
+  &.eraser {
+    cursor: url(/eraser-cursor.png) 5 10, auto;
+  }
+}
+
+.whiteMessage {
+  color: white;
+  width: 374px;
+  position: absolute;
+  top: 280px;
+  left: calc(50% + 50px);
+  transform: translateX(-50%);
+}
+
+.connectToStarknet {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.glasses {
+  position: absolute;
+  top: 370px;
+  left: 600px;
+}
+
+.twitter {
+  position: absolute;
+  top: 600px;
+  left: 470px;
+}
+
+.discord {
+  position: absolute;
+  top: 750px;
+  left: 630px;
+}
+
+.noPxlImage {
+  position: absolute;
+  top: 270px;
+  left: 135px;
+}
+
+.rainbowImage {
+  position: absolute;
+  top: 150px;
+  left: 455px;
+}

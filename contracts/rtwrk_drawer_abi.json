@@ -2,45 +2,6 @@
     {
         "members": [
             {
-                "name": "set",
-                "offset": 0,
-                "type": "felt"
-            },
-            {
-                "name": "color",
-                "offset": 1,
-                "type": "Color"
-            }
-        ],
-        "name": "PixelColor",
-        "size": 4,
-        "type": "struct"
-    },
-    {
-        "members": [
-            {
-                "name": "red",
-                "offset": 0,
-                "type": "felt"
-            },
-            {
-                "name": "green",
-                "offset": 1,
-                "type": "felt"
-            },
-            {
-                "name": "blue",
-                "offset": 2,
-                "type": "felt"
-            }
-        ],
-        "name": "Color",
-        "size": 3,
-        "type": "struct"
-    },
-    {
-        "members": [
-            {
                 "name": "low",
                 "offset": 0,
                 "type": "felt"
@@ -68,7 +29,7 @@
                 "type": "felt"
             }
         ],
-        "name": "Colorization",
+        "name": "PixelColorization",
         "size": 2,
         "type": "struct"
     },
@@ -88,27 +49,76 @@
         "type": "event"
     },
     {
+        "data": [
+            {
+                "name": "implementation",
+                "type": "felt"
+            }
+        ],
+        "keys": [],
+        "name": "Upgraded",
+        "type": "event"
+    },
+    {
+        "data": [
+            {
+                "name": "previousAdmin",
+                "type": "felt"
+            },
+            {
+                "name": "newAdmin",
+                "type": "felt"
+            }
+        ],
+        "keys": [],
+        "name": "AdminChanged",
+        "type": "event"
+    },
+    {
+        "data": [
+            {
+                "name": "pxl_id",
+                "type": "Uint256"
+            },
+            {
+                "name": "account_address",
+                "type": "felt"
+            },
+            {
+                "name": "pixel_colorizations_len",
+                "type": "felt"
+            },
+            {
+                "name": "pixel_colorizations",
+                "type": "PixelColorization*"
+            }
+        ],
+        "keys": [],
+        "name": "pixels_colorized",
+        "type": "event"
+    },
+    {
         "inputs": [
+            {
+                "name": "proxy_admin",
+                "type": "felt"
+            },
             {
                 "name": "owner",
                 "type": "felt"
             },
             {
-                "name": "pixel_erc721_address",
-                "type": "felt"
-            },
-            {
-                "name": "max_colorizations",
+                "name": "pxl_erc721",
                 "type": "felt"
             }
         ],
-        "name": "constructor",
+        "name": "initializer",
         "outputs": [],
-        "type": "constructor"
+        "type": "function"
     },
     {
         "inputs": [],
-        "name": "pixelERC721Address",
+        "name": "pxlERC721Address",
         "outputs": [
             {
                 "name": "address",
@@ -132,7 +142,7 @@
     },
     {
         "inputs": [],
-        "name": "currentDrawingTimestamp",
+        "name": "currentRtwrkTimestamp",
         "outputs": [
             {
                 "name": "timestamp",
@@ -145,11 +155,11 @@
     {
         "inputs": [
             {
-                "name": "round",
+                "name": "rtwrk_id",
                 "type": "felt"
             }
         ],
-        "name": "drawingTimestamp",
+        "name": "rtwrkTimestamp",
         "outputs": [
             {
                 "name": "timestamp",
@@ -161,10 +171,10 @@
     },
     {
         "inputs": [],
-        "name": "currentDrawingRound",
+        "name": "currentRtwrkId",
         "outputs": [
             {
-                "name": "round",
+                "name": "rtwrk_id",
                 "type": "felt"
             }
         ],
@@ -174,49 +184,15 @@
     {
         "inputs": [
             {
-                "name": "pixelIndex",
-                "type": "felt"
-            }
-        ],
-        "name": "currentDrawingPixelColor",
-        "outputs": [
-            {
-                "name": "color",
-                "type": "PixelColor"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "round",
+                "name": "rtwrkId",
                 "type": "felt"
             },
             {
-                "name": "pixelIndex",
+                "name": "rtwrkStep",
                 "type": "felt"
             }
         ],
-        "name": "pixelColor",
-        "outputs": [
-            {
-                "name": "color",
-                "type": "PixelColor"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "round",
-                "type": "felt"
-            }
-        ],
-        "name": "getGrid",
+        "name": "rtwrkGrid",
         "outputs": [
             {
                 "name": "grid_len",
@@ -231,29 +207,42 @@
         "type": "function"
     },
     {
-        "inputs": [],
-        "name": "everyoneCanLaunchRound",
-        "outputs": [
-            {
-                "name": "bool",
-                "type": "felt"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
         "inputs": [
             {
-                "name": "round",
+                "name": "rtwrkId",
                 "type": "felt"
             },
             {
-                "name": "tokenId",
+                "name": "rtwrkStep",
+                "type": "felt"
+            }
+        ],
+        "name": "rtwrkTokenUri",
+        "outputs": [
+            {
+                "name": "tokenUri_len",
+                "type": "felt"
+            },
+            {
+                "name": "tokenUri",
+                "type": "felt*"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "rtwrkId",
+                "type": "felt"
+            },
+            {
+                "name": "pxlId",
                 "type": "Uint256"
             }
         ],
-        "name": "numberOfColorizations",
+        "name": "numberOfPixelColorizations",
         "outputs": [
             {
                 "name": "count",
@@ -266,11 +255,11 @@
     {
         "inputs": [
             {
-                "name": "round",
+                "name": "rtwrkId",
                 "type": "felt"
             }
         ],
-        "name": "totalNumberOfColorizations",
+        "name": "totalNumberOfPixelColorizations",
         "outputs": [
             {
                 "name": "count",
@@ -281,21 +270,13 @@
         "type": "function"
     },
     {
-        "inputs": [],
-        "name": "maxColorizationsPerToken",
-        "outputs": [
-            {
-                "name": "max",
-                "type": "felt"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
         "inputs": [
             {
-                "name": "drawing_round",
+                "name": "rtwrkId",
+                "type": "felt"
+            },
+            {
+                "name": "rtwrkStep",
                 "type": "felt"
             }
         ],
@@ -312,11 +293,36 @@
     {
         "inputs": [
             {
-                "name": "drawing_round",
+                "name": "rtwrkId",
+                "type": "felt"
+            },
+            {
+                "name": "rtwrkStep",
                 "type": "felt"
             }
         ],
-        "name": "drawingTheme",
+        "name": "colorizers",
+        "outputs": [
+            {
+                "name": "colorizers_len",
+                "type": "felt"
+            },
+            {
+                "name": "colorizers",
+                "type": "felt*"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "rtwrkId",
+                "type": "felt"
+            }
+        ],
+        "name": "rtwrkTheme",
         "outputs": [
             {
                 "name": "theme_len",
@@ -333,16 +339,90 @@
     {
         "inputs": [
             {
-                "name": "tokenId",
-                "type": "Uint256"
-            },
+                "name": "rtwrkId",
+                "type": "felt"
+            }
+        ],
+        "name": "rtwrkMetadata",
+        "outputs": [
             {
-                "name": "colorizations_len",
+                "name": "auction_winner",
                 "type": "felt"
             },
             {
-                "name": "colorizations",
-                "type": "Colorization*"
+                "name": "auction_bid_amount",
+                "type": "Uint256"
+            },
+            {
+                "name": "timestamp",
+                "type": "felt"
+            },
+            {
+                "name": "theme_len",
+                "type": "felt"
+            },
+            {
+                "name": "theme",
+                "type": "felt*"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "rtwrkId",
+                "type": "felt"
+            }
+        ],
+        "name": "rtwrkStepsCount",
+        "outputs": [
+            {
+                "name": "steps_count",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "maxPixelColorizationsPerColorizer",
+        "outputs": [
+            {
+                "name": "max",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "rtwrkThemeAuctionContractAddress",
+        "outputs": [
+            {
+                "name": "address",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "pxlId",
+                "type": "Uint256"
+            },
+            {
+                "name": "pixel_colorizations_len",
+                "type": "felt"
+            },
+            {
+                "name": "pixel_colorizations",
+                "type": "PixelColorization*"
             }
         ],
         "name": "colorizePixels",
@@ -358,25 +438,17 @@
             {
                 "name": "theme",
                 "type": "felt*"
-            }
-        ],
-        "name": "launchNewRoundIfNecessary",
-        "outputs": [
+            },
             {
-                "name": "launched",
+                "name": "auction_winner",
                 "type": "felt"
-            }
-        ],
-        "type": "function"
-    },
-    {
-        "inputs": [
+            },
             {
-                "name": "bool",
-                "type": "felt"
+                "name": "auction_bid_amount",
+                "type": "Uint256"
             }
         ],
-        "name": "setEveryoneCanLaunchRound",
+        "name": "launchNewRtwrk",
         "outputs": [],
         "type": "function"
     },
@@ -400,11 +472,44 @@
     {
         "inputs": [
             {
-                "name": "new_max",
+                "name": "address",
                 "type": "felt"
             }
         ],
-        "name": "setMaxColorizationsPerToken",
+        "name": "setRtwrkThemeAuctionContractAddress",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "address",
+                "type": "felt"
+            }
+        ],
+        "name": "setPxlERC721ContractAddress",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "new_implementation",
+                "type": "felt"
+            }
+        ],
+        "name": "upgradeImplementation",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "address",
+                "type": "felt"
+            }
+        ],
+        "name": "setProxyAdmin",
         "outputs": [],
         "type": "function"
     }

@@ -46,6 +46,22 @@ const mintingMessages = [
 
 type ColorPickerMode = undefined | "eyedropper" | "eraser";
 
+type BidAction = {
+  auctionId: number;
+  bidAmount: string;
+  theme: string;
+  transactionHash: string;
+};
+
+type Bid = {
+  bidId: number;
+  bidAccount: string;
+  bidAmountEth: string;
+  bidAmountWei: string;
+  bidTimestamp: number;
+  theme: string;
+};
+
 const setAlertIfLeave = () => {
   window.onbeforeunload = function () {
     return "You have uncommitted colorizations. Do you want to quit PXLs?";
@@ -58,6 +74,7 @@ const unsetAlertIfLeave = () => {
 
 export const state = createModel<RootModel>()({
   state: {
+    rehydrated: false,
     message: "",
     account: "",
     accountConnected: false,
@@ -73,6 +90,12 @@ export const state = createModel<RootModel>()({
     selectedPixel: undefined as OwnedPixel | undefined,
     mouseOverGrid: false,
     committedColorizations: undefined as number | undefined,
+    lastBidAction: {} as BidAction | undefined,
+    currentAuctionBid: undefined as Bid | undefined,
+    launchAuctionHash: "",
+    launchAuctionRtwrkHash: "",
+    drawingIsHappening: false,
+    settlingAuctionHash: "",
   },
   reducers: {
     setColorPickerColor(state, color: Color) {
@@ -180,6 +203,53 @@ export const state = createModel<RootModel>()({
     setCommittedColorizations(state, committedColorizations: number) {
       return { ...state, committedColorizations };
     },
+    setRehydrated(state) {
+      return { ...state, rehydrated: true };
+    },
+    setLastBidAction(state, bidAction: BidAction | undefined) {
+      const newState = {
+        ...state,
+        lastBidAction: bidAction || ({} as BidAction),
+      };
+      if (!bidAction) {
+        localStorage.removeItem("pxls-last-bid-action");
+      } else {
+        localStorage.setItem("pxls-last-bid-action", JSON.stringify(bidAction));
+      }
+      return newState;
+    },
+    setCurrentAuctionBid(state, bid: Bid | undefined) {
+      return { ...state, currentAuctionBid: bid };
+    },
+    setLaunchAuctionHash(state, hash) {
+      const newState = { ...state, launchAuctionHash: hash };
+      if (hash) {
+        localStorage.setItem("pxls-launch-auction", hash);
+      } else {
+        localStorage.removeItem("pxls-launch-auction");
+      }
+      return newState;
+    },
+    setLaunchAuctionRtwrkHash(state, hash) {
+      const newState = { ...state, launchAuctionRtwrkHash: hash };
+      if (hash) {
+        localStorage.setItem("pxls-launch-auction-rtwrk", hash);
+      } else {
+        localStorage.removeItem("pxls-launch-auction-rtwrk");
+      }
+      return newState;
+    },
+    setDrawingIsHappening(state, happening) {
+      return { ...state, drawingIsHappening: happening };
+    },
+    setSettlingAuctionHash(state, hash) {
+      if (hash) {
+        localStorage.setItem("pxls-settling-auction", hash);
+      } else {
+        localStorage.removeItem("pxls-settling-auction");
+      }
+      return { ...state, settlingAuctionHash: hash };
+    },
   },
 });
 
@@ -198,6 +268,12 @@ setTimeout(() => {
     const previousAccount = localStorage.getItem("pxls-account");
     const mintingHash = localStorage.getItem("pxls-minting");
     const coloringHash = localStorage.getItem("pxls-coloring");
+    const lastBidAction = localStorage.getItem("pxls-last-bid-action");
+    const launchAuctionHash = localStorage.getItem("pxls-launch-auction");
+    const launchAuctionRtwrkHash = localStorage.getItem(
+      "pxls-launch-auction-rtwrk"
+    );
+    const settlingAuctionHash = localStorage.getItem("pxls-settling-auction");
     if (previousAccount) {
       store.dispatch({
         type: "state/setAccount",
@@ -219,8 +295,36 @@ setTimeout(() => {
         payload: coloringHash,
       });
     }
+    if (lastBidAction) {
+      store.dispatch({
+        type: "state/setLastBidAction",
+        payload: JSON.parse(lastBidAction),
+      });
+    }
+    if (launchAuctionHash) {
+      store.dispatch({
+        type: "state/setLaunchAuctionHash",
+        payload: launchAuctionHash,
+      });
+    }
+    if (launchAuctionRtwrkHash) {
+      store.dispatch({
+        type: "state/setLaunchAuctionRtwrkHash",
+        payload: launchAuctionRtwrkHash,
+      });
+    }
+    if (settlingAuctionHash) {
+      store.dispatch({
+        type: "state/setSettlingAuctionHash",
+        payload: settlingAuctionHash,
+      });
+    }
+    store.dispatch({
+      type: "state/setRehydrated",
+      payload: true,
+    });
   }
-}, 150);
+}, 100);
 
 setInterval(() => {
   // Making the "minting in progress (can take up to several hours)..."

@@ -10,4 +10,29 @@
     color: #8f8f8f;
     border: 1px solid #8f8f8f;
   }
+
+  &.block {
+    display: block;
+    max-width: initial;
+    text-align: center;
+  }
+
+  &.rainbowButton {
+    color: white;
+    background: linear-gradient(
+      83.15deg,
+      #ff4040 -12.47%,
+      #ee63f1 21.56%,
+      #3633cf 51.1%,
+      #55e8e8 81.28%,
+      #50dc1e 110.81%
+    );
+    border: 1px solid #000000;
+    padding: 9px 18px;
+
+    &.disabled {
+      pointer-events: none;
+      opacity: 0.6;
+    }
+  }
 }

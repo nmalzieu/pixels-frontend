@@ -1,0 +1,529 @@
+[
+    {
+        "members": [
+            {
+                "name": "low",
+                "offset": 0,
+                "type": "felt"
+            },
+            {
+                "name": "high",
+                "offset": 1,
+                "type": "felt"
+            }
+        ],
+        "name": "Uint256",
+        "size": 2,
+        "type": "struct"
+    },
+    {
+        "data": [
+            {
+                "name": "previousOwner",
+                "type": "felt"
+            },
+            {
+                "name": "newOwner",
+                "type": "felt"
+            }
+        ],
+        "keys": [],
+        "name": "OwnershipTransferred",
+        "type": "event"
+    },
+    {
+        "data": [
+            {
+                "name": "implementation",
+                "type": "felt"
+            }
+        ],
+        "keys": [],
+        "name": "Upgraded",
+        "type": "event"
+    },
+    {
+        "data": [
+            {
+                "name": "previousAdmin",
+                "type": "felt"
+            },
+            {
+                "name": "newAdmin",
+                "type": "felt"
+            }
+        ],
+        "keys": [],
+        "name": "AdminChanged",
+        "type": "event"
+    },
+    {
+        "data": [
+            {
+                "name": "caller_account_address",
+                "type": "felt"
+            },
+            {
+                "name": "auction_id",
+                "type": "felt"
+            }
+        ],
+        "keys": [],
+        "name": "auction_launched",
+        "type": "event"
+    },
+    {
+        "data": [
+            {
+                "name": "caller_account_address",
+                "type": "felt"
+            },
+            {
+                "name": "auction_id",
+                "type": "felt"
+            },
+            {
+                "name": "rtwrk_id",
+                "type": "felt"
+            },
+            {
+                "name": "theme_len",
+                "type": "felt"
+            },
+            {
+                "name": "theme",
+                "type": "felt*"
+            }
+        ],
+        "keys": [],
+        "name": "rtwrk_launched",
+        "type": "event"
+    },
+    {
+        "data": [
+            {
+                "name": "caller_account_address",
+                "type": "felt"
+            },
+            {
+                "name": "winner_account_address",
+                "type": "felt"
+            },
+            {
+                "name": "auction_id",
+                "type": "felt"
+            },
+            {
+                "name": "rtwrk_id",
+                "type": "felt"
+            }
+        ],
+        "keys": [],
+        "name": "auction_settled",
+        "type": "event"
+    },
+    {
+        "data": [
+            {
+                "name": "auction_id",
+                "type": "felt"
+            },
+            {
+                "name": "caller_account_address",
+                "type": "felt"
+            },
+            {
+                "name": "amount",
+                "type": "Uint256"
+            },
+            {
+                "name": "theme_len",
+                "type": "felt"
+            },
+            {
+                "name": "theme",
+                "type": "felt*"
+            }
+        ],
+        "keys": [],
+        "name": "bid_placed",
+        "type": "event"
+    },
+    {
+        "data": [
+            {
+                "name": "caller_account_address",
+                "type": "felt"
+            },
+            {
+                "name": "amount",
+                "type": "Uint256"
+            },
+            {
+                "name": "recipient",
+                "type": "felt"
+            }
+        ],
+        "keys": [],
+        "name": "pxls_balance_withdrawn",
+        "type": "event"
+    },
+    {
+        "data": [
+            {
+                "name": "caller_account_address",
+                "type": "felt"
+            },
+            {
+                "name": "amount",
+                "type": "Uint256"
+            },
+            {
+                "name": "pxl_id",
+                "type": "Uint256"
+            },
+            {
+                "name": "recipient",
+                "type": "felt"
+            }
+        ],
+        "keys": [],
+        "name": "colorizer_balance_withdrawn",
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "name": "proxy_admin",
+                "type": "felt"
+            },
+            {
+                "name": "owner",
+                "type": "felt"
+            },
+            {
+                "name": "eth_erc20_address_value",
+                "type": "felt"
+            },
+            {
+                "name": "pxls_erc721_address_value",
+                "type": "felt"
+            },
+            {
+                "name": "rtwrk_drawer_address_value",
+                "type": "felt"
+            },
+            {
+                "name": "rtwrk_erc721_address_value",
+                "type": "felt"
+            },
+            {
+                "name": "bid_increment_value",
+                "type": "felt"
+            }
+        ],
+        "name": "initializer",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "auctionId",
+                "type": "felt"
+            },
+            {
+                "name": "bidId",
+                "type": "felt"
+            }
+        ],
+        "name": "bid",
+        "outputs": [
+            {
+                "name": "bidAccount",
+                "type": "felt"
+            },
+            {
+                "name": "bidAmount",
+                "type": "Uint256"
+            },
+            {
+                "name": "bidTimestamp",
+                "type": "felt"
+            },
+            {
+                "name": "bidReimbursementTimestamp",
+                "type": "felt"
+            },
+            {
+                "name": "theme_len",
+                "type": "felt"
+            },
+            {
+                "name": "theme",
+                "type": "felt*"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "currentAuctionId",
+        "outputs": [
+            {
+                "name": "currentAuctionId",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "auctionId",
+                "type": "felt"
+            }
+        ],
+        "name": "currentAuctionBidId",
+        "outputs": [
+            {
+                "name": "currentAuctionBidId",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "auctionId",
+                "type": "felt"
+            }
+        ],
+        "name": "currentAuctionBid",
+        "outputs": [
+            {
+                "name": "bidId",
+                "type": "felt"
+            },
+            {
+                "name": "bidAccount",
+                "type": "felt"
+            },
+            {
+                "name": "bidAmount",
+                "type": "Uint256"
+            },
+            {
+                "name": "bidTimestamp",
+                "type": "felt"
+            },
+            {
+                "name": "bidReimbursementTimestamp",
+                "type": "felt"
+            },
+            {
+                "name": "theme_len",
+                "type": "felt"
+            },
+            {
+                "name": "theme",
+                "type": "felt*"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "auctionId",
+                "type": "felt"
+            }
+        ],
+        "name": "auctionTimestamp",
+        "outputs": [
+            {
+                "name": "auctionTimestamp",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "auctionId",
+                "type": "felt"
+            }
+        ],
+        "name": "auctionBidsCount",
+        "outputs": [
+            {
+                "name": "bidsCount",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "pxlId",
+                "type": "Uint256"
+            }
+        ],
+        "name": "colorizerBalance",
+        "outputs": [
+            {
+                "name": "balance",
+                "type": "Uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "pxlsBalance",
+        "outputs": [
+            {
+                "name": "balance",
+                "type": "Uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "owner",
+        "outputs": [
+            {
+                "name": "owner",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "bidIncrement",
+        "outputs": [
+            {
+                "name": "increment",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "launchAuction",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "auctionId",
+                "type": "felt"
+            },
+            {
+                "name": "bidAmount",
+                "type": "Uint256"
+            },
+            {
+                "name": "theme_len",
+                "type": "felt"
+            },
+            {
+                "name": "theme",
+                "type": "felt*"
+            }
+        ],
+        "name": "placeBid",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "launchAuctionRtwrk",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "newOwner",
+                "type": "felt"
+            }
+        ],
+        "name": "transferOwnership",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "settleAuction",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "withdrawPxlsBalance",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "pxlId",
+                "type": "Uint256"
+            }
+        ],
+        "name": "withdrawColorizerBalance",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "address",
+                "type": "felt"
+            }
+        ],
+        "name": "setPxlERC721ContractAddress",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "new_implementation",
+                "type": "felt"
+            }
+        ],
+        "name": "upgradeImplementation",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "address",
+                "type": "felt"
+            }
+        ],
+        "name": "setProxyAdmin",
+        "outputs": [],
+        "type": "function"
+    }
+]

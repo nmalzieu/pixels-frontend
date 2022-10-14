@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 
-import HomeDesktop from "../components/homeDesktop";
 import HomeMobile from "../components/homeMobile";
+import MintHomeDesktop from "../components/mintHomeDesktop";
 
 interface Props {
   isMobileView: boolean;
@@ -11,7 +11,7 @@ const Home: NextPage<Props> = ({ isMobileView }) => {
   if (isMobileView) {
     return <HomeMobile />;
   }
-  return <HomeDesktop />;
+  return <MintHomeDesktop />;
 };
 
 Home.getInitialProps = async ({ req }) => {

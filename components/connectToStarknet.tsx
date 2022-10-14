@@ -1,8 +1,4 @@
-import {
-  getInstalledInjectedConnectors,
-  useConnectors,
-  useStarknet,
-} from "@starknet-react/core";
+import { useAccount, useConnectors } from "@starknet-react/core";
 import { useCallback, useEffect } from "react";
 
 import { useStoreDispatch, useStoreState } from "../store";
@@ -15,21 +11,16 @@ const ConnectToStarknet = ({ connectButton }: Props) => {
   const state = useStoreState();
   const dispatch = useStoreDispatch();
 
-  const { connect, disconnect, available, connectors } = useConnectors();
+  const { connect, disconnect, available, refresh } = useConnectors();
+  useEffect(() => {
+    const interval = setInterval(refresh, 5000);
+    return () => clearInterval(interval);
+  }, [refresh]);
 
-  console.log("[DEBUG] Available connectors:", available);
-  console.log("[DEBUG] All connectors:", connectors);
-
-  const installedInjectedConnectors = getInstalledInjectedConnectors();
-  console.log("[DEBUG] Injected connectors:", installedInjectedConnectors);
-
-  const { account: starknetConnectedAccount } = useStarknet();
-  console.log("[DEBUG] Current account", starknetConnectedAccount);
+  const { address: starknetConnectedAccount } = useAccount();
   const connector = available.length > 0 ? available[0] : null;
 
   const disconnectAndDispatch = useCallback(() => {
-    const windowStarknet = (window as any).starknet;
-    console.log("[DEBUG] ", windowStarknet);
     if (starknetConnectedAccount) {
       try {
         disconnect();
@@ -38,11 +29,11 @@ const ConnectToStarknet = ({ connectButton }: Props) => {
         console.log("[DEBUG] Could not disconnect", e);
       }
     }
-    console.log("[DEBUG] Going to set account to null");
     dispatch.setAccount({
       account: "",
       accountConnected: false,
     });
+    dispatch.setLastBidAction(undefined);
   }, [starknetConnectedAccount, disconnect, dispatch]);
 
   useEffect(() => {
@@ -92,7 +83,7 @@ const ConnectToStarknet = ({ connectButton }: Props) => {
     );
   } else if (!starknetConnectedAccount) {
     return (
-      <div
+      <span
         onClick={() => {
           if (connector) {
             connect(connector);
@@ -101,7 +92,7 @@ const ConnectToStarknet = ({ connectButton }: Props) => {
         className="clickable"
       >
         {connectButton}
-      </div>
+      </span>
     );
   }
   return <div></div>;

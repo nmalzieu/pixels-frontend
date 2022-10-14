@@ -273,7 +273,10 @@ const RtwrkAndBidCarousel = ({
         {!isAuctionPage && (
           <>
             <div className={styles.dual}>
-              <div className={styles.labelAndValue}>
+              <div
+                className={styles.labelAndValue}
+                style={{ marginRight: isPreAuctionDrawing ? 0 : undefined }}
+              >
                 <div className={styles.label}>Winner</div>
                 <div>
                   {isPreAuctionDrawing

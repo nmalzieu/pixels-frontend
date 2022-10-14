@@ -112,7 +112,9 @@ const Auction = ({
               .toString()
           ).toFixed(),
           bidTimestamp: (currentAuctionBidData as any).bidTimestamp.toNumber(),
-          theme: feltArrayToStr((currentAuctionBidData as any).theme).join(""),
+          theme: feltArrayToStr((currentAuctionBidData as any).theme)
+            .join("")
+            .replace(/\+/g, " "),
         }
       : undefined;
     dispatch.setCurrentAuctionBid(currentAuctionBid);

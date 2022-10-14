@@ -55,6 +55,11 @@ const RtwrkAndBidCarousel = ({
 }: Props) => {
   const state = useStoreState();
   const dispatch = useStoreDispatch();
+  console.log({
+    drawingIsHappening: state.drawingIsHappening,
+    currentRwrkId: currentRwrkId,
+    mintedCount: mintedCount,
+  });
   const [round, setRound] = useState(
     state.drawingIsHappening || currentRwrkId > mintedCount
       ? currentRwrkId

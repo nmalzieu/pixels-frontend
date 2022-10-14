@@ -105,12 +105,12 @@ const Auction = ({
               .toString()
           )
             .multipliedBy("1e-18")
-            .toString(),
+            .toFixed(),
           bidAmountWei: new BigNumber(
             uint256
               .uint256ToBN((currentAuctionBidData as any).bidAmount)
               .toString()
-          ).toString(),
+          ).toFixed(),
           bidTimestamp: (currentAuctionBidData as any).bidTimestamp.toNumber(),
           theme: feltArrayToStr((currentAuctionBidData as any).theme).join(""),
         }

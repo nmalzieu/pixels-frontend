@@ -8,13 +8,14 @@ import { useRtwrkERC721Contract } from "../contracts/rtwrkERC721";
 import { useRtwrkThemeAuctionContract } from "../contracts/rtwrkThemeAuction";
 import CommissioningImage from "../public/commissioning.svg";
 import PinkBorder from "../public/pink_border.svg";
-import { useStoreDispatch } from "../store";
+import { useStoreDispatch, useStoreState } from "../store";
 import styles from "../styles/HomePage.module.scss";
 import GridLoader from "./gridLoader";
 import RtwrkAndBidCarousel from "./rtwrkAndBidCarousel";
 import TopNav from "./topNav";
 
 const HomePage = () => {
+  const state = useStoreState();
   const dispatch = useStoreDispatch();
   const { contract: rtwrkDrawerContract } = useRtwrkDrawerContract();
   const { contract: rtwrkERC721Contract } = useRtwrkERC721Contract();
@@ -93,7 +94,8 @@ const HomePage = () => {
     !currentRtwrkTimestampData ||
     !currentRtwrkIdData ||
     !currentAuctionIdData ||
-    !currentAuctionTimestampData;
+    !currentAuctionTimestampData ||
+    !state.rehydrated;
 
   const now = new Date().getTime() / 1000;
   const currentRtwrkStartedSince = now - currentRtwrkTimestamp;

@@ -37,6 +37,8 @@ const THEME_MAX_LENGTH = 155; // 5 felts
 const THEME_VOCABULARY =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:/?[]@!$&'()* ,;=";
 
+const BLOCK_TIME_BUFFER = 2 * 3600; // 2 hours buffer
+
 const Auction = ({
   auctionId,
   auctionTimestamp,
@@ -57,6 +59,7 @@ const Auction = ({
   const isCurrentAuction = auctionStartedSince <= 24 * 3600;
   const [secondsUntilAuctionFinished, setSecondsUntilAuctionFinished] =
     useState(auctionEnd - Math.floor(new Date().getTime() / 1000));
+
   useEffect(() => {
     const refresh = () => {
       const now = new Date().getTime() / 1000;
@@ -162,6 +165,20 @@ const Auction = ({
   hoursUntilFinished = Math.trunc(hoursUntilFinished);
   minsUntilFinished = Math.trunc(minsUntilFinished);
   secsUntilFinished = Math.trunc(secsUntilFinished);
+
+  const secondsUntilAuctionFinishedWithBuffer =
+    secondsUntilAuctionFinished + BLOCK_TIME_BUFFER;
+
+  const isAfterBuffer = secondsUntilAuctionFinishedWithBuffer < 0;
+
+  let hoursUntilFinishedWithBuffer =
+    secondsUntilAuctionFinishedWithBuffer / 3600;
+  let minsUntilFinishedWithBuffer =
+    (secondsUntilAuctionFinishedWithBuffer % 3600) / 60;
+  let secsUntilFinishedWithBuffer = (minsUntilFinishedWithBuffer * 60) % 60;
+  hoursUntilFinishedWithBuffer = Math.trunc(hoursUntilFinishedWithBuffer);
+  minsUntilFinishedWithBuffer = Math.trunc(minsUntilFinishedWithBuffer);
+  secsUntilFinishedWithBuffer = Math.trunc(secsUntilFinishedWithBuffer);
 
   const [bidAmount, setBidAmount] = useState("");
   const [bidTheme, setBidTheme] = useState("");
@@ -395,13 +412,19 @@ const Auction = ({
             </div>
             <div className={styles.singleSeparator} />
             <br />
-            {!isRtwrkLaunching && (
+            {!isRtwrkLaunching && isAfterBuffer && (
               <Button
                 rainbow
                 block
                 text={`Launch rtwrk #${nextRwrkId} drawing`}
                 action={launchAuctionRtwrk}
               />
+            )}
+            {!isRtwrkLaunching && !isAfterBuffer && (
+              <div>
+                You will be able to launch the drawing in{" "}
+                {minsUntilFinishedWithBuffer}m {secsUntilFinishedWithBuffer}s
+              </div>
             )}
             {isRtwrkLaunching && (
               <div>

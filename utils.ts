@@ -104,3 +104,7 @@ export const useHasChanged = (value: any, callback: any) => {
   }, [callback, hasChanged, previous]);
   return [hasChanged, previous];
 };
+
+export const capitalizeFirstLetter = (s: string) => {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+};

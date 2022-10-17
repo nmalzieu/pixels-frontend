@@ -154,7 +154,9 @@ const Auction = ({
   );
 
   const auctionHadBids =
-    auctionId > 0 && !currentAuctionBidLoading && !!currentAuctionBid;
+    auctionId > 0 &&
+    !currentAuctionBidLoading &&
+    !!currentAuctionBid?.bidTimestamp;
   const isAuctionFinished =
     (auctionTimestamp > 0 && secondsUntilAuctionFinished < 0) ||
     auctionId === 0;
@@ -171,12 +173,9 @@ const Auction = ({
 
   const isAfterBuffer = secondsUntilAuctionFinishedWithBuffer < 0;
 
-  let hoursUntilFinishedWithBuffer =
-    secondsUntilAuctionFinishedWithBuffer / 3600;
   let minsUntilFinishedWithBuffer =
     (secondsUntilAuctionFinishedWithBuffer % 3600) / 60;
   let secsUntilFinishedWithBuffer = (minsUntilFinishedWithBuffer * 60) % 60;
-  hoursUntilFinishedWithBuffer = Math.trunc(hoursUntilFinishedWithBuffer);
   minsUntilFinishedWithBuffer = Math.trunc(minsUntilFinishedWithBuffer);
   secsUntilFinishedWithBuffer = Math.trunc(secsUntilFinishedWithBuffer);
 

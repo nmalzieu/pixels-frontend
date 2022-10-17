@@ -34,6 +34,7 @@ import GridComponent from "./grid";
 import GridLoader from "./gridLoader";
 
 const ORIGINAL_RTWRKS_COUNT = 11;
+const BLOCK_TIME_BUFFER = 2 * 3600; // 2 hours buffer
 
 type Props = {
   pendingRtwrkId: number;
@@ -277,12 +278,21 @@ const RtwrkAndBidCarousel = ({
   const aspectUrl = `${process.env.NEXT_PUBLIC_ASPECT_ASSET_LINK}/${process.env.NEXT_PUBLIC_RTWRK_ERC721_ADDRESS}/${round}`;
   const mintsquareUrl = `${process.env.NEXT_PUBLIC_MINTSQUARE_ASSET_LINK}/${process.env.NEXT_PUBLIC_RTWRK_ERC721_ADDRESS}/${round}`;
 
+  const drawingEndsInWithBuffer = drawingEndsIn + BLOCK_TIME_BUFFER;
+
   let hoursUntilFinished = drawingEndsIn / 3600;
   let minsUntilFinished = (drawingEndsIn % 3600) / 60;
   let secsUntilFinished = (minsUntilFinished * 60) % 60;
   hoursUntilFinished = Math.trunc(hoursUntilFinished);
   minsUntilFinished = Math.trunc(minsUntilFinished);
   secsUntilFinished = Math.trunc(secsUntilFinished);
+
+  const isInBuffer = drawingEndsIn < 0 && drawingEndsInWithBuffer > 0;
+
+  let minsUntilFinishedWithBuffer = (drawingEndsInWithBuffer % 3600) / 60;
+  let secsUntilFinishedWithBuffer = (minsUntilFinishedWithBuffer * 60) % 60;
+  minsUntilFinishedWithBuffer = Math.trunc(minsUntilFinishedWithBuffer);
+  secsUntilFinishedWithBuffer = Math.trunc(secsUntilFinishedWithBuffer);
 
   const displayAddress = (a: string) => {
     if (state.account && BigNumber(a).isEqualTo(state.account)) {
@@ -379,19 +389,33 @@ const RtwrkAndBidCarousel = ({
                   </a>
                 </div>
               )}
-            {!isCurrentDrawing && round > mintedCount && !metadataLoading && (
-              <div>
-                <div className={styles.singleSeparator} />
-                Rtwrk #{round} is finished. It’s fixed forever on the
-                blockchain.
-                <Button
-                  rainbow
-                  block
-                  text="Settle, mint and start new auction"
-                  action={settleAuction}
-                />
-              </div>
-            )}
+            {!isCurrentDrawing &&
+              round > mintedCount &&
+              !metadataLoading &&
+              !isInBuffer && (
+                <div>
+                  <div className={styles.singleSeparator} />
+                  Rtwrk #{round} is finished. It’s fixed forever on the
+                  blockchain.
+                  <Button
+                    rainbow
+                    block
+                    text="Settle, mint and start new auction"
+                    action={settleAuction}
+                  />
+                </div>
+              )}
+            {!isCurrentDrawing &&
+              round > mintedCount &&
+              !metadataLoading &&
+              isInBuffer && (
+                <div>
+                  <div className={styles.singleSeparator} />
+                  Rtwrk #{round} is finished. It’s fixed forever on the
+                  blockchain. You will be able to settle the drawing in{" "}
+                  {minsUntilFinishedWithBuffer}m {secsUntilFinishedWithBuffer}s
+                </div>
+              )}
             {isCurrentDrawing && !rtwrkMetadataDataLoading && (
               <>
                 <div className={styles.singleSeparator} />

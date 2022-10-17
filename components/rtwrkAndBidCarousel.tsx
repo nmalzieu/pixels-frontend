@@ -1,3 +1,4 @@
+import { useStarknetCall } from "@starknet-react/core";
 import BigNumber from "bignumber.js";
 import moment from "moment-timezone";
 import { useEffect, useRef, useState } from "react";
@@ -33,6 +34,7 @@ import GridComponent from "./grid";
 import GridLoader from "./gridLoader";
 
 const ORIGINAL_RTWRKS_COUNT = 11;
+const BLOCK_TIME_BUFFER = 2 * 3600; // 2 hours buffer
 
 type Props = {
   pendingRtwrkId: number;
@@ -55,39 +57,36 @@ const RtwrkAndBidCarousel = ({
 }: Props) => {
   const state = useStoreState();
   const dispatch = useStoreDispatch();
-  console.log({
-    drawingIsHappening: state.drawingIsHappening,
-    currentRwrkId: currentRwrkId,
-    mintedCount: mintedCount,
-  });
-  console.log(
-    "setting round to ",
-    state.drawingIsHappening || currentRwrkId > mintedCount
-      ? currentRwrkId
-      : currentRwrkId + 1
-  );
   const [round, setRound] = useState(
     state.drawingIsHappening || currentRwrkId > mintedCount
       ? currentRwrkId
       : currentRwrkId + 1
   );
-  console.log("round", round);
-
   const { contract: rtwrkDrawerContract } = useRtwrkDrawerContract();
   const { contract: rtwrkERC721Contract } = useRtwrkERC721Contract();
 
-  const { data: rtwrkMetadataData } = useCall({
-    contract: rtwrkDrawerContract,
-    method: "rtwrkMetadata",
-    args: [round],
-    condition: round <= currentRwrkId,
-  });
+  const { data: rtwrkMetadataData, loading: rtwrkMetadataDataLoading } =
+    useCall({
+      contract: rtwrkDrawerContract,
+      method: "rtwrkMetadata",
+      args: [round],
+      condition: round <= currentRwrkId,
+    });
 
   const { data: rtwrkOwnerData } = useCall({
     contract: rtwrkERC721Contract,
     method: "ownerOf",
     args: [uint256.bnToUint256(round)],
     condition: round <= mintedCount,
+  });
+
+  const {
+    data: totalNumberOfPixelColorizationsData,
+    loading: totalNumberOfPixelColorizationsLoading,
+  } = useStarknetCall({
+    contract: rtwrkDrawerContract,
+    method: "totalNumberOfPixelColorizations",
+    args: [round],
   });
 
   const { execute: settleAuctionExecute } = useExecute({
@@ -149,7 +148,7 @@ const RtwrkAndBidCarousel = ({
     if (rtwrkMetadataData) {
       const themeArray = (rtwrkMetadataData as any).theme;
       const themeStrings = feltArrayToStr(themeArray);
-      const newTheme = themeStrings.join("").trim();
+      const newTheme = themeStrings.join("").trim().replace(/\+/g, " ");
       setAuctionAmount(
         new BigNumber(
           uint256
@@ -177,7 +176,7 @@ const RtwrkAndBidCarousel = ({
     }
   }, [rtwrkOwnerData]);
 
-  let component = <GridLoader />;
+  let component = <GridLoader transparent />;
 
   const now = new Date().getTime() / 1000;
 
@@ -191,6 +190,22 @@ const RtwrkAndBidCarousel = ({
   const drawingStartedSince = now - timestamp;
   const isCurrentDrawing = !isAuctionPage && drawingStartedSince <= 24 * 3600;
   const auctionStartedSince = now - currentAuctionTimestamp;
+
+  const [drawingEndsIn, setDrawingEndsIn] = useState(0);
+
+  useEffect(() => {
+    const refresh = () => {
+      const now = new Date().getTime() / 1000;
+      const sUntilFinished = timestamp + 24 * 3600 - Math.floor(now);
+      setDrawingEndsIn(sUntilFinished);
+    };
+    refresh();
+    const interval = setInterval(refresh, 1000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [timestamp]);
+
   const isCurrentAuction = isAuctionPage && auctionStartedSince <= 24 * 3600;
   const {
     pending: lastBidActionPending,
@@ -214,7 +229,13 @@ const RtwrkAndBidCarousel = ({
   }
 
   if (!isAuctionPage && round <= mintedCount) {
-    component = <AspectRtwrkImage rtwrkId={round} key={`aspect-${round}`} />;
+    component = (
+      <AspectRtwrkImage
+        rtwrkId={round}
+        key={`aspect-${round}`}
+        transparentLoader
+      />
+    );
   } else if (isAuctionPage) {
     const currentAuctionBid = state.currentAuctionBid?.bidTimestamp
       ? state.currentAuctionBid
@@ -241,15 +262,37 @@ const RtwrkAndBidCarousel = ({
     }
   } else if (!isAuctionPage && round > 0 && matrixSize) {
     component = (
-      <GridComponent gridSize={matrixSize} round={round} viewerOnly />
+      <GridComponent
+        gridSize={matrixSize}
+        round={round}
+        viewerOnly
+        forceShowRefresh
+        transparentLoader
+      />
     );
   }
 
   const beginningOfDrawing = moment.unix(timestamp).tz("Europe/Paris");
   const isPreAuctionDrawing = round <= ORIGINAL_RTWRKS_COUNT;
 
-  const aspectUrl = `${process.env.NEXT_PUBLIC_ASPECT_LINK}/${process.env.NEXT_PUBLIC_RTWRK_ERC721_ADDRESS}/${round}`;
+  const aspectUrl = `${process.env.NEXT_PUBLIC_ASPECT_ASSET_LINK}/${process.env.NEXT_PUBLIC_RTWRK_ERC721_ADDRESS}/${round}`;
   const mintsquareUrl = `${process.env.NEXT_PUBLIC_MINTSQUARE_ASSET_LINK}/${process.env.NEXT_PUBLIC_RTWRK_ERC721_ADDRESS}/${round}`;
+
+  const drawingEndsInWithBuffer = drawingEndsIn + BLOCK_TIME_BUFFER;
+
+  let hoursUntilFinished = drawingEndsIn / 3600;
+  let minsUntilFinished = (drawingEndsIn % 3600) / 60;
+  let secsUntilFinished = (minsUntilFinished * 60) % 60;
+  hoursUntilFinished = Math.trunc(hoursUntilFinished);
+  minsUntilFinished = Math.trunc(minsUntilFinished);
+  secsUntilFinished = Math.trunc(secsUntilFinished);
+
+  const isInBuffer = drawingEndsIn < 0 && drawingEndsInWithBuffer > 0;
+
+  let minsUntilFinishedWithBuffer = (drawingEndsInWithBuffer % 3600) / 60;
+  let secsUntilFinishedWithBuffer = (minsUntilFinishedWithBuffer * 60) % 60;
+  minsUntilFinishedWithBuffer = Math.trunc(minsUntilFinishedWithBuffer);
+  secsUntilFinishedWithBuffer = Math.trunc(secsUntilFinishedWithBuffer);
 
   const displayAddress = (a: string) => {
     if (state.account && BigNumber(a).isEqualTo(state.account)) {
@@ -273,7 +316,10 @@ const RtwrkAndBidCarousel = ({
         {!isAuctionPage && (
           <>
             <div className={styles.dual}>
-              <div className={styles.labelAndValue}>
+              <div
+                className={styles.labelAndValue}
+                style={{ marginRight: isPreAuctionDrawing ? 0 : undefined }}
+              >
                 <div className={styles.label}>Winner</div>
                 <div>
                   {isPreAuctionDrawing
@@ -296,7 +342,9 @@ const RtwrkAndBidCarousel = ({
             </div>
             <div className={styles.labelAndValue}>
               <div className={styles.label}>Theme</div>
-              <div>{!metadataLoading && theme ? theme : "--"}</div>
+              <div style={{ height: 48 }}>
+                {!metadataLoading && theme ? theme : "--"}
+              </div>
             </div>
             {round <= mintedCount && !showIsAuctionLaunching && (
               <>
@@ -341,18 +389,56 @@ const RtwrkAndBidCarousel = ({
                   </a>
                 </div>
               )}
-            {!isCurrentDrawing && round > mintedCount && !metadataLoading && (
-              <div>
+            {!isCurrentDrawing &&
+              round > mintedCount &&
+              !metadataLoading &&
+              !isInBuffer && (
+                <div>
+                  <div className={styles.singleSeparator} />
+                  Rtwrk #{round} is finished. It’s fixed forever on the
+                  blockchain.
+                  <Button
+                    rainbow
+                    block
+                    text="Settle, mint and start new auction"
+                    action={settleAuction}
+                  />
+                </div>
+              )}
+            {!isCurrentDrawing &&
+              round > mintedCount &&
+              !metadataLoading &&
+              isInBuffer && (
+                <div>
+                  <div className={styles.singleSeparator} />
+                  Rtwrk #{round} is finished. It’s fixed forever on the
+                  blockchain. You will be able to settle the drawing in{" "}
+                  {minsUntilFinishedWithBuffer}m {secsUntilFinishedWithBuffer}s
+                </div>
+              )}
+            {isCurrentDrawing && !rtwrkMetadataDataLoading && (
+              <>
                 <div className={styles.singleSeparator} />
-                Rtwrk #{round} is finished. It’s fixed forever on the
-                blockchain.
-                <Button
-                  rainbow
-                  block
-                  text="Settle, mint and start new auction"
-                  action={settleAuction}
-                />
-              </div>
+                <div className={styles.dual}>
+                  <div className={styles.labelAndValue} style={{ width: 110 }}>
+                    <div className={styles.label}>Drawing ends in</div>
+                    <div>
+                      {drawingEndsIn > 0
+                        ? `${hoursUntilFinished}h ${minsUntilFinished}m ${secsUntilFinished}s`
+                        : "--"}
+                    </div>
+                  </div>
+                  <div className={styles.labelAndValue}>
+                    <div className={styles.label}>Pixels colorized</div>
+                    <div>
+                      {!totalNumberOfPixelColorizationsLoading &&
+                      totalNumberOfPixelColorizationsData
+                        ? `${totalNumberOfPixelColorizationsData[0].toNumber()} pixels`
+                        : "--"}
+                    </div>
+                  </div>
+                </div>
+              </>
             )}
           </>
         )}

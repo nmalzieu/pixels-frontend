@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/router";
 import { BigNumberish } from "starknet/utils/number";
 
 import { useCall } from "../contracts/helpers";
@@ -11,9 +11,12 @@ import CollectionPxl from "./collectionPxl";
 import CollectionRtwtk from "./collectionRtwrk";
 import CollectionRtwrkEdit from "./collectionRtwrkEdit";
 import ConnectToStarknet from "./connectToStarknet";
+import Loading from "./loading";
 import TopNav from "./topNav";
 
 const CollectionPage = () => {
+  const router = useRouter();
+  const { editing: editingStepForRtwrk } = router.query;
   const state = useStoreState();
   const showDisconnected = !state.account && state.rehydrated;
   const { contract: pxlERC721Contract } = usePxlERC721Contract();
@@ -41,9 +44,6 @@ const CollectionPage = () => {
       : rtwrksOwnedData[0].map((p: BigNumberish) => p.toNumber());
   const doesNotOwnAnything =
     pixelsOfOwner.length === 0 && rtwrksOwned.length === 0;
-  const [editingStepForRtwrk, setEditingStepForRtwrk] = useState<
-    number | undefined
-  >(undefined);
   const height = editingStepForRtwrk
     ? 1000
     : 171 + rtwrksOwned.length * 970 + pixelsOfOwner.length * 977 + 600;
@@ -91,9 +91,7 @@ const CollectionPage = () => {
               </a>
             </>
           )}
-          {loading && (
-            <img src="/loading-collection.svg" className={styles.loading} />
-          )}
+          {loading && <Loading className={styles.loading} />}
           {!showDisconnected &&
             state.rehydrated &&
             !loading &&
@@ -121,7 +119,7 @@ const CollectionPage = () => {
                       1/ become an artist - get a pxl NFT and draw rtwrks with
                       the community. See the collection on{" "}
                       <a
-                        href={`${process.env.NEXT_PUBLIC_ASPECT_LINK}/${process.env.NEXT_PUBLIC_PXL_ERC721_ADDRESS}`}
+                        href={`${process.env.NEXT_PUBLIC_ASPECT_COLLECTION_LINK}/${process.env.NEXT_PUBLIC_PXL_ERC721_ADDRESS}`}
                         target="_blank"
                         rel="noreferrer"
                         style={{ textDecoration: "underline" }}
@@ -181,7 +179,9 @@ const CollectionPage = () => {
                   <CollectionRtwtk
                     key={rtwrkId}
                     rtwrkId={rtwrkId}
-                    setEditingStepForRtwrk={setEditingStepForRtwrk}
+                    setEditingStepForRtwrk={() => {
+                      router.replace(`/collection?editing=${rtwrkId}`);
+                    }}
                   />
                 ))}
                 {pixelsOfOwner.map((pxlId: number) => (
@@ -193,7 +193,9 @@ const CollectionPage = () => {
             !loading &&
             !doesNotOwnAnything &&
             editingStepForRtwrk && (
-              <CollectionRtwrkEdit rtwrkId={editingStepForRtwrk} />
+              <CollectionRtwrkEdit
+                rtwrkId={parseInt(`${editingStepForRtwrk}`, 10)}
+              />
             )}
         </div>
       </div>

@@ -32,7 +32,9 @@
 
     &.disabled {
       pointer-events: none;
-      opacity: 0.6;
+      background: #d9d9d9;
+      border: 1px solid #000000;
+      color: black;
     }
   }
 }

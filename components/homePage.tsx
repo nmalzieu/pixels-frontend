@@ -167,7 +167,16 @@ const HomePage = () => {
               <br />
               Everything we do is on-chain (on the Starknet blockchain):
               auctions, drawings, image storing, NFTs. If you want to have a
-              look at our contracts, check our documentation.
+              look at our contracts, check{" "}
+              <a
+                style={{ textDecoration: "underline" }}
+                href="https://github.com/nmalzieu/pxls-contracts"
+                target="_blank"
+                rel="noreferrer"
+              >
+                our documentation
+              </a>
+              .
               <br />
               <br />
               What will we draw next?

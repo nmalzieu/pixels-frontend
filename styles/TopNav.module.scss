@@ -11,6 +11,15 @@
     top: -12px;
     left: 50%;
     transform: translateX(-50%);
+    cursor: pointer;
+  }
+
+  .wrongNetworkMessage {
+    position: absolute;
+    right: 25px;
+    text-align: right;
+    top: 50px;
+    width: 135px;
   }
 
   .topElement {

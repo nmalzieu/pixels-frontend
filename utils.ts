@@ -65,10 +65,14 @@ export const strToFeltArray = (str: string): string[] => {
 
 export const getExecuteParameterFromTheme = (theme: string): string[] => {
   const feltArray = [];
-  for (const letter of theme) {
-    feltArray.push(
-      toBN(encodeShortString(letter.replace(" ", "+"))).toString()
-    );
+  try {
+    for (const letter of theme) {
+      feltArray.push(
+        toBN(encodeShortString(letter.replace(" ", "+"))).toString()
+      );
+    }
+  } catch (e) {
+    // console.error(e);
   }
   return [feltArray.length.toString(), ...feltArray];
 };
@@ -99,4 +103,8 @@ export const useHasChanged = (value: any, callback: any) => {
     }
   }, [callback, hasChanged, previous]);
   return [hasChanged, previous];
+};
+
+export const capitalizeFirstLetter = (s: string) => {
+  return s.charAt(0).toUpperCase() + s.slice(1);
 };

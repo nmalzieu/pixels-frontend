@@ -507,6 +507,17 @@
     {
         "inputs": [
             {
+                "name": "address",
+                "type": "felt"
+            }
+        ],
+        "name": "setRtwrkDrawerContractAddress",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "name": "new_implementation",
                 "type": "felt"
             }

@@ -17,6 +17,13 @@
       top: 5px;
       left: 5px;
     }
+
+    &.forceShowRefresh {
+      right: -120px;
+      bottom: 40px;
+      z-index: 2;
+      pointer-events: all;
+    }
   }
 
   &.viewerOnly {

@@ -37,6 +37,8 @@ const THEME_MAX_LENGTH = 155; // 5 felts
 const THEME_VOCABULARY =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:/?[]@!$&'()* ,;=";
 
+const BLOCK_TIME_BUFFER = 2 * 3600; // 2 hours buffer
+
 const Auction = ({
   auctionId,
   auctionTimestamp,
@@ -57,6 +59,7 @@ const Auction = ({
   const isCurrentAuction = auctionStartedSince <= 24 * 3600;
   const [secondsUntilAuctionFinished, setSecondsUntilAuctionFinished] =
     useState(auctionEnd - Math.floor(new Date().getTime() / 1000));
+
   useEffect(() => {
     const refresh = () => {
       const now = new Date().getTime() / 1000;
@@ -151,7 +154,9 @@ const Auction = ({
   );
 
   const auctionHadBids =
-    auctionId > 0 && !currentAuctionBidLoading && !!currentAuctionBid;
+    auctionId > 0 &&
+    !currentAuctionBidLoading &&
+    !!currentAuctionBid?.bidTimestamp;
   const isAuctionFinished =
     (auctionTimestamp > 0 && secondsUntilAuctionFinished < 0) ||
     auctionId === 0;
@@ -162,6 +167,17 @@ const Auction = ({
   hoursUntilFinished = Math.trunc(hoursUntilFinished);
   minsUntilFinished = Math.trunc(minsUntilFinished);
   secsUntilFinished = Math.trunc(secsUntilFinished);
+
+  const secondsUntilAuctionFinishedWithBuffer =
+    secondsUntilAuctionFinished + BLOCK_TIME_BUFFER;
+
+  const isAfterBuffer = secondsUntilAuctionFinishedWithBuffer < 0;
+
+  let minsUntilFinishedWithBuffer =
+    (secondsUntilAuctionFinishedWithBuffer % 3600) / 60;
+  let secsUntilFinishedWithBuffer = (minsUntilFinishedWithBuffer * 60) % 60;
+  minsUntilFinishedWithBuffer = Math.trunc(minsUntilFinishedWithBuffer);
+  secsUntilFinishedWithBuffer = Math.trunc(secsUntilFinishedWithBuffer);
 
   const [bidAmount, setBidAmount] = useState("");
   const [bidTheme, setBidTheme] = useState("");
@@ -220,7 +236,6 @@ const Auction = ({
     .multipliedBy("1e+18")
     .integerValue()
     .toFixed();
-
   const isAmountOverBalance = bidAmountBigNumber
     .multipliedBy("1e+18")
     .integerValue()
@@ -294,8 +309,9 @@ const Auction = ({
   }
 
   const validateAndPlaceBid = () => {
+    setShowError(false);
     if (bidAmountBigNumber.isEqualTo(0) || bidTheme.trim().length === 0) {
-      setShowError(false);
+      setShowError(true);
       return;
     }
     if (
@@ -330,6 +346,17 @@ const Auction = ({
     !isCurrentAuction &&
     auctionHadBids;
 
+  const displayAddress = (a: string) => {
+    if (state.account && BigNumber(a).isEqualTo(state.account)) {
+      return (
+        <span>
+          You <img src="/glasses-you.svg" />
+        </span>
+      );
+    }
+    return shortAddress(a);
+  };
+
   return (
     <div className={styles.auction}>
       {isAuctionFinished &&
@@ -339,9 +366,26 @@ const Auction = ({
         !currentAuctionBidLoading && (
           <div>
             <div className={styles.singleSeparator} />
-            There was no bid in the last auction. Start a new auction for rtwrk
-            #{nextRwrkId}
-            <Button rainbow block text="Start auction" action={launchAuction} />
+            {isAfterBuffer && (
+              <div>
+                There was no bid in the last auction. Start a new auction for
+                rtwrk #{nextRwrkId}
+                <Button
+                  rainbow
+                  block
+                  text="Start auction"
+                  action={launchAuction}
+                />
+              </div>
+            )}
+            {!isAfterBuffer && (
+              <div>
+                There was no bid in the last auction. There was no bid in the
+                last auction. You’ll be able to launch a new auction for rtwrk #
+                {nextRwrkId} in {minsUntilFinishedWithBuffer}m{" "}
+                {secsUntilFinishedWithBuffer}s
+              </div>
+            )}
           </div>
         )}
       {isAuctionLaunching && (
@@ -360,13 +404,12 @@ const Auction = ({
         !isAuctionLaunching &&
         !lastDrawingNotFinished && (
           <div>
-            <div className={styles.singleSeparator} />
             <div className={carouselStyles.dual}>
               <div className={carouselStyles.labelAndValue}>
                 <div className={carouselStyles.label}>Winner</div>
                 <div style={{ width: 110 }}>
                   {currentAuctionBid
-                    ? shortAddress(currentAuctionBid.bidAccount)
+                    ? displayAddress(currentAuctionBid.bidAccount)
                     : "--"}
                 </div>
               </div>
@@ -383,13 +426,21 @@ const Auction = ({
               <div className={carouselStyles.label}>Theme</div>
               <div>{currentAuctionBid ? currentAuctionBid.theme : "--"}</div>
             </div>
-            {!isRtwrkLaunching && (
+            <div className={styles.singleSeparator} />
+            <br />
+            {!isRtwrkLaunching && isAfterBuffer && (
               <Button
                 rainbow
                 block
                 text={`Launch rtwrk #${nextRwrkId} drawing`}
                 action={launchAuctionRtwrk}
               />
+            )}
+            {!isRtwrkLaunching && !isAfterBuffer && (
+              <div>
+                You will be able to launch the drawing in{" "}
+                {minsUntilFinishedWithBuffer}m {secsUntilFinishedWithBuffer}s
+              </div>
             )}
             {isRtwrkLaunching && (
               <div>
@@ -472,7 +523,7 @@ const Auction = ({
           </div>
           <div className={carouselStyles.labelAndValue}>
             <div className={carouselStyles.label}>Current theme</div>
-            <div>
+            <div style={{ height: 34 }}>
               {currentAuctionBid && currentAuctionBid.theme
                 ? currentAuctionBid.theme
                 : "--"}

@@ -8,6 +8,7 @@ import { useStoreState } from "../store";
 import styles from "../styles/DrawPage.module.scss";
 import ConnectToStarknet from "./connectToStarknet";
 import Drawer from "./drawer";
+import Loading from "./loading";
 import TopNav from "./topNav";
 
 const DrawPage = () => {
@@ -72,6 +73,9 @@ const DrawPage = () => {
   const showLoading =
     !showDisconnected && !showDrawer && !showNoPxls && !showNoCurrentDrawing;
 
+  const aspectUrl = `${process.env.NEXT_PUBLIC_ASPECT_COLLECTION_LINK}/${process.env.NEXT_PUBLIC_RTWRK_ERC721_ADDRESS}`;
+  const mintsquareUrl = `${process.env.NEXT_PUBLIC_MINTSQUARE_COLLECTION_LINK}/${process.env.NEXT_PUBLIC_RTWRK_ERC721_ADDRESS}`;
+
   return (
     <div
       className={`${styles.gridPage} ${
@@ -91,9 +95,7 @@ const DrawPage = () => {
           style={{ height: showDrawer ? 1580 : 1000 }}
         >
           <TopNav white logo />
-          {showLoading && (
-            <img src="/loading-collection.svg" className={styles.loading} />
-          )}
+          {showLoading && <Loading className={styles.loading} />}
           {showDisconnected && (
             <>
               <div className={styles.whiteMessage}>
@@ -177,7 +179,24 @@ const DrawPage = () => {
                 gm!
                 <br />
                 it seems like you don’t have a pxl NFT in your wallet. If you
-                want to draw rtwrks with us, go get one on Aspect or Mintsquare
+                want to draw rtwrks with us, go get one on{" "}
+                <a
+                  href={aspectUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ textDecoration: "underline" }}
+                >
+                  Aspect
+                </a>{" "}
+                or{" "}
+                <a
+                  href={mintsquareUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ textDecoration: "underline" }}
+                >
+                  Mintsquare
+                </a>
               </div>
               <img
                 src="/no_pxl.svg"

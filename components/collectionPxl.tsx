@@ -31,7 +31,7 @@ const CollectionPxl = ({ pxlId }: Props) => {
       calldata: [pxlIdUint256.low, pxlIdUint256.high],
     },
   });
-  const aspectUrl = `${process.env.NEXT_PUBLIC_ASPECT_LINK}/${process.env.NEXT_PUBLIC_PXL_ERC721_ADDRESS}/${pxlId}`;
+  const aspectUrl = `${process.env.NEXT_PUBLIC_ASPECT_ASSET_LINK}/${process.env.NEXT_PUBLIC_PXL_ERC721_ADDRESS}/${pxlId}`;
   const mintsquareUrl = `${process.env.NEXT_PUBLIC_MINTSQUARE_ASSET_LINK}/${process.env.NEXT_PUBLIC_PXL_ERC721_ADDRESS}/${pxlId}`;
   let balance = "0";
 
@@ -117,8 +117,8 @@ const CollectionPxl = ({ pxlId }: Props) => {
       <div className={styles.labelAndValue}>
         <div className={styles.label}>Contributions</div>
         <div>
-          Every time you contribute to an rtwrk, you can withdraw a share of the
-          revenue. Your balance is update every rtwrk settlement. You can
+          Every time you contribute to an rtwrk, you get a share of the auction
+          revenue. Your balance is updated with every rtwrk settlement. You can
           withdraw it whenever you want.
         </div>
       </div>

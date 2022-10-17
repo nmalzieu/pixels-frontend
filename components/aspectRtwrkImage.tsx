@@ -6,9 +6,10 @@ import GridLoader from "./gridLoader";
 
 type Props = {
   rtwrkId: number;
+  transparentLoader?: boolean;
 };
 
-const AspectRtwrkImage = ({ rtwrkId }: Props) => {
+const AspectRtwrkImage = ({ rtwrkId, transparentLoader }: Props) => {
   const [imageUri, setImageUri] = useState();
   useEffect(() => {
     const fetch = async () => {
@@ -20,7 +21,7 @@ const AspectRtwrkImage = ({ rtwrkId }: Props) => {
     fetch();
   }, []);
   if (!imageUri) {
-    return <GridLoader />;
+    return <GridLoader transparent={transparentLoader} />;
   }
   return <Image src={imageUri} width={400} height={400} alt="Rtwrk" />;
 };

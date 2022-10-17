@@ -526,6 +526,17 @@
     {
         "inputs": [
             {
+                "name": "address",
+                "type": "felt"
+            }
+        ],
+        "name": "setRtwrkDrawerContractAddress",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "name": "newOwner",
                 "type": "felt"
             }

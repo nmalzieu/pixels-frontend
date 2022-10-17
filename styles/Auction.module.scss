@@ -1,7 +1,7 @@
 .singleSeparator {
   border-bottom: 1px solid black;
-  margin-top: 7px;
-  margin-bottom: 30px;
+  margin-top: 37px;
+  margin-bottom: 20px;
 }
 .auction {
   input {
@@ -32,6 +32,13 @@
     border: 1px solid #000000;
     box-shadow: 2px 2px 0px #000000;
     padding: 13px 16px;
+    left: 45px;
+    top: 85px;
+
+    .singleSeparator {
+      margin-top: 7px;
+      margin-bottom: 30px;
+    }
 
     svg {
       cursor: pointer;

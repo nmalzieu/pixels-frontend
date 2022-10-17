@@ -98,9 +98,19 @@ type GridProps = {
   viewerOnly?: boolean;
   saveGrid?: boolean;
   step?: number;
+  forceShowRefresh?: boolean;
+  transparentLoader?: boolean;
 };
 
-const Grid = ({ round, gridSize, viewerOnly, saveGrid, step }: GridProps) => {
+const Grid = ({
+  round,
+  gridSize,
+  viewerOnly,
+  saveGrid,
+  step,
+  forceShowRefresh,
+  transparentLoader,
+}: GridProps) => {
   const { contract: rtwrkDrawerContract } = useRtwrkDrawerContract();
 
   const dispatch = useStoreDispatch();
@@ -112,6 +122,7 @@ const Grid = ({ round, gridSize, viewerOnly, saveGrid, step }: GridProps) => {
     data: gridData,
     refresh: refreshGrid,
     refreshing,
+    loading,
   } = useStarknetCall({
     contract: rtwrkDrawerContract,
     method: "rtwrkGrid",
@@ -155,8 +166,8 @@ const Grid = ({ round, gridSize, viewerOnly, saveGrid, step }: GridProps) => {
     }
   }, [dispatch, gridData, saveGrid]);
 
-  if (!gridData || refreshing) {
-    return <GridLoader />;
+  if (!gridData || loading) {
+    return <GridLoader transparent={transparentLoader} />;
   }
 
   return (
@@ -175,13 +186,18 @@ const Grid = ({ round, gridSize, viewerOnly, saveGrid, step }: GridProps) => {
           )
         )}
       </div>
-      {state.currentlyColoringHash && (
+      {state.currentlyColoringHash && !viewerOnly && (
         <div className={styles.currentlyColoringMessage}>
           Your colorizations are currently committing...
         </div>
       )}
-      {!viewerOnly && (
-        <div className={styles.refresh} onClick={refreshGrid}>
+      {(!viewerOnly || forceShowRefresh) && (
+        <div
+          className={`${styles.refresh} ${
+            forceShowRefresh ? styles.forceShowRefresh : ""
+          }`}
+          onClick={refreshGrid}
+        >
           <img
             src="/refresh.gif"
             alt="refresh-animated"

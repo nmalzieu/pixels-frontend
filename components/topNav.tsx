@@ -43,9 +43,11 @@ const TopNav = ({ white, logo }: Props) => (
       <ConnectToStarknet connectButton="👛 connect wallet" />
     </div>
     {logo && (
-      <div className={styles.logo}>
-        <LogoImage />
-      </div>
+      <Link href="/">
+        <div className={styles.logo}>
+          <LogoImage />
+        </div>
+      </Link>
     )}
   </div>
 );

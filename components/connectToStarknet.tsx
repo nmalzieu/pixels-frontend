@@ -46,6 +46,7 @@ const ConnectToStarknet = ({ connectButton }: Props) => {
   }, [disconnectAndDispatch, state.network]);
 
   useEffect(() => {
+    if (!state.rehydrated) return;
     if (
       state.network &&
       state.network === process.env.NEXT_PUBLIC_STARKNET_NETWORK &&
@@ -56,8 +57,24 @@ const ConnectToStarknet = ({ connectButton }: Props) => {
         account: starknetConnectedAccount,
         accountConnected: true,
       });
+    } else if (
+      !starknetConnectedAccount &&
+      state.account &&
+      state.accountConnected
+    ) {
+      dispatch.setAccount({
+        account: "",
+        accountConnected: false,
+      });
     }
-  }, [dispatch, starknetConnectedAccount, state.account, state.network]);
+  }, [
+    dispatch,
+    starknetConnectedAccount,
+    state.account,
+    state.accountConnected,
+    state.network,
+    state.rehydrated,
+  ]);
 
   const disconnectButton = () => {
     if (Object.keys(state.temporaryColors).length > 0) {

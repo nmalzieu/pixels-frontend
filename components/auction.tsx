@@ -220,7 +220,6 @@ const Auction = ({
     .multipliedBy("1e+18")
     .integerValue()
     .toFixed();
-
   const isAmountOverBalance = bidAmountBigNumber
     .multipliedBy("1e+18")
     .integerValue()
@@ -294,8 +293,9 @@ const Auction = ({
   }
 
   const validateAndPlaceBid = () => {
+    setShowError(false);
     if (bidAmountBigNumber.isEqualTo(0) || bidTheme.trim().length === 0) {
-      setShowError(false);
+      setShowError(true);
       return;
     }
     if (
@@ -330,6 +330,17 @@ const Auction = ({
     !isCurrentAuction &&
     auctionHadBids;
 
+  const displayAddress = (a: string) => {
+    if (state.account && BigNumber(a).isEqualTo(state.account)) {
+      return (
+        <span>
+          You <img src="/glasses-you.svg" />
+        </span>
+      );
+    }
+    return shortAddress(a);
+  };
+
   return (
     <div className={styles.auction}>
       {isAuctionFinished &&
@@ -360,13 +371,12 @@ const Auction = ({
         !isAuctionLaunching &&
         !lastDrawingNotFinished && (
           <div>
-            <div className={styles.singleSeparator} />
             <div className={carouselStyles.dual}>
               <div className={carouselStyles.labelAndValue}>
                 <div className={carouselStyles.label}>Winner</div>
                 <div style={{ width: 110 }}>
                   {currentAuctionBid
-                    ? shortAddress(currentAuctionBid.bidAccount)
+                    ? displayAddress(currentAuctionBid.bidAccount)
                     : "--"}
                 </div>
               </div>
@@ -383,6 +393,8 @@ const Auction = ({
               <div className={carouselStyles.label}>Theme</div>
               <div>{currentAuctionBid ? currentAuctionBid.theme : "--"}</div>
             </div>
+            <div className={styles.singleSeparator} />
+            <br />
             {!isRtwrkLaunching && (
               <Button
                 rainbow
@@ -472,7 +484,7 @@ const Auction = ({
           </div>
           <div className={carouselStyles.labelAndValue}>
             <div className={carouselStyles.label}>Current theme</div>
-            <div>
+            <div style={{ height: 34 }}>
               {currentAuctionBid && currentAuctionBid.theme
                 ? currentAuctionBid.theme
                 : "--"}

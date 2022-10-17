@@ -237,8 +237,9 @@ export const useTransactionStatus = (transactionHash: string | undefined) => {
       }
       setLoading(false);
     };
-
     fetchData();
+    const interval = setInterval(fetchData, 30000);
+    return () => clearInterval(interval);
   }, [transactionHash]);
 
   const notYetPending = [

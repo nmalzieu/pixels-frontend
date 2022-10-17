@@ -366,9 +366,26 @@ const Auction = ({
         !currentAuctionBidLoading && (
           <div>
             <div className={styles.singleSeparator} />
-            There was no bid in the last auction. Start a new auction for rtwrk
-            #{nextRwrkId}
-            <Button rainbow block text="Start auction" action={launchAuction} />
+            {isAfterBuffer && (
+              <div>
+                There was no bid in the last auction. Start a new auction for
+                rtwrk #{nextRwrkId}
+                <Button
+                  rainbow
+                  block
+                  text="Start auction"
+                  action={launchAuction}
+                />
+              </div>
+            )}
+            {!isAfterBuffer && (
+              <div>
+                There was no bid in the last auction. There was no bid in the
+                last auction. You’ll be able to launch a new auction for rtwrk #
+                {nextRwrkId} in {minsUntilFinishedWithBuffer}m{" "}
+                {secsUntilFinishedWithBuffer}s
+              </div>
+            )}
           </div>
         )}
       {isAuctionLaunching && (

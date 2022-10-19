@@ -289,8 +289,10 @@ const RtwrkAndBidCarousel = ({
 
   const isInBuffer = drawingEndsIn < 0 && drawingEndsInWithBuffer > 0;
 
+  let hoursUntilFinishedWithBuffer = drawingEndsInWithBuffer / 3600;
   let minsUntilFinishedWithBuffer = (drawingEndsInWithBuffer % 3600) / 60;
   let secsUntilFinishedWithBuffer = (minsUntilFinishedWithBuffer * 60) % 60;
+  hoursUntilFinishedWithBuffer = Math.trunc(hoursUntilFinishedWithBuffer);
   minsUntilFinishedWithBuffer = Math.trunc(minsUntilFinishedWithBuffer);
   secsUntilFinishedWithBuffer = Math.trunc(secsUntilFinishedWithBuffer);
 
@@ -412,8 +414,10 @@ const RtwrkAndBidCarousel = ({
                 <div>
                   <div className={styles.singleSeparator} />
                   Rtwrk #{round} is finished. It’s fixed forever on the
-                  blockchain. You will be able to settle the drawing in{" "}
-                  {minsUntilFinishedWithBuffer}m {secsUntilFinishedWithBuffer}s
+                  blockchain. You will be able to settle the drawing in&nbsp;
+                  {hoursUntilFinishedWithBuffer}h&nbsp;
+                  {minsUntilFinishedWithBuffer}m&nbsp;
+                  {secsUntilFinishedWithBuffer}s
                 </div>
               )}
             {isCurrentDrawing && !rtwrkMetadataDataLoading && (

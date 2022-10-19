@@ -173,9 +173,12 @@ const Auction = ({
 
   const isAfterBuffer = secondsUntilAuctionFinishedWithBuffer < 0;
 
+  let hoursUntilFinishedWithBuffer =
+    secondsUntilAuctionFinishedWithBuffer / 3600;
   let minsUntilFinishedWithBuffer =
     (secondsUntilAuctionFinishedWithBuffer % 3600) / 60;
   let secsUntilFinishedWithBuffer = (minsUntilFinishedWithBuffer * 60) % 60;
+  hoursUntilFinishedWithBuffer = Math.trunc(hoursUntilFinishedWithBuffer);
   minsUntilFinishedWithBuffer = Math.trunc(minsUntilFinishedWithBuffer);
   secsUntilFinishedWithBuffer = Math.trunc(secsUntilFinishedWithBuffer);
 
@@ -438,8 +441,10 @@ const Auction = ({
             )}
             {!isRtwrkLaunching && !isAfterBuffer && (
               <div>
-                You will be able to launch the drawing in{" "}
-                {minsUntilFinishedWithBuffer}m {secsUntilFinishedWithBuffer}s
+                You will be able to launch the drawing in&nbsp;
+                {hoursUntilFinishedWithBuffer}h&nbsp;
+                {minsUntilFinishedWithBuffer}m&nbsp;
+                {secsUntilFinishedWithBuffer}s
               </div>
             )}
             {isRtwrkLaunching && (

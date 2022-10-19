@@ -449,11 +449,7 @@ const Auction = ({
             )}
             {isRtwrkLaunching && (
               <div>
-                <div
-                  className={styles.singleSeparator}
-                  style={{ marginBottom: 15 }}
-                />
-                <SmallClock style={{ marginBottom: 10 }} />
+                <SmallClock style={{ marginBottom: 10, marginTop: -15 }} />
                 <br />
                 Rtwrk #{nextRwrkId}’s drawing will start at Starknet’s next
                 block. It can take up to several hours.

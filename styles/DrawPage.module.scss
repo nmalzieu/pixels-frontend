@@ -1,6 +1,7 @@
 .gridPage {
   height: 100%;
   overflow-x: hidden;
+  min-height: 100vh;;
 
   .gridPageContent {
     background-image: url(/background-live.png);
@@ -9,6 +10,7 @@
     left: 0;
     top: 0;
     width: 100%;
+    min-height: 100vh;
 
     .gridPageContainer {
       position: absolute;

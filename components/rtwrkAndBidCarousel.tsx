@@ -228,6 +228,9 @@ const RtwrkAndBidCarousel = ({
     }
   }
 
+  const drawingEndsInWithBuffer = drawingEndsIn + BLOCK_TIME_BUFFER;
+  const isInBuffer = drawingEndsIn < 0 && drawingEndsInWithBuffer > 0;
+
   if (!isAuctionPage && round <= mintedCount) {
     component = (
       <AspectRtwrkImage
@@ -266,7 +269,7 @@ const RtwrkAndBidCarousel = ({
         gridSize={matrixSize}
         round={round}
         viewerOnly
-        forceShowRefresh
+        forceShowRefresh={!isInBuffer}
         transparentLoader
       />
     );
@@ -278,16 +281,12 @@ const RtwrkAndBidCarousel = ({
   const aspectUrl = `${process.env.NEXT_PUBLIC_ASPECT_ASSET_LINK}/${process.env.NEXT_PUBLIC_RTWRK_ERC721_ADDRESS}/${round}`;
   const mintsquareUrl = `${process.env.NEXT_PUBLIC_MINTSQUARE_ASSET_LINK}/${process.env.NEXT_PUBLIC_RTWRK_ERC721_ADDRESS}/${round}`;
 
-  const drawingEndsInWithBuffer = drawingEndsIn + BLOCK_TIME_BUFFER;
-
   let hoursUntilFinished = drawingEndsIn / 3600;
   let minsUntilFinished = (drawingEndsIn % 3600) / 60;
   let secsUntilFinished = (minsUntilFinished * 60) % 60;
   hoursUntilFinished = Math.trunc(hoursUntilFinished);
   minsUntilFinished = Math.trunc(minsUntilFinished);
   secsUntilFinished = Math.trunc(secsUntilFinished);
-
-  const isInBuffer = drawingEndsIn < 0 && drawingEndsInWithBuffer > 0;
 
   let hoursUntilFinishedWithBuffer = drawingEndsInWithBuffer / 3600;
   let minsUntilFinishedWithBuffer = (drawingEndsInWithBuffer % 3600) / 60;

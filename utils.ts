@@ -67,9 +67,7 @@ export const getExecuteParameterFromTheme = (theme: string): string[] => {
   const feltArray = [];
   try {
     for (const letter of theme) {
-      feltArray.push(
-        toBN(encodeShortString(letter.replace(" ", "+"))).toString()
-      );
+      feltArray.push(toBN(encodeShortString(letter)).toString());
     }
   } catch (e) {
     // console.error(e);

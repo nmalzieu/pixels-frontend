@@ -148,7 +148,7 @@ const RtwrkAndBidCarousel = ({
     if (rtwrkMetadataData) {
       const themeArray = (rtwrkMetadataData as any).theme;
       const themeStrings = feltArrayToStr(themeArray);
-      const newTheme = themeStrings.join("").trim().replace(/\+/g, " ");
+      const newTheme = themeStrings.join("").trim().replace(/%20/g, " ");
       setAuctionAmount(
         new BigNumber(
           uint256

@@ -383,9 +383,10 @@ const Auction = ({
             )}
             {!isAfterBuffer && (
               <div>
-                There was no bid in the last auction. There was no bid in the
-                last auction. You’ll be able to launch a new auction for rtwrk #
-                {nextRwrkId} in {minsUntilFinishedWithBuffer}m{" "}
+                There was no bid in the last auction. You’ll be able to launch a
+                new auction for rtwrk #{nextRwrkId} in&nbsp;
+                {hoursUntilFinishedWithBuffer}h&nbsp;
+                {minsUntilFinishedWithBuffer}m&nbsp;
                 {secsUntilFinishedWithBuffer}s
               </div>
             )}

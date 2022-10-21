@@ -277,7 +277,7 @@ const Drawer = ({ pixelsOwned }: Props) => {
   } else if (rtwrkMetadataData) {
     const themeArray = (rtwrkMetadataData as any).theme;
     const themeStrings = feltArrayToStr(themeArray);
-    const newTheme = themeStrings.join("").trim().replace(/\+/g, " ");
+    const newTheme = themeStrings.join("").trim().replace(/%20/g, " ");
     if (newTheme.length > 0) {
       theme = newTheme;
     }

@@ -13,7 +13,7 @@ import Button from "./button";
 import Grid from "./grid";
 import GridLoader from "./gridLoader";
 
-const ORIGINAL_RTWRKS_COUNT = 10;
+const ORIGINAL_RTWRKS_COUNT = 12;
 
 type Props = {
   rtwrkId: number;

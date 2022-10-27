@@ -138,13 +138,18 @@ const Drawer = ({ pixelsOwned }: Props) => {
   } = useTransactionStatus(state.currentlyColoringHash);
 
   useEffect(() => {
-    console.log(state.currentlyColoringHash, colorizationLoading);
+    console.log({
+      currentlyColoringHash: state.currentlyColoringHash,
+      colorizationLoading: colorizationLoading,
+    });
     if (state.currentlyColoringHash && !colorizationLoading) {
       if (colorizationPending || colorizationAccepted) {
+        console.log("PENDING OR ACCEPTED");
         dispatch.setColoringHash("");
         dispatch.resetColoringState();
         setLastCommitAt(new Date().getTime());
       } else if (colorizationRejected) {
+        console.log("REJECTEDD");
         dispatch.setColoringHash("");
         dispatch.setFailedColoringHash(state.currentlyColoringHash);
       }

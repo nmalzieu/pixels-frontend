@@ -33,7 +33,7 @@ import Button from "./button";
 import GridComponent from "./grid";
 import GridLoader from "./gridLoader";
 
-const ORIGINAL_RTWRKS_COUNT = 11;
+const ORIGINAL_RTWRKS_COUNT = 12;
 const BLOCK_TIME_BUFFER = 2 * 3600; // 2 hours buffer
 
 type Props = {
@@ -269,7 +269,7 @@ const RtwrkAndBidCarousel = ({
         gridSize={matrixSize}
         round={round}
         viewerOnly
-        forceShowRefresh={!isInBuffer}
+        forceShowRefresh={!isInBuffer && isCurrentDrawing}
         transparentLoader
       />
     );
@@ -370,11 +370,16 @@ const RtwrkAndBidCarousel = ({
             )}
             {showIsAuctionLaunching && (
               <>
-                <div className={styles.singleSeparator} />
+                <div
+                  className={styles.singleSeparator}
+                  style={{ marginBottom: 15 }}
+                />
                 <SmallClock />
-                <br />
-                Rtwrk #{currentRwrkId} is being settled. Its NFT is being
-                minted, auction for rtwrk #{currentRwrkId + 1} will start soon.
+                <div style={{ marginTop: 10 }}>
+                  Rtwrk #{currentRwrkId} is being settled. Its NFT is being
+                  minted, auction for rtwrk #{currentRwrkId + 1} will start
+                  soon.
+                </div>
               </>
             )}
 
@@ -393,8 +398,9 @@ const RtwrkAndBidCarousel = ({
             {!isCurrentDrawing &&
               round > mintedCount &&
               !metadataLoading &&
-              !isInBuffer && (
-                <div>
+              !isInBuffer &&
+              !showIsAuctionLaunching && (
+                <div style={{ marginTop: -20 }}>
                   <div className={styles.singleSeparator} />
                   Rtwrk #{round} is finished. It’s fixed forever on the
                   blockchain.

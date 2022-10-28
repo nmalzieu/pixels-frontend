@@ -33,7 +33,7 @@ import Button from "./button";
 import GridComponent from "./grid";
 import GridLoader from "./gridLoader";
 
-const ORIGINAL_RTWRKS_COUNT = 12;
+const ORIGINAL_RTWRKS_COUNT = 13;
 const BLOCK_TIME_BUFFER = 2 * 3600; // 2 hours buffer
 
 type Props = {

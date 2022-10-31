@@ -10,16 +10,23 @@ const StarknetCC: NextPage = () => {
         <LogoImage />
       </div>
       <div className={styles.message}>
-        Hello fellow Starknet CC attendee! We are Pxls, a collaborative pixel
-        art experiment on the Starknet blockchain.
+        Hello fellow Starknet.cc attendee!
         <br />
         <br />
-        We have gathered a community of 400 people who will create daily
-        on-chain artworks together.
+        We are a community of 400 pxl NFT holders. Every two days, we draw
+        on-chain collaborative pixel art for web3 collectors.
         <br />
         <br />
-        First rtwrks will be created by our community in a few days. Follow our
-        adventures on Twitter!
+        If you want us do draw something for you, propose a theme and a bid. If
+        you win the auction, we will draw your theme and you will get your
+        artwork (“rtwrk”) as an NFT.
+        <br />
+        <br />
+        Visit{" "}
+        <a href="https://pxls.wtf/" style={{ textDecoration: "underline" }}>
+          https://pxls.wtf/
+        </a>{" "}
+        on desktop to propose a theme!
       </div>
       <a href="https://twitter.com/PxlsWtf" target="_blank" rel="noreferrer">
         <img src="/twitter.png" alt="Twitter" />

@@ -292,7 +292,7 @@ const Drawer = ({ pixelsOwned }: Props) => {
         .toString()
     )
       .multipliedBy("1e-18")
-      .toString();
+      .toFixed();
     bidAmount = `${bidAmount} eth`;
     bidWinner = getAddressFromBN((rtwrkMetadataData as any).auction_winner);
   }

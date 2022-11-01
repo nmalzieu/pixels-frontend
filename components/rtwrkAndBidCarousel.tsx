@@ -156,7 +156,7 @@ const RtwrkAndBidCarousel = ({
             .toString()
         )
           .multipliedBy("1e-18")
-          .toString()
+          .toFixed()
       );
       setAuctionWinner(
         getAddressFromBN((rtwrkMetadataData as any).auction_winner)

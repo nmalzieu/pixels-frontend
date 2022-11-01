@@ -65,7 +65,7 @@ const CollectionRtwtk = ({ rtwrkId, setEditingStepForRtwrk }: Props) => {
         .toString()
     )
       .multipliedBy("1e-18")
-      .toString();
+      .toFixed();
 
     auctionWinner = getAddressFromBN((rtwrkMetadataData as any).auction_winner);
     timestamp = (rtwrkMetadataData as any).timestamp.toNumber();

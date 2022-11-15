@@ -521,7 +521,7 @@ const Drawer = ({ pixelsOwned }: Props) => {
         <Window
           style={{
             width: 320,
-            top: state.account && !noCurrentRound ? 300 : 0,
+            top: state.account && !noCurrentRound ? 380 : 0,
             left: state.account && !noCurrentRound ? "auto" : 0,
             right: state.account && !noCurrentRound ? 30 : "auto",
           }}
@@ -546,7 +546,7 @@ const Drawer = ({ pixelsOwned }: Props) => {
             width: 320,
             top: 33,
             right: 30,
-            height: 224,
+            height: 296,
             padding: "16px 25px",
             display: "flex",
             alignItems: "center",
@@ -563,18 +563,39 @@ const Drawer = ({ pixelsOwned }: Props) => {
             {theme}
           </div>
           {bidAmount && (
-            <div style={{ textAlign: "center" }}>
-              <div
-                style={{
-                  borderBottom: "1px solid black",
-                  width: 236,
-                  marginBottom: 10,
-                }}
-              />
-              Ordered by <b title={bidWinner}>{shortAddress(bidWinner)}</b>
-              <br />
-              for <b>{bidAmount}</b>
-            </div>
+            <>
+              <div style={{ textAlign: "center" }}>
+                <div
+                  style={{
+                    borderBottom: "1px solid black",
+                    width: 270,
+                    marginBottom: 20,
+                  }}
+                />
+                Find inspiration for the rtwrk in the{" "}
+                <a
+                  href="https://discord.com/channels/998172245274931240/998224567988404316"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ color: "#FF8780" }}
+                >
+                  dedicated Discord channel
+                </a>
+              </div>
+              <div style={{ textAlign: "center" }}>
+                <div
+                  style={{
+                    borderBottom: "1px solid black",
+                    width: 270,
+                    marginBottom: 20,
+                    marginTop: 20,
+                  }}
+                />
+                Ordered by <b title={bidWinner}>{shortAddress(bidWinner)}</b>
+                <br />
+                for <b>{bidAmount}</b>
+              </div>
+            </>
           )}
 
           <div className={styles.themeTitle}>Today’s theme</div>

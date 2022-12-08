@@ -89,7 +89,37 @@
         "type": "event"
     },
     {
+        "data": [
+            {
+                "name": "implementation",
+                "type": "felt"
+            }
+        ],
+        "keys": [],
+        "name": "Upgraded",
+        "type": "event"
+    },
+    {
+        "data": [
+            {
+                "name": "previousAdmin",
+                "type": "felt"
+            },
+            {
+                "name": "newAdmin",
+                "type": "felt"
+            }
+        ],
+        "keys": [],
+        "name": "AdminChanged",
+        "type": "event"
+    },
+    {
         "inputs": [
+            {
+                "name": "proxy_admin",
+                "type": "felt"
+            },
             {
                 "name": "name",
                 "type": "felt"
@@ -121,11 +151,15 @@
             {
                 "name": "pxls_301_400_address",
                 "type": "felt"
+            },
+            {
+                "name": "original_pixel_erc721_address",
+                "type": "felt"
             }
         ],
-        "name": "constructor",
+        "name": "initializer",
         "outputs": [],
-        "type": "constructor"
+        "type": "function"
     },
     {
         "inputs": [
@@ -320,14 +354,14 @@
                 "type": "felt"
             }
         ],
-        "name": "pixelsOfOwner",
+        "name": "pxlsOwned",
         "outputs": [
             {
-                "name": "pixels_len",
+                "name": "pxls_len",
                 "type": "felt"
             },
             {
-                "name": "pixels",
+                "name": "pxls",
                 "type": "felt*"
             }
         ],
@@ -436,6 +470,17 @@
     {
         "inputs": [
             {
+                "name": "tokenId",
+                "type": "Uint256"
+            }
+        ],
+        "name": "burnAndMint",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "name": "hash_len",
                 "type": "felt"
             },
@@ -462,6 +507,28 @@
     {
         "inputs": [],
         "name": "renounceOwnership",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "new_implementation",
+                "type": "felt"
+            }
+        ],
+        "name": "upgradeImplementation",
+        "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "address",
+                "type": "felt"
+            }
+        ],
+        "name": "setProxyAdmin",
         "outputs": [],
         "type": "function"
     }

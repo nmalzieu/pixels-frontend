@@ -15,9 +15,9 @@ const DrawPage = () => {
   const state = useStoreState();
   const { contract: pxlERC721Contract } = usePxlERC721Contract();
   const { contract: rtwrkDrawerContract } = useRtwrkDrawerContract();
-  const { data: pixelsOfOwnerData } = useStarknetCall({
+  const { data: pxlsOwnedData } = useStarknetCall({
     contract: pxlERC721Contract,
-    method: "pixelsOfOwner",
+    method: "pxlsOwned",
     args: [state.account || ""],
     options: {
       watch: false,
@@ -30,17 +30,17 @@ const DrawPage = () => {
     options: { blockIdentifier: "latest" },
   });
 
-  const pixelsOwned =
-    (pixelsOfOwnerData as any)?.pixels?.map((p: any) => p.toNumber()) || [];
+  const pxlsOwned =
+    (pxlsOwnedData as any)?.pxls?.map((p: any) => p.toNumber()) || [];
 
-  const [loadingPixelsOfOwner, setLoadingPixelsOfOwner] = useState(true);
-
-  useEffect(() => {
-    setLoadingPixelsOfOwner(false);
-  }, [pixelsOfOwnerData]);
+  const [loadingPxlsOwned, setLoadingPxlsOwned] = useState(true);
 
   useEffect(() => {
-    setLoadingPixelsOfOwner(true);
+    setLoadingPxlsOwned(false);
+  }, [pxlsOwnedData]);
+
+  useEffect(() => {
+    setLoadingPxlsOwned(true);
   }, [state.account]);
 
   let noCurrentDrawing = false;
@@ -58,16 +58,15 @@ const DrawPage = () => {
   }
 
   const allLoadingReady =
-    !loadingPixelsOfOwner && currentRtwrkTimestampData && state.rehydrated;
+    !loadingPxlsOwned && currentRtwrkTimestampData && state.rehydrated;
 
   const showDisconnected = !state.account && state.rehydrated;
   const showDrawer =
     state.account &&
     allLoadingReady &&
-    pixelsOwned.length > 0 &&
+    pxlsOwned.length > 0 &&
     !noCurrentDrawing;
-  const showNoPxls =
-    state.account && allLoadingReady && pixelsOwned.length === 0;
+  const showNoPxls = state.account && allLoadingReady && pxlsOwned.length === 0;
   const showNoCurrentDrawing =
     state.account && noCurrentDrawing && allLoadingReady && !showNoPxls;
   const showLoading =
@@ -138,7 +137,7 @@ const DrawPage = () => {
                 className={styles.whiteMessage}
                 style={{ left: 760, top: 330 }}
               >
-                gm{pixelsOwned.length > 0 ? ` pxl #${pixelsOwned[0]}` : ","}
+                gm{pxlsOwned.length > 0 ? ` pxl #${pxlsOwned[0]}` : ","}
                 <br />
                 how are you doing today?
                 <br />
@@ -221,7 +220,7 @@ const DrawPage = () => {
               </a>
             </>
           )}
-          {showDrawer && <Drawer pixelsOwned={pixelsOwned} />}
+          {showDrawer && <Drawer pxlsOwned={pxlsOwned} />}
         </div>
       </div>
     </div>

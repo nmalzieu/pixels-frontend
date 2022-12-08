@@ -21,9 +21,9 @@ const CollectionPage = () => {
   const showDisconnected = !state.account && state.rehydrated;
   const { contract: pxlERC721Contract } = usePxlERC721Contract();
   const { contract: rtwrkERC721Contract } = useRtwrkERC721Contract();
-  const { data: pixelsOfOwnerData, loading: pixelsOfOwnerLoading } = useCall({
+  const { data: pxlsOwnedData, loading: pxlsOwnedLoading } = useCall({
     contract: pxlERC721Contract,
-    method: "pixelsOfOwner",
+    method: "pxlsOwned",
     args: [state.account || ""],
     condition: !!state.account,
   });
@@ -33,20 +33,19 @@ const CollectionPage = () => {
     args: [state.account || ""],
     condition: !!state.account,
   });
-  const loading = pixelsOfOwnerLoading || rtwrksOwnedLoading;
-  const pixelsOfOwner =
-    pixelsOfOwnerLoading || !pixelsOfOwnerData?.[0]
+  const loading = pxlsOwnedLoading || rtwrksOwnedLoading;
+  const pxlsOwned =
+    pxlsOwnedLoading || !pxlsOwnedData?.[0]
       ? []
-      : pixelsOfOwnerData[0]?.map((p: BigNumberish) => p.toNumber());
+      : pxlsOwnedData[0]?.map((p: BigNumberish) => p.toNumber());
   const rtwrksOwned =
     rtwrksOwnedLoading || !rtwrksOwnedData?.[0]
       ? []
       : rtwrksOwnedData[0].map((p: BigNumberish) => p.toNumber());
-  const doesNotOwnAnything =
-    pixelsOfOwner.length === 0 && rtwrksOwned.length === 0;
+  const doesNotOwnAnything = pxlsOwned.length === 0 && rtwrksOwned.length === 0;
   const height = editingStepForRtwrk
     ? 1000
-    : 171 + rtwrksOwned.length * 970 + pixelsOfOwner.length * 977 + 600;
+    : 171 + rtwrksOwned.length * 970 + pxlsOwned.length * 977 + 600;
 
   return (
     <div className={styles.collectionPage}>
@@ -184,7 +183,7 @@ const CollectionPage = () => {
                     }}
                   />
                 ))}
-                {pixelsOfOwner.map((pxlId: number) => (
+                {pxlsOwned.map((pxlId: number) => (
                   <CollectionPxl key={pxlId} pxlId={pxlId} />
                 ))}
               </div>

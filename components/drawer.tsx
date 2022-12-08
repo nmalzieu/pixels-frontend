@@ -32,10 +32,10 @@ import Window from "./window";
 const DoubleSeparator = () => <div className={styles.doubleSeparator}></div>;
 
 type Props = {
-  pixelsOwned: number[];
+  pxlsOwned: number[];
 };
 
-const Drawer = ({ pixelsOwned }: Props) => {
+const Drawer = ({ pxlsOwned }: Props) => {
   const state = useStoreState();
   const dispatch = useStoreDispatch();
 
@@ -50,17 +50,17 @@ const Drawer = ({ pixelsOwned }: Props) => {
   const [fixedInText, setFixedInText] = useState("");
 
   useEffect(() => {
-    if (pixelsOwned.length === 0 || !state.account) {
+    if (pxlsOwned.length === 0 || !state.account) {
       setSelectedPxlNFT(undefined);
       return;
     }
     if (
       state.account &&
-      (!selectedPxlNFT || !pixelsOwned.includes(selectedPxlNFT))
+      (!selectedPxlNFT || !pxlsOwned.includes(selectedPxlNFT))
     ) {
-      setSelectedPxlNFT(pixelsOwned[0]);
+      setSelectedPxlNFT(pxlsOwned[0]);
     }
-  }, [pixelsOwned, selectedPxlNFT, state.account]);
+  }, [pxlsOwned, selectedPxlNFT, state.account]);
 
   useEffect(() => {
     if (!state.account) {
@@ -394,7 +394,7 @@ const Drawer = ({ pixelsOwned }: Props) => {
         </span>
       );
     }
-    if (pixelsOwned?.length === 0) {
+    if (pxlsOwned?.length === 0) {
       message = (
         <span>
           🤔️ It seems like you don’t have any PXL NFT in your wallet. If you
@@ -455,7 +455,7 @@ const Drawer = ({ pixelsOwned }: Props) => {
       {selectedPxlNFT && (
         <div className={styles.topPxlGM}>
           👋 gm, pxl #{selectedPxlNFT}
-          {pixelsOwned.length > 1 && (
+          {pxlsOwned.length > 1 && (
             <select
               className={styles.topPxlSelect}
               onChange={(e) => {
@@ -479,7 +479,7 @@ const Drawer = ({ pixelsOwned }: Props) => {
               }}
             >
               <option value="change">change pxl</option>
-              {pixelsOwned.map((p: any) => {
+              {pxlsOwned.map((p: any) => {
                 if (p === selectedPxlNFT) return;
                 return (
                   <option key={p} value={p}>

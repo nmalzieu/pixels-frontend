@@ -47,15 +47,13 @@ const Admin: NextPage = () => {
     args: [],
   });
 
-  const { data: pixelsOfOwnerData } = useStarknetCall({
+  const { data: pxlsOwnedData } = useStarknetCall({
     contract: pxlERC721Contract,
-    method: "pixelsOfOwner",
+    method: "pxlsOwned",
     args: [storeState.account],
   });
 
-  const pixelsOwned = (pixelsOfOwnerData as any)?.pixels?.map((p: any) =>
-    p.toNumber()
-  );
+  const pxlsOwned = (pxlsOwnedData as any)?.pxls?.map((p: any) => p.toNumber());
 
   const { invoke: transfer } = useInvoke({
     contract: pxlERC721Contract,
@@ -174,16 +172,16 @@ const Admin: NextPage = () => {
               : "loading..."}
           </li>
           <li>
-            pxls owned by current user : {pixelsOwned && pixelsOwned.join(",")}
+            pxls owned by current user : {pxlsOwned && pxlsOwned.join(",")}
           </li>
-          {pixelsOwned && pixelsOwned.length > 0 && (
+          {pxlsOwned && pxlsOwned.length > 0 && (
             <button
               onClick={() => {
                 transfer({
                   args: [
                     storeState.account,
                     "0x000000000000000000000000000000000000dead",
-                    getUintFromNumber(pixelsOwned[0]),
+                    getUintFromNumber(pxlsOwned[0]),
                   ],
                 });
               }}

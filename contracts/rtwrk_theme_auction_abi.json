@@ -516,6 +516,12 @@
         "type": "function"
     },
     {
+        "inputs": [],
+        "name": "fixPxl400BalanceBug",
+        "outputs": [],
+        "type": "function"
+    },
+    {
         "inputs": [
             {
                 "name": "new_implementation",

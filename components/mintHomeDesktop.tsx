@@ -17,9 +17,9 @@ const MintHomeDesktop = () => {
 
   const { contract: pxlERC721Contract } = usePxlERC721Contract();
 
-  const { data: pixelsOfOwnerData } = useStarknetCall({
+  const { data: pxlsOwnedData } = useStarknetCall({
     contract: pxlERC721Contract,
-    method: "pixelsOfOwner",
+    method: "pxlsOwned",
     args: [state.account],
   });
 
@@ -48,7 +48,7 @@ const MintHomeDesktop = () => {
 
     // If mouse is clicked and the star is shown,
     // it also rotates the star
-    if (isMouseClicked && pixelsOwned?.length > 0 && starRef.current) {
+    if (isMouseClicked && pxlsOwned?.length > 0 && starRef.current) {
       const { x: lastX, y: lastY } = lastMousePosition;
       const diffX = x - lastX;
       const diffY = y - lastY;
@@ -76,20 +76,13 @@ const MintHomeDesktop = () => {
     setLastMousePosition({ x, y });
   };
 
-  const pixelsOwned = (pixelsOfOwnerData as any)?.pixels?.map((p: any) =>
-    p.toNumber()
-  );
+  const pxlsOwned = (pxlsOwnedData as any)?.pxls?.map((p: any) => p.toNumber());
   let showMint = true;
 
   // If logged in, check
   // if already has a pxl
   // and hide button
-  if (
-    state.account &&
-    pixelsOfOwnerData &&
-    pixelsOwned &&
-    pixelsOwned.length > 0
-  ) {
+  if (state.account && pxlsOwnedData && pxlsOwned && pxlsOwned.length > 0) {
     showMint = false;
   }
 
@@ -158,8 +151,8 @@ const MintHomeDesktop = () => {
         className={styles.gridLogo}
         style={{ filter: `hue-rotate(${hueRotate}deg)` }}
       />
-      {state.account && pixelsOwned?.length > 0 && (
-        <Star pxls={pixelsOwned} rotate={starRotate} innerRef={starRef} />
+      {state.account && pxlsOwned?.length > 0 && (
+        <Star pxls={pxlsOwned} rotate={starRotate} innerRef={starRef} />
       )}
       <TopNav />
       {rainbowMessage && (
@@ -177,7 +170,7 @@ const MintHomeDesktop = () => {
       )}
 
       {showMint && <Mint />}
-      {state.account && pixelsOwned?.length > 0 && (
+      {state.account && pxlsOwned?.length > 0 && (
         <Window
           style={{
             width: 300,

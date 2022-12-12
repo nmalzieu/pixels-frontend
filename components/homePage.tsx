@@ -11,6 +11,7 @@ import PinkBorder from "../public/pink_border.svg";
 import { useStoreDispatch, useStoreState } from "../store";
 import styles from "../styles/HomePage.module.scss";
 import GridLoader from "./gridLoader";
+import RegenesisBanner from "./regenesisBanner";
 import RtwrkAndBidCarousel from "./rtwrkAndBidCarousel";
 import TopNav from "./topNav";
 
@@ -108,6 +109,7 @@ const HomePage = () => {
 
   return (
     <div className={styles.homePage}>
+      <RegenesisBanner />
       <div className={styles.homePageContent}>
         <div className={styles.homePageContainer}>
           <TopNav white logo />

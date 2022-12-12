@@ -1,0 +1,52 @@
+.regenesisPage {
+  height: 100%;
+  overflow-x: hidden;
+
+  .regenesisPageContent {
+    background-image: url(/background-live.png);
+    background-size: cover;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    min-height: 100vh;
+
+    .regenesisPageContainer {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 0;
+      width: 1220px;
+      min-height: 100vh;
+      padding-top: 60px;
+    }
+  }
+}
+
+.loading {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 300px;
+}
+
+.separator {
+  border-bottom: 1px solid black;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.button {
+  border: 1px solid black;
+  margin-top: 20px;
+  padding: 10px 15px;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.pxlsDivs {
+  position: absolute;
+  width: 525px;
+  top: 560px;
+  left: 340px;
+}

@@ -12,6 +12,7 @@ import CollectionRtwtk from "./collectionRtwrk";
 import CollectionRtwrkEdit from "./collectionRtwrkEdit";
 import ConnectToStarknet from "./connectToStarknet";
 import Loading from "./loading";
+import RegenesisBanner from "./regenesisBanner";
 import TopNav from "./topNav";
 
 const CollectionPage = () => {
@@ -49,6 +50,7 @@ const CollectionPage = () => {
 
   return (
     <div className={styles.collectionPage}>
+      <RegenesisBanner />
       <div className={styles.collectionPageContent} style={{ height }}>
         <div className={styles.collectionPageContainer} style={{ height }}>
           <TopNav white logo />

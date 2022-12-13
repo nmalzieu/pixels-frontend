@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { BigNumberish } from "starknet/utils/number";
 
 import { useCall, useExecute } from "../contracts/helpers";
@@ -18,13 +18,16 @@ export default function RegenesisPage() {
   const { contract: originalPxlERC721Contract } =
     useOriginalPxlERC721Contract();
   const { contract: pxlERC721Contract } = usePxlERC721Contract();
-  const { data: originalPxlsOwnedData, loading: originalPxlsOwnedLoading } =
-    useCall({
-      contract: originalPxlERC721Contract,
-      method: "pixelsOfOwner",
-      args: [state.account || ""],
-      condition: !!state.account,
-    });
+  const {
+    data: originalPxlsOwnedData,
+    loading: originalPxlsOwnedLoading,
+    refresh: originalPxlsRefresh,
+  } = useCall({
+    contract: originalPxlERC721Contract,
+    method: "pixelsOfOwner",
+    args: [state.account || ""],
+    condition: !!state.account,
+  });
   const originalPxlsOwned =
     originalPxlsOwnedLoading || !originalPxlsOwnedData?.[0]
       ? []
@@ -32,7 +35,11 @@ export default function RegenesisPage() {
           pxlId: p.toNumber(),
           migrated: false,
         }));
-  const { data: pxlsOwnedData, loading: pxlsOwnedLoading } = useCall({
+  const {
+    data: pxlsOwnedData,
+    loading: pxlsOwnedLoading,
+    refresh: pxlsRefresh,
+  } = useCall({
     contract: pxlERC721Contract,
     method: "pxlsOwned",
     args: [state.account || ""],
@@ -46,12 +53,21 @@ export default function RegenesisPage() {
           migrated: true,
         }));
   const loading = pxlsOwnedLoading || originalPxlsOwnedLoading;
-  const [migrating, setMigrating] = useState<any>({});
+  const [migrating, _setMigrating] = useState<any>({});
+
+  const setMigrating = useCallback(
+    async (v: any) => {
+      await Promise.all([pxlsRefresh(), originalPxlsRefresh()]);
+      _setMigrating(v);
+    },
+    [originalPxlsRefresh, pxlsRefresh]
+  );
+
   useEffect(() => {
     setMigrating(
       JSON.parse(localStorage.getItem("pxls-migrating-regenesis") || "{}") || {}
     );
-  }, []);
+  }, [setMigrating]);
 
   let height = 560;
   originalPxlsOwned.forEach((o: any) => {
@@ -91,22 +107,38 @@ export default function RegenesisPage() {
     ],
   });
 
-  const burnAndMint = useCallback(
-    async (pxlId: number) => {
-      setPxlToBurn(pxlId);
-      const r: any = await executeBurnAndMint();
-      const currentMigrating =
-        JSON.parse(localStorage.getItem("pxls-migrating-regenesis") || "{}") ||
-        {};
-      currentMigrating[pxlId] = r.transaction_hash;
-      localStorage.setItem(
-        "pxls-migrating-regenesis",
-        JSON.stringify(currentMigrating)
-      );
-      setMigrating(currentMigrating);
-    },
-    [executeBurnAndMint]
-  );
+  const burnAndMint = useCallback((pxlId: number) => {
+    setPxlToBurn(pxlId);
+  }, []);
+
+  const launchingBurnTransaction = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (pxlToBurn && pxlToBurn !== launchingBurnTransaction.current) {
+      launchingBurnTransaction.current = pxlToBurn;
+      const effect = async () => {
+        try {
+          const r: any = await executeBurnAndMint();
+          setPxlToBurn(null);
+          const currentMigrating =
+            JSON.parse(
+              localStorage.getItem("pxls-migrating-regenesis") || "{}"
+            ) || {};
+          currentMigrating[pxlToBurn] = r.transaction_hash;
+          localStorage.setItem(
+            "pxls-migrating-regenesis",
+            JSON.stringify(currentMigrating)
+          );
+          setMigrating(currentMigrating);
+        } catch (e) {
+          setPxlToBurn(null);
+        }
+      };
+      effect();
+    } else if (!pxlToBurn) {
+      launchingBurnTransaction.current = null;
+    }
+  }, [executeBurnAndMint, pxlToBurn, setMigrating]);
 
   if (!loading) {
     allPxls.forEach((pxl) => {
@@ -120,7 +152,7 @@ export default function RegenesisPage() {
           setMigrating={setMigrating}
         />
       );
-      pxlTop += (pxl.migrated ? 157 : 212) + 30;
+      pxlTop += (pxl.migrated || migrating[pxl.pxlId] ? 157 : 212) + 30;
     });
   }
 

@@ -7,7 +7,7 @@ export default function RegenesisBanner() {
     <Link href="/regenesis">
       <div className={styles.regenesisBanner}>
         Preparing for Starknet regenesis: burn and mint your pxl NFT in order to
-        keep using it. Click here.
+        keep using it.<a className={styles.clickHere}>Click here.</a>
       </div>
     </Link>
   );

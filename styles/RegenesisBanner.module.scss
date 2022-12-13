@@ -13,4 +13,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
+  .clickHere {
+    margin-left: 3px;
+  }
+
+  &:hover {
+    .clickHere {
+      text-decoration: underline;
+    }
+  }
 }

@@ -78,7 +78,13 @@ export default function RegenesisPage() {
     }
   });
 
-  height += pxlsOwned.length * 192;
+  pxlsOwned.forEach((o: any) => {
+    if (migrating[o.pxlId]) {
+      height += 192;
+    } else {
+      height += 245;
+    }
+  });
 
   const totalCount = originalPxlsOwned.length + pxlsOwned.length;
 
@@ -152,7 +158,7 @@ export default function RegenesisPage() {
           setMigrating={setMigrating}
         />
       );
-      pxlTop += (pxl.migrated || migrating[pxl.pxlId] ? 157 : 212) + 30;
+      pxlTop += (pxl.migrated && migrating[pxl.pxlId] ? 157 : 212) + 30;
     });
   }
 
@@ -174,11 +180,11 @@ export default function RegenesisPage() {
               <p>Hey, pxlr!</p>
               <Separator />
               <p>
-                In order to keep your pxl NFT post-regenesis of the Starknet
-                blockchain, you’ll need to burn it and mint it again. You have
-                until Jan 31st 2023 to do so. Only NFTs belonging to the new
-                collection will have the ability to draw rtwrks starting Dec
-                22nd 2022.
+                In order to keep your pxl NFT post-Starknet regenesis, you’ll
+                need to migrate it (our contract will burn it and mint it again
+                in the same transaction). Do it before Jan 31st 2023, after that
+                you might lose it forever. As of now, only NFTs belonging to the
+                new collection will have the ability to draw rtwrks.
               </p>
               <Separator />
               {!state.account && (

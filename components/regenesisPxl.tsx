@@ -42,7 +42,7 @@ export default function RegenesisPxl({
         padding: "16px 29px 30px 29px",
         top: pxlTop,
         left: 0,
-        height: pxl.migrated || migrating[pxl.pxlId] ? 157 : 212,
+        height: pxl.migrated && migrating[pxl.pxlId] ? 157 : 212,
       }}
     >
       <div style={{ marginTop: 12 }} />
@@ -73,6 +73,36 @@ export default function RegenesisPxl({
             {migrating[pxl.pxlId]
               ? "ℹ️ This pxl NFT is being burnt and minted. Please check again later to make sure it’s all done."
               : "✅ You’re all set! Your pxl NFT is ready for post-regenesis era on the Starknet blockchain!"}
+            {!migrating[pxl.pxlId] && (
+              <>
+                <br />
+                <a
+                  href={`${process.env.NEXT_PUBLIC_ASPECT_ASSET_LINK}/${process.env.NEXT_PUBLIC_PXL_ERC721_ADDRESS}/${pxl.pxlId}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{
+                    marginTop: 32,
+                    display: "inline-block",
+                    marginRight: 10,
+                  }}
+                >
+                  See it on Aspect
+                </a>
+                |
+                <a
+                  href={`${process.env.NEXT_PUBLIC_MINTSQUARE_ASSET_LINK}/${process.env.NEXT_PUBLIC_PXL_ERC721_ADDRESS}/${pxl.pxlId}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{
+                    marginTop: 32,
+                    display: "inline-block",
+                    marginLeft: 10,
+                  }}
+                >
+                  See it on Mintsquare
+                </a>
+              </>
+            )}
           </p>
         )}
       </div>

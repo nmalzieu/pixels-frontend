@@ -77,7 +77,7 @@ export default function RegenesisPxl({
               <>
                 <br />
                 <a
-                  href={`${process.env.NEXT_PUBLIC_ASPECT_ASSET_LINK}/${process.env.NEXT_PUBLIC_PXL_ERC721_ADDRESS}/${pxl.pxlId}`}
+                  href={`${process.env.NEXT_PUBLIC_UNFRAMED_ASSET_LINK}/${process.env.NEXT_PUBLIC_PXL_ERC721_ADDRESS}/${pxl.pxlId}`}
                   target="_blank"
                   rel="noreferrer"
                   style={{
@@ -86,20 +86,7 @@ export default function RegenesisPxl({
                     marginRight: 10,
                   }}
                 >
-                  See it on Aspect
-                </a>
-                |
-                <a
-                  href={`${process.env.NEXT_PUBLIC_MINTSQUARE_ASSET_LINK}/${process.env.NEXT_PUBLIC_PXL_ERC721_ADDRESS}/${pxl.pxlId}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{
-                    marginTop: 32,
-                    display: "inline-block",
-                    marginLeft: 10,
-                  }}
-                >
-                  See it on Mintsquare
+                  See it on Unframed
                 </a>
               </>
             )}

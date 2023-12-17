@@ -7,8 +7,8 @@ import { useExecute, useTransactionStatus } from "../contracts/helpers";
 import { useRtwrkThemeAuctionContract } from "../contracts/rtwrkThemeAuction";
 import SmallClock from "../public/clock-small.svg";
 import styles from "../styles/CollectionPxl.module.scss";
-import AspectPxlImage from "./aspectPxlImage";
 import Button from "./button";
+import UnframedPxlImage from "./unframedPxlImage";
 
 type Props = {
   pxlId: number;
@@ -31,8 +31,7 @@ const CollectionPxl = ({ pxlId }: Props) => {
       calldata: [pxlIdUint256.low, pxlIdUint256.high],
     },
   });
-  const aspectUrl = `${process.env.NEXT_PUBLIC_ASPECT_ASSET_LINK}/${process.env.NEXT_PUBLIC_PXL_ERC721_ADDRESS}/${pxlId}`;
-  const mintsquareUrl = `${process.env.NEXT_PUBLIC_MINTSQUARE_ASSET_LINK}/${process.env.NEXT_PUBLIC_PXL_ERC721_ADDRESS}/${pxlId}`;
+  const unframedUrl = `${process.env.NEXT_PUBLIC_UNFRAMED_ASSET_LINK}/${process.env.NEXT_PUBLIC_PXL_ERC721_ADDRESS}/${pxlId}`;
   let balance = "0";
 
   if (!balanceLoading && balanceData?.[0]) {
@@ -85,7 +84,7 @@ const CollectionPxl = ({ pxlId }: Props) => {
   return (
     <div className={styles.collectionPxl}>
       <div className={styles.gridContainer}>
-        <AspectPxlImage pxlId={pxlId} />
+        <UnframedPxlImage pxlId={pxlId} />
       </div>
       <div
         style={{
@@ -98,12 +97,10 @@ const CollectionPxl = ({ pxlId }: Props) => {
         PXL #{pxlId}
       </div>
       <div className={styles.dual}>
-        <a href={aspectUrl} target="_blank" rel="noreferrer">
-          View on Aspect
+        <a href={unframedUrl} target="_blank" rel="noreferrer">
+          View on Unframed
         </a>
-        <a href={mintsquareUrl} target="_blank" rel="noreferrer">
-          View on Mintsquare
-        </a>
+        <div />
       </div>
       <div
         style={{

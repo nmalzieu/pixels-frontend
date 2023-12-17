@@ -147,7 +147,7 @@ export const state = createModel<RootModel>()({
       const newState: any = { ...state, network };
       const networkMessage = `please connect to the ${process.env.NEXT_PUBLIC_STARKNET_NETWORK} network`;
       if (network) {
-        if (network !== process.env.NEXT_PUBLIC_STARKNET_NETWORK) {
+        if (network !== process.env.NEXT_PUBLIC_STARKNET_NETWORK && false) {
           newState.message = networkMessage;
         } else if (state.message === networkMessage) {
           newState.message = "";

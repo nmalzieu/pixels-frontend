@@ -1,4 +1,3 @@
-import { useStarknet } from "@starknet-react/core";
 import { useEffect, useRef } from "react";
 import { uint256 } from "starknet";
 import { toBN, toHex } from "starknet/dist/utils/number";
@@ -21,23 +20,29 @@ export const getUintFromNumber = (num: any) => {
   return uint256.bnToUint256(num);
 };
 
-export const useStarknetNetwork = () => {
-  const { account, library } = useStarknet();
-  if (!account) {
-    return;
-  }
-  try {
-    const baseUrl =
-      (library as any).baseUrl || (library as any).provider?.baseUrl;
-    if (baseUrl.includes("alpha-mainnet.starknet.io")) {
-      return "mainnet";
-    } else if (baseUrl.includes("alpha4.starknet.io")) {
-      return "goerli";
-    } else if (baseUrl.match(/^https?:\/\/localhost.*/)) {
-      return "localhost";
-    }
-  } catch {}
-};
+// export const useStarknetNetwork = () => {
+//   const { library } = useStarknet();
+//   try {
+//     const baseUrl =
+//       (library as any).baseUrl || (library as any).provider?.baseUrl;
+//     const nodeUrl = (library as any).provider?.nodeUrl;
+//     console.log({baseUrl, nodeUrl});
+//     if (
+//       baseUrl.includes(
+//         "alpha-mainnet.starknet.io" || nodeUrl.includes("starknet-mainnet")
+//       )
+//     ) {
+//       return "mainnet";
+//     } else if (
+//       baseUrl.includes("alpha4.starknet.io") ||
+//       nodeUrl.includes("starknet-testnet")
+//     ) {
+//       return "goerli";
+//     } else if (baseUrl.match(/^https?:\/\/localhost.*/)) {
+//       return "localhost";
+//     }
+//   } catch {}
+// };
 
 const componentToHex = (c: number): string => {
   var hex = c.toString(16);

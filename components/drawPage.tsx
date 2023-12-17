@@ -9,7 +9,6 @@ import styles from "../styles/DrawPage.module.scss";
 import ConnectToStarknet from "./connectToStarknet";
 import Drawer from "./drawer";
 import Loading from "./loading";
-import RegenesisBanner from "./regenesisBanner";
 import TopNav from "./topNav";
 
 const DrawPage = () => {
@@ -86,7 +85,6 @@ const DrawPage = () => {
           : ""
       }`}
     >
-      <RegenesisBanner />
       <div
         className={styles.gridPageContent}
         style={{ height: showDrawer ? 1580 : 1000 }}

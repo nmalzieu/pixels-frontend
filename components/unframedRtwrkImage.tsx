@@ -9,21 +9,21 @@ type Props = {
   transparentLoader?: boolean;
 };
 
-const AspectRtwrkImage = ({ rtwrkId, transparentLoader }: Props) => {
+const UnframedRtwrkImage = ({ rtwrkId, transparentLoader }: Props) => {
   const [imageUri, setImageUri] = useState();
   useEffect(() => {
     const fetch = async () => {
       const { data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_ASPECT_API}/asset/${process.env.NEXT_PUBLIC_RTWRK_ERC721_ADDRESS}/${rtwrkId}`
+        `${process.env.NEXT_PUBLIC_UNFRAMED_API}/${process.env.NEXT_PUBLIC_RTWRK_ERC721_ADDRESS}/${rtwrkId}`
       );
-      setImageUri(data.image_uri);
+      setImageUri(data.imageUrls.full);
     };
     fetch();
-  }, []);
+  }, [rtwrkId]);
   if (!imageUri) {
     return <GridLoader transparent={transparentLoader} />;
   }
   return <Image src={imageUri} width={400} height={400} alt="Rtwrk" />;
 };
 
-export default AspectRtwrkImage;
+export default UnframedRtwrkImage;

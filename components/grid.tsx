@@ -170,11 +170,6 @@ const Grid = ({
     return <GridLoader transparent={transparentLoader} />;
   }
 
-  console.log({ hash: state.currentlyColoringHash, viewer: viewerOnly });
-  if (state.currentlyColoringHash && !viewerOnly) {
-    console.log("Should show committing state");
-  }
-
   return (
     <div
       className={`${styles.gridWrapper} ${viewerOnly ? styles.viewerOnly : ""}`}

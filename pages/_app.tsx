@@ -4,19 +4,20 @@ import "../styles/globals.css";
 import { InjectedConnector, StarknetConfig } from "@starknet-react/core";
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { Provider as ReactReduxProvider } from "react-redux";
 import { Provider as StrkProvider } from "starknet";
 
 import { store, useStoreDispatch } from "../store";
-import { useStarknetNetwork } from "../utils";
+// import { useStarknetNetwork } from "../utils";
 
 const StarknetStatusComponent = () => {
   const dispatch = useStoreDispatch();
-  const network = useStarknetNetwork();
-  useEffect(() => {
-    dispatch.setNetwork(network || "");
-  }, [dispatch, network]);
+  // const network = useStarknetNetwork();
+  // console.log({network});
+  // useEffect(() => {
+  //   dispatch.setNetwork(network || "");
+  // }, [dispatch, network]);
   return <></>;
 };
 

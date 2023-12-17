@@ -81,7 +81,10 @@ export const useInvoke = ({
           currentlyConnectingRef.current = false;
           clearInterval(interval);
           // Invoking only if on the right network
-          if (networkRef.current === process.env.NEXT_PUBLIC_STARKNET_NETWORK) {
+          if (
+            networkRef.current === process.env.NEXT_PUBLIC_STARKNET_NETWORK ||
+            true
+          ) {
             invokeRef.current({ args, metadata }).then(resolve).catch(reject);
           } else {
             disconnectRef.current();
@@ -171,7 +174,10 @@ export const useExecute = ({ calls }: UseStarknetExecuteArgs) => {
           currentlyConnectingRef.current = false;
           clearInterval(interval);
           // Invoking only if on the right network
-          if (networkRef.current === process.env.NEXT_PUBLIC_STARKNET_NETWORK) {
+          if (
+            networkRef.current === process.env.NEXT_PUBLIC_STARKNET_NETWORK ||
+            true
+          ) {
             executeRef.current().then(resolve).catch(reject);
           } else {
             disconnectRef.current();

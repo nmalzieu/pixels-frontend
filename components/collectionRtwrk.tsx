@@ -36,8 +36,7 @@ const CollectionRtwtk = ({ rtwrkId, setEditingStepForRtwrk }: Props) => {
       method: "rtwrkStep",
       args: [bnToUint256(rtwrkId)],
     });
-  const aspectUrl = `${process.env.NEXT_PUBLIC_ASPECT_ASSET_LINK}/${process.env.NEXT_PUBLIC_RTWRK_ERC721_ADDRESS}/${rtwrkId}`;
-  const mintsquareUrl = `${process.env.NEXT_PUBLIC_MINTSQUARE_ASSET_LINK}/${process.env.NEXT_PUBLIC_RTWRK_ERC721_ADDRESS}/${rtwrkId}`;
+  const unframedUrl = `${process.env.NEXT_PUBLIC_UNFRAMED_ASSET_LINK}/${process.env.NEXT_PUBLIC_RTWRK_ERC721_ADDRESS}/${rtwrkId}`;
 
   const displayAddress = (a: string) => {
     if (state.account && BigNumber(a).isEqualTo(state.account)) {
@@ -134,12 +133,10 @@ const CollectionRtwtk = ({ rtwrkId, setEditingStepForRtwrk }: Props) => {
         </div>
       </div>
       <div className={styles.dual}>
-        <a href={aspectUrl} target="_blank" rel="noreferrer">
-          View on Aspect
+        <a href={unframedUrl} target="_blank" rel="noreferrer">
+          View on Unframed
         </a>
-        <a href={mintsquareUrl} target="_blank" rel="noreferrer">
-          View on Mintsquare
-        </a>
+        <div />
       </div>
       <br />
       <Button

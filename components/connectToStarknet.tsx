@@ -36,23 +36,24 @@ const ConnectToStarknet = ({ connectButton }: Props) => {
     dispatch.setLastBidAction(undefined);
   }, [starknetConnectedAccount, disconnect, dispatch]);
 
-  useEffect(() => {
-    if (
-      state.network &&
-      state.network !== process.env.NEXT_PUBLIC_STARKNET_NETWORK
-    ) {
-      disconnectAndDispatch();
-    }
-  }, [disconnectAndDispatch, state.network]);
+  // useEffect(() => {
+  //   if (
+  //     state.network &&
+  //     state.network !== process.env.NEXT_PUBLIC_STARKNET_NETWORK
+  //   ) {
+  //     disconnectAndDispatch();
+  //   }
+  // }, [disconnectAndDispatch, state.network]);
 
   useEffect(() => {
     if (!state.rehydrated) return;
     if (
-      state.network &&
-      state.network === process.env.NEXT_PUBLIC_STARKNET_NETWORK &&
+      // state.network &&
+      // state.network === process.env.NEXT_PUBLIC_STARKNET_NETWORK &&
       starknetConnectedAccount &&
       starknetConnectedAccount !== state.account
     ) {
+      console.log("dispatching");
       dispatch.setAccount({
         account: starknetConnectedAccount,
         accountConnected: true,

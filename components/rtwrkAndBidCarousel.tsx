@@ -27,11 +27,11 @@ import RightArrowHover from "../public/right-arrow-hover.svg";
 import { useStoreDispatch, useStoreState } from "../store";
 import styles from "../styles/RtwrkAndBidCarousel.module.scss";
 import { feltArrayToStr, getAddressFromBN, shortAddress } from "../utils";
-import AspectRtwrkImage from "./aspectRtwrkImage";
 import Auction from "./auction";
 import Button from "./button";
 import GridComponent from "./grid";
 import GridLoader from "./gridLoader";
+import UnframedRtwrkImage from "./unframedRtwrkImage";
 
 const ORIGINAL_RTWRKS_COUNT = 13;
 const BLOCK_TIME_BUFFER = 2 * 3600; // 2 hours buffer
@@ -233,7 +233,7 @@ const RtwrkAndBidCarousel = ({
 
   if (!isAuctionPage && round <= mintedCount) {
     component = (
-      <AspectRtwrkImage
+      <UnframedRtwrkImage
         rtwrkId={round}
         key={`aspect-${round}`}
         transparentLoader
@@ -278,8 +278,7 @@ const RtwrkAndBidCarousel = ({
   const beginningOfDrawing = moment.unix(timestamp).tz("Europe/Paris");
   const isPreAuctionDrawing = round <= ORIGINAL_RTWRKS_COUNT;
 
-  const aspectUrl = `${process.env.NEXT_PUBLIC_ASPECT_ASSET_LINK}/${process.env.NEXT_PUBLIC_RTWRK_ERC721_ADDRESS}/${round}`;
-  const mintsquareUrl = `${process.env.NEXT_PUBLIC_MINTSQUARE_ASSET_LINK}/${process.env.NEXT_PUBLIC_RTWRK_ERC721_ADDRESS}/${round}`;
+  const unframedUrl = `${process.env.NEXT_PUBLIC_UNFRAMED_ASSET_LINK}/${process.env.NEXT_PUBLIC_RTWRK_ERC721_ADDRESS}/${round}`;
 
   let hoursUntilFinished = drawingEndsIn / 3600;
   let minsUntilFinished = (drawingEndsIn % 3600) / 60;
@@ -387,12 +386,10 @@ const RtwrkAndBidCarousel = ({
               round <= mintedCount &&
               !showIsAuctionLaunching && (
                 <div className={styles.dual}>
-                  <a href={aspectUrl} target="_blank" rel="noreferrer">
-                    View on Aspect
+                  <a href={unframedUrl} target="_blank" rel="noreferrer">
+                    View on Unframed
                   </a>
-                  <a href={mintsquareUrl} target="_blank" rel="noreferrer">
-                    View on Mintsquare
-                  </a>
+                  <div />
                 </div>
               )}
             {!isCurrentDrawing &&

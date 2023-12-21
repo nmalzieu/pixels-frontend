@@ -35,16 +35,16 @@ function MyApp({ Component, pageProps }: AppProps) {
         connectors={connectors}
         defaultProvider={
           new StrkProvider({
-            sequencer: {
-              baseUrl:
-                process.env.NEXT_PUBLIC_STARKNET_PROVIDER ||
-                "http://alpha4.starknet.io",
-              feederGatewayUrl: "feeder_gateway",
-              gatewayUrl: "gateway",
-            },
-            // rpc: {
-            //   nodeUrl: "https://starknet-mainnet.infura.io/v3/...",
+            // sequencer: {
+            //   baseUrl:
+            //     process.env.NEXT_PUBLIC_STARKNET_PROVIDER ||
+            //     "http://alpha4.starknet.io",
+            //   feederGatewayUrl: "feeder_gateway",
+            //   gatewayUrl: "gateway",
             // },
+            rpc: {
+              nodeUrl: "https://starknet-mainnet.public.blastapi.io",
+            },
           })
         }
       >

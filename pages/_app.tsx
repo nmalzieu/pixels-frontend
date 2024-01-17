@@ -43,7 +43,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             //   gatewayUrl: "gateway",
             // },
             rpc: {
-              nodeUrl: "https://starknet-mainnet.public.blastapi.io",
+              nodeUrl: "https://starknet.blockpi.network/v1/rpc/public",
             },
           })
         }

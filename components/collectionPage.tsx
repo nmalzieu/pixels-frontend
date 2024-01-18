@@ -118,21 +118,12 @@ const CollectionPage = () => {
                       1/ become an artist - get a pxl NFT and draw rtwrks with
                       the community. See the collection on{" "}
                       <a
-                        href={`${process.env.NEXT_PUBLIC_ASPECT_COLLECTION_LINK}/${process.env.NEXT_PUBLIC_PXL_ERC721_ADDRESS}`}
+                        href={`${process.env.NEXT_PUBLIC_UNFRAMED_COLLECTION_LINK}/${process.env.NEXT_PUBLIC_PXL_ERC721_ADDRESS}`}
                         target="_blank"
                         rel="noreferrer"
                         style={{ textDecoration: "underline" }}
                       >
-                        Aspect
-                      </a>{" "}
-                      or{" "}
-                      <a
-                        href={`${process.env.NEXT_PUBLIC_MINTSQUARE_COLLECTION_LINK}/${process.env.NEXT_PUBLIC_PXL_ERC721_ADDRESS}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{ textDecoration: "underline" }}
-                      >
-                        Mintsquare
+                        Unframed
                       </a>
                       .
                       <br />

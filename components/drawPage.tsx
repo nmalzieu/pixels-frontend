@@ -72,8 +72,7 @@ const DrawPage = () => {
   const showLoading =
     !showDisconnected && !showDrawer && !showNoPxls && !showNoCurrentDrawing;
 
-  const aspectUrl = `${process.env.NEXT_PUBLIC_ASPECT_COLLECTION_LINK}/${process.env.NEXT_PUBLIC_RTWRK_ERC721_ADDRESS}`;
-  const mintsquareUrl = `${process.env.NEXT_PUBLIC_MINTSQUARE_COLLECTION_LINK}/${process.env.NEXT_PUBLIC_RTWRK_ERC721_ADDRESS}`;
+  const unframedURL = `${process.env.NEXT_PUBLIC_UNFRAMED_COLLECTION_LINK}/${process.env.NEXT_PUBLIC_PXL_ERC721_ADDRESS}`;
 
   return (
     <div
@@ -106,7 +105,15 @@ const DrawPage = () => {
                     </span>
                   }
                 />{" "}
-                and colorize your pxls. Be the artist of the third internet.
+                and colorize your pxls. Be the artist of the third internet.{" "}
+                <a
+                  href={unframedURL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={styles.connectToStarknet}
+                >
+                  Or buy a PXL NFT here.
+                </a>
               </div>
               <img
                 src="/glasses.svg"
@@ -180,21 +187,12 @@ const DrawPage = () => {
                 it seems like you don’t have a pxl NFT in your wallet. If you
                 want to draw rtwrks with us, go get one on{" "}
                 <a
-                  href={aspectUrl}
+                  href={unframedURL}
                   target="_blank"
                   rel="noreferrer"
                   style={{ textDecoration: "underline" }}
                 >
-                  Aspect
-                </a>{" "}
-                or{" "}
-                <a
-                  href={mintsquareUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ textDecoration: "underline" }}
-                >
-                  Mintsquare
+                  Unframed
                 </a>
               </div>
               <img

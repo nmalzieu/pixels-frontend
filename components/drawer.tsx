@@ -197,12 +197,8 @@ const Drawer = ({ pxlsOwned }: Props) => {
       gridComponent = (
         <div className={styles.gridMessage}>
           There is no rtwrk being drawn right now. Join our{" "}
-          <a
-            href="https://discord.com/invite/ufafywMTQh"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Discord
+          <a href="https://t.me/pxls_wtf" target="_blank" rel="noreferrer">
+            Telegram
           </a>{" "}
           or follow us on{" "}
           <a
@@ -574,12 +570,12 @@ const Drawer = ({ pxlsOwned }: Props) => {
                 />
                 Find inspiration for the rtwrk in the{" "}
                 <a
-                  href="https://discord.com/channels/998172245274931240/998224567988404316"
+                  href="https://t.me/pxls_wtf"
                   target="_blank"
                   rel="noreferrer"
                   style={{ color: "#FF8780" }}
                 >
-                  dedicated Discord channel
+                  dedicated Telegram channel
                 </a>
               </div>
               <div style={{ textAlign: "center" }}>
@@ -698,12 +694,12 @@ const Drawer = ({ pxlsOwned }: Props) => {
           <img src="/twitter-text.png" alt="Twitter" />
         </a>
         <a
-          className={styles.discord}
-          href="https://discord.com/invite/ufafywMTQh"
+          className={styles.telegram}
+          href="https://t.me/pxls_wtf"
           target="_blank"
           rel="noreferrer"
         >
-          <img src="/discord-text.png" alt="Discord" />
+          <img src="/telegram.png" alt="Telegram" />
         </a>
         {/* <div className={styles.bottom} /> */}
       </div>

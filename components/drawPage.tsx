@@ -129,12 +129,12 @@ const DrawPage = () => {
                 <img src="/twitter-text.png" alt="Twitter" />
               </a>
               <a
-                className={styles.discord}
-                href="https://discord.com/invite/ufafywMTQh"
+                className={styles.telegram}
+                href="https://t.me/pxls_wtf"
                 target="_blank"
                 rel="noreferrer"
               >
-                <img src="/discord-text.png" alt="Discord" />
+                <img src="/telegram.png" alt="Telegram" />
               </a>
             </>
           )}
@@ -170,12 +170,12 @@ const DrawPage = () => {
                 <img src="/twitter-text.png" alt="Twitter" />
               </a>
               <a
-                className={styles.discord}
-                href="https://discord.com/invite/ufafywMTQh"
+                className={styles.telegram}
+                href="https://t.me/pxls_wtf"
                 target="_blank"
                 rel="noreferrer"
               >
-                <img src="/discord-text.png" alt="Discord" />
+                <img src="/telegram.png" alt="Telegram" />
               </a>
             </>
           )}
@@ -209,12 +209,12 @@ const DrawPage = () => {
                 <img src="/twitter-text.png" alt="Twitter" />
               </a>
               <a
-                className={styles.discord}
-                href="https://discord.com/invite/ufafywMTQh"
+                className={styles.telegram}
+                href="https://t.me/pxls_wtf"
                 target="_blank"
                 rel="noreferrer"
               >
-                <img src="/discord-text.png" alt="Discord" />
+                <img src="/telegram.png" alt="Telegram" />
               </a>
             </>
           )}

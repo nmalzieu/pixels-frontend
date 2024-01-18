@@ -118,12 +118,12 @@ const MintHomeDesktop = () => {
       <span>
         all pxl NFTs have been minted - join us on{" "}
         <a
-          href="https://discord.gg/ufafywMTQh"
+          href="https://t.me/pxls_wtf"
           target="_blank"
           rel="noreferrer"
           className="clickable"
         >
-          Discord
+          Telegram
         </a>{" "}
         &{" "}
         <a
@@ -185,12 +185,8 @@ const MintHomeDesktop = () => {
             <br />
             <b>Next step:</b> create our very first rtwrk together!
             <br />
-            <a
-              href="https://discord.gg/ufafywMTQh"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Join the Discord
+            <a href="https://t.me/pxls_wtf" target="_blank" rel="noreferrer">
+              Join the Telegram
             </a>{" "}
             &{" "}
             <a

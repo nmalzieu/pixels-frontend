@@ -80,13 +80,13 @@ const CollectionPage = () => {
                 <img src="/twitter-text.png" alt="Twitter" />
               </a>
               <a
-                className={styles.discord}
+                className={styles.telegram}
                 style={{ left: 580, top: 600 }}
-                href="https://discord.com/invite/ufafywMTQh"
+                href="https://t.me/pxls_wtf"
                 target="_blank"
                 rel="noreferrer"
               >
-                <img src="/discord-text.png" alt="Discord" />
+                <img src="/telegram.png" alt="Telegram" />
               </a>
             </>
           )}
@@ -150,13 +150,13 @@ const CollectionPage = () => {
                   <img src="/twitter-text.png" alt="Twitter" />
                 </a>
                 <a
-                  className={styles.discord}
+                  className={styles.telegram}
                   style={{ left: 470, top: 620 }}
-                  href="https://discord.com/invite/ufafywMTQh"
+                  href="https://t.me/pxls_wtf"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <img src="/discord-text.png" alt="Discord" />
+                  <img src="/telegram.png" alt="Telegram" />
                 </a>
               </>
             )}
